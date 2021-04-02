@@ -1,0 +1,24 @@
+{
+  "name": "cafett/game_assistant",
+  "authors": [
+    {
+      "name": "suinua"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "": [
+        "src/"
+      ]
+    }
+  },
+  "repositories": [
+  ],
+  "require": {
+    "pocketmine/pocketmine-mp": "*",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5"
+  }
+}
