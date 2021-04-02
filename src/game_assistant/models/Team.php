@@ -16,7 +16,5 @@ class Team
     private string $TeamColorFormat;
 }
 
-class TeamId {
 
-}
 
