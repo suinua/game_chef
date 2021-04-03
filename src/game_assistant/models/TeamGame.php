@@ -16,13 +16,13 @@ class TeamGame extends Game
 
     protected int $maxPlayersDifference;
 
+    /**
+     * @param string $playerName
+     * @return bool
+     * @throws \Exception
+     */
     public function canJoin(string $playerName): bool {
-        try {
-            $playerData = PlayerDataStore::getByName($playerName);
-        } catch (\Exception $exception) {
-            //TODO:メッセージ
-            return false;
-        }
+        $playerData = PlayerDataStore::getByName($playerName);
         if ($playerData->getBelongGameId() !== null) return false;
 
         $hasEmpty = false;
@@ -46,4 +46,22 @@ class TeamGame extends Game
         return false;
     }
 
+    /**
+     * @return Team[]
+     */
+    public function getTeams(): array {
+        return $this->teams;
+    }
+
+    public function getTeamById(TeamId $teamId): Team {
+        foreach ($this->teams as $team) {
+            if ($team->getId()->equals($teamId)) return $team;
+        }
+
+        throw new \Exception("そのIDのチームは存在しません");
+    }
+
+    public function getMaxPlayersDifference(): int {
+        return $this->maxPlayersDifference;
+    }
 }
