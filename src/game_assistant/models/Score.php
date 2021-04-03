@@ -8,12 +8,8 @@ class Score
 {
     private int $value;
 
-    public function __construct(int $value) {
+    public function __construct(int $value = 0) {
         $this->value = $value;
-    }
-
-    static function asNew(): self {
-        return new Score(0);
     }
 
     /**

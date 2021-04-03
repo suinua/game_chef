@@ -10,6 +10,8 @@ class Game
     protected GameType $type;
     protected Score $victoryScore;
     protected GameStatus $status;
+    protected bool $canJumpIn;
+
 
     public function getId(): GameId {
         return $this->id;

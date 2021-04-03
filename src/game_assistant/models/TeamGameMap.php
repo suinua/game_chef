@@ -4,8 +4,6 @@
 namespace game_assistant\models;
 
 
-use pocketmine\math\Vector3;
-
 class TeamGameMap extends Map
 {
     /**
