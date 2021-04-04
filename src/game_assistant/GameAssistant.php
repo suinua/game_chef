@@ -10,7 +10,6 @@ use game_assistant\models\TeamId;
 use game_assistant\services\GameService;
 use game_assistant\services\SoloGameService;
 use game_assistant\services\TeamGameService;
-use game_assistant\store\GamesStore;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -74,10 +73,31 @@ class GameAssistant
     }
 
     //TeamGameのときのみ、チーム移動できるかModelで設定
-    static function moveTeam():bool {}
-    static function quitGame():bool {}
+    static function moveTeam(string $name, TeamId $teamId, bool $force = false): bool {
+        try {
+            TeamGameService::moveTeam($name, $teamId, $force);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
 
-    static function setSpawnPoint():bool{}
-    static function addTeamScore():bool{}
-    static function addPlayerScore():bool{}
+        return true;
+    }
+
+    static function quitGame(string $name): bool {
+        try {
+            GameService::quit($name);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    static function setSpawnPoint(): bool { }
+
+    static function addTeamScore(): bool { }
+
+    static function addPlayerScore(): bool { }
 }

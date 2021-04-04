@@ -15,6 +15,7 @@ class TeamGame extends Game
     private TeamGameMap $map;
 
     protected int $maxPlayersDifference;
+    private bool $canMoveTeam;
 
     /**
      * @param string $playerName
@@ -63,5 +64,9 @@ class TeamGame extends Game
 
     public function getMaxPlayersDifference(): int {
         return $this->maxPlayersDifference;
+    }
+
+    public function isCanMoveTeam(): bool {
+        return $this->canMoveTeam;
     }
 }

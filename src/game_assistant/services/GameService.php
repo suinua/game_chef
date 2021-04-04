@@ -7,8 +7,10 @@ namespace game_assistant\services;
 use game_assistant\events\FinishedGameEvent;
 use game_assistant\models\Game;
 use game_assistant\models\GameId;
+use game_assistant\models\PlayerData;
 use game_assistant\store\GamesStore;
 use game_assistant\store\GameTimersStore;
+use game_assistant\store\PlayerDataStore;
 use pocketmine\scheduler\TaskScheduler;
 
 class GameService
@@ -40,5 +42,11 @@ class GameService
         (new FinishedGameEvent($gameId))->call();
     }
 
-    static function quit(string $name) { }
+    /**
+     * @param string $name
+     * @throws \Exception
+     */
+    static function quit(string $name) {
+        PlayerDataStore::update(new PlayerData($name));
+    }
 }
