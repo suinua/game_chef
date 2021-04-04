@@ -30,8 +30,7 @@ class TeamGameService
         }
 
         if (!$game->canJoin($playerData->getName())) {
-            //TODO:メッセージ
-            return;
+            throw new \Exception("ゲームに参加するとこができませんでした");
         }
 
         //チーム指定なし

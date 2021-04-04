@@ -27,8 +27,7 @@ class SoloGameService
         }
 
         if (!$game->canJoin($playerData->getName())) {
-            //TODO:メッセージ
-            return;
+            throw new \Exception("ゲームに参加するとこができませんでした");
         }
 
         $soloTeam = new SoloTeam($playerData->getName());//TODO:ColorFormat
