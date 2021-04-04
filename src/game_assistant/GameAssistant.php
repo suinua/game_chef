@@ -72,7 +72,6 @@ class GameAssistant
         return true;
     }
 
-    //TeamGameのときのみ、チーム移動できるかModelで設定
     static function moveTeam(string $name, TeamId $teamId, bool $force = false): bool {
         try {
             TeamGameService::moveTeam($name, $teamId, $force);
@@ -96,6 +95,10 @@ class GameAssistant
     }
 
     static function setSpawnPoint(): bool { }
+
+    static function setGamePlayersSpawnPoint(): bool { }
+
+    static function setTeamPlayersSpawnPoint(): bool { }
 
     static function addTeamScore(): bool { }
 
