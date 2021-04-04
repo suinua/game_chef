@@ -12,4 +12,8 @@ class SoloTeam extends Team
     public function __construct(string $name, string $TeamColorFormat = "") {
         parent::__construct($name, $TeamColorFormat);
     }
+
+    public function addScore(Score $score): void {
+        $this->score = $this->score->add($score);
+    }
 }

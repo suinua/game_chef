@@ -62,6 +62,11 @@ class TeamGame extends Game
         return $this->teams;
     }
 
+    /**
+     * @param TeamId $teamId
+     * @return Team
+     * @throws \Exception
+     */
     public function getTeamById(TeamId $teamId): Team {
         foreach ($this->teams as $team) {
             if ($team->getId()->equals($teamId)) return $team;
@@ -76,5 +81,14 @@ class TeamGame extends Game
 
     public function isCanMoveTeam(): bool {
         return $this->canMoveTeam;
+    }
+
+    /**
+     * @param TeamId $teamId
+     * @param Score $score
+     * @throws \Exception
+     */
+    public function addScore(TeamId $teamId, Score $score): void {
+        $this->getTeamById($teamId)->addScore($score);
     }
 }

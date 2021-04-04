@@ -12,10 +12,11 @@ class Score
         $this->value = $value;
     }
 
-    /**
-     * @return int
-     */
     public function getValue(): int {
         return $this->value;
+    }
+
+    public function add(Score $score): Score {
+        return new Score($this->value + $score->value);
     }
 }

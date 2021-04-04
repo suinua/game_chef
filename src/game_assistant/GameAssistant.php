@@ -6,10 +6,14 @@ namespace game_assistant;
 
 use game_assistant\models\Game;
 use game_assistant\models\GameId;
+use game_assistant\models\Score;
+use game_assistant\models\SoloGame;
+use game_assistant\models\TeamGame;
 use game_assistant\models\TeamId;
 use game_assistant\services\GameService;
 use game_assistant\services\SoloGameService;
 use game_assistant\services\TeamGameService;
+use game_assistant\store\GamesStore;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -100,7 +104,37 @@ class GameAssistant
 
     static function setTeamPlayersSpawnPoint(): bool { }
 
-    static function addTeamScore(): bool { }
+    static function addTeamScore(GameId $gameId, TeamId $teamId, Score $score): bool {
+        try {
+            $game = GamesStore::getById($gameId);
+            if ($game instanceof TeamGame) {
+                $game->addScore($teamId, $score);
+            } else {
+                self::$logger->error("そのゲームIDはTeamGameのものではありません");
+                return false;
+            }
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
 
-    static function addPlayerScore(): bool { }
+        return true;
+    }
+
+    static function addPlayerScore(GameId $gameId, string $name, Score $score): bool {
+        try {
+            $game = GamesStore::getById($gameId);
+            if ($game instanceof SoloGame) {
+                $game->addScore($name, $score);
+            } else {
+                self::$logger->error("そのゲームIDはSoloGameのものではありません");
+                return false;
+            }
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
+
+        return true;
+    }
 }

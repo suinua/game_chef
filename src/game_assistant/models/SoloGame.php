@@ -44,11 +44,28 @@ class SoloGame extends Game
         return $this->maxPlayers;
     }
 
+    /**
+     * @param SoloTeam $team
+     * @throws \Exception
+     */
     public function addSoloTeam(SoloTeam $team): void {
         if ($this->canJoin($team->getName())) {
             throw new \Exception("ソロチームを追加できませんでした");
         }
 
         $this->teams[$team->getName()] = $team;
+    }
+
+
+    /**
+     * @param string $name
+     * @param Score $score
+     * @throws \Exception
+     */
+    public function addScore(string $name, Score $score): void {
+        if (!array_key_exists($name, $this->teams)) {
+            throw new \Exception("{$name}はこのゲームに参加していません");
+        }
+        $this->teams[$name]->addScore($score);
     }
 }

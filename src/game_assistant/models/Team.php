@@ -46,6 +46,10 @@ class Team
     public function getMinPlayer(): ?int {
         return $this->minPlayer;
     }
+
+    public function addScore(Score $score): void {
+        $this->score = $this->score->add($score);
+    }
 }
 
 
