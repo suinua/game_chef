@@ -52,8 +52,14 @@ class GameAssistant
         return true;
     }
 
-    static function finishGame(GameId $gameId): void {
-        GameService::finish($gameId);
+    static function finishGame(GameId $gameId): bool {
+        try {
+            GameService::finish($gameId);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
+        return true;
     }
 
     static function joinSoloGame(string $name, GameId $gameId): bool {

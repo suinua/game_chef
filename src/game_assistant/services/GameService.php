@@ -4,7 +4,6 @@
 namespace game_assistant\services;
 
 
-use game_assistant\events\FinishedGameEvent;
 use game_assistant\models\Game;
 use game_assistant\models\GameId;
 use game_assistant\models\PlayerData;
@@ -36,10 +35,19 @@ class GameService
         $timer->start($scheduler);
     }
 
+    /**
+     * @param GameId $gameId
+     * @throws \Exception
+     */
     static function finish(GameId $gameId) {
+        $timer = GameTimersStore::getById($gameId);
+        $game = GamesStore::getById($gameId);
 
-        //最後に実行
-        (new FinishedGameEvent($gameId))->call();
+        $timer->stop();
+        $game->finished();
+
+        GameTimersStore::delete($gameId);
+        GamesStore::delete($gameId);
     }
 
     /**
