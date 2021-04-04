@@ -12,6 +12,13 @@ class Game
     protected GameStatus $status;
     protected bool $canJumpIn;
 
+    public function __construct(GameType $gameType, Score $victoryScore, bool $canJumpIn = true) {
+        $this->id = GameId::asNew();
+        $this->type = $gameType;
+        $this->victoryScore = $victoryScore;
+        $this->status = GameStatus::Standby();
+        $this->canJumpIn = $canJumpIn;
+    }
 
     public function getId(): GameId {
         return $this->id;
@@ -21,6 +28,9 @@ class Game
         return $this->type;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function start(): void {
         if (!$this->status->equals(GameStatus::Standby())) {
             throw new \Exception("待機状態の試合しか開始できません");
@@ -29,6 +39,9 @@ class Game
         $this->status = GameStatus::Started();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function finished(): void {
         if ($this->status->equals(GameStatus::Started())) {
             throw new \Exception("始まっている試合しか終了できません");

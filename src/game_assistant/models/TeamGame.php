@@ -8,14 +8,22 @@ use game_assistant\store\PlayerDataStore;
 
 class TeamGame extends Game
 {
+
+    private TeamGameMap $map;
     /**
      * @var Team[]
      */
     private array $teams;
-    private TeamGameMap $map;
-
-    protected int $maxPlayersDifference;
+    protected ?int $maxPlayersDifference;
     private bool $canMoveTeam;
+
+    public function __construct(TeamGameMap $map, GameType $gameType, Score $victoryScore, bool $canJumpIn = true, array $teams = [], ?int $maxPlayersDifference = null, bool $canMoveTeam = true) {
+        parent::__construct($gameType, $victoryScore, $canJumpIn);
+        $this->map = $map;
+        $this->teams = $teams;
+        $this->maxPlayersDifference = $maxPlayersDifference;
+        $this->canMoveTeam = $canMoveTeam;
+    }
 
     /**
      * @param string $playerName
@@ -62,7 +70,7 @@ class TeamGame extends Game
         throw new \Exception("そのIDのチームは存在しません");
     }
 
-    public function getMaxPlayersDifference(): int {
+    public function getMaxPlayersDifference(): ?int {
         return $this->maxPlayersDifference;
     }
 
