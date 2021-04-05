@@ -4,7 +4,7 @@
 namespace game_assistant\models;
 
 
-use game_assistant\events\UpdatedGameTimerEvent;
+use game_assistant\pmmp\events\UpdatedGameTimerEvent;
 use game_assistant\services\GameService;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskHandler;

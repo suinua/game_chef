@@ -1,7 +1,7 @@
 <?php
 
 
-namespace game_assistant\events;
+namespace game_assistant\pmmp\events;
 
 
 use game_assistant\models\GameId;
