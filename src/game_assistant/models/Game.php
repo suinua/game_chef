@@ -8,16 +8,18 @@ class Game
 {
     protected GameId $id;
     protected GameType $type;
-    protected Score $victoryScore;
+    protected ?Score $victoryScore;
     protected GameStatus $status;
     protected bool $canJumpIn;
+    protected ?int $timeLimit;
 
-    public function __construct(GameType $gameType, Score $victoryScore, bool $canJumpIn = true) {
+    public function __construct(GameType $gameType, ?Score $victoryScore, bool $canJumpIn = true, ?int $timeLimit = null) {
         $this->id = GameId::asNew();
         $this->type = $gameType;
         $this->victoryScore = $victoryScore;
         $this->status = GameStatus::Standby();
         $this->canJumpIn = $canJumpIn;
+        $this->timeLimit = $timeLimit;
     }
 
     public function getId(): GameId {
@@ -26,6 +28,10 @@ class Game
 
     public function getType(): GameType {
         return $this->type;
+    }
+
+    public function getTimeLimit(): ?int {
+        return $this->timeLimit;
     }
 
     /**

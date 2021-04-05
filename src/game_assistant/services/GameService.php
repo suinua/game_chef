@@ -6,6 +6,7 @@ namespace game_assistant\services;
 
 use game_assistant\models\Game;
 use game_assistant\models\GameId;
+use game_assistant\models\GameTimer;
 use game_assistant\models\PlayerData;
 use game_assistant\store\GamesStore;
 use game_assistant\store\GameTimersStore;
@@ -20,6 +21,8 @@ class GameService
      */
     static function register(Game $game) {
         GamesStore::add($game);
+        $timer = new GameTimer($game->getId(), $game->getTimeLimit());
+        GameTimersStore::add($timer);
     }
 
     /**
