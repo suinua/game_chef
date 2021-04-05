@@ -13,8 +13,15 @@ class SoloGameMap extends Map
      */
     private array $spawnPoints;
 
-    public function __construct(string $name, string $levelName, array $spawnPoints) {
-        parent::__construct($name, $levelName);
+    public function __construct(string $name, string $levelName, array $adaptedGameType, array $spawnPoints) {
+        parent::__construct($name, $levelName, $adaptedGameType);
         $this->spawnPoints = $spawnPoints;
+    }
+
+    /**
+     * @return Vector3[]
+     */
+    public function getSpawnPoints(): array {
+        return $this->spawnPoints;
     }
 }
