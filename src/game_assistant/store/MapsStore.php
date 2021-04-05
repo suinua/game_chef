@@ -7,6 +7,7 @@ namespace game_assistant\store;
 use game_assistant\models\GameType;
 use game_assistant\models\Map;
 use game_assistant\models\SoloGameMap;
+use game_assistant\models\TeamGameMap;
 
 class MapsStore
 {
@@ -14,7 +15,10 @@ class MapsStore
      * @var SoloGameMap[]
      */
     static array $soloGameMaps;
-
+    /**
+     * @var TeamGameMap[]
+     */
+    static array $teamGameMaps;
 
     /**
      * @param string $name
@@ -44,10 +48,38 @@ class MapsStore
             }
         }
 
-        throw new \Exception("そのマップ({$name})が存在しないか、すでに貸し出しています");
+        throw new \Exception("そのマップ({$name})が存在しないか、すでに使用しています");
     }
 
-    static function borrowTeamGameMap(GameType $gameType, int $numberOfTeams): Map { }
+
+    /**
+     * @param string $name
+     * @param GameType $gameType
+     * @param int $numberOfTeams
+     * @return TeamGameMap
+     * @throws \Exception
+     */
+    static function borrowTeamGameMap(string $name, GameType $gameType, int $numberOfTeams): TeamGameMap {
+        foreach (self::$teamGameMaps as $key => $map) {
+            if ($map->getName() === $name) {
+                if ($map->isAdaptedGameType($gameType)) {
+                    if ($numberOfTeams !== null) {
+                        //登録してあるチームデータより、多いチームすうはムリ
+                        if ($map->getTeamDataList() <= $numberOfTeams) {
+                            throw new \Exception("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
+                        }
+                    }
+                    unset(self::$soloGameMaps[$key]);
+                    self::$soloGameMaps = array_values(self::$soloGameMaps);
+                    return $map;
+                } else {
+                    throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
+                }
+            }
+        }
+
+        throw new \Exception("そのマップ({$name})が存在しないか、すでに使用しています");
+    }
 
     static function return(Map $map): Map { }
 }
