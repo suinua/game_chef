@@ -6,15 +6,15 @@ namespace game_assistant\store;
 
 use game_assistant\models\GameType;
 use game_assistant\models\Map;
-use game_assistant\models\SoloGameMap;
+use game_assistant\models\FFAGameMap;
 use game_assistant\models\TeamGameMap;
 
 class MapsStore
 {
     /**
-     * @var SoloGameMap[]
+     * @var FFAGameMap[]
      */
-    static array $soloGameMaps;
+    static array $ffaGameMaps;
     /**
      * @var TeamGameMap[]
      */
@@ -30,8 +30,8 @@ class MapsStore
      * numberOfPlayersを設定すると、スポーン地点よりプレイヤーが多い場合エラーを吐きます
      * 同じところにスポーンしていい場合を除き、設定することを推奨します
      */
-    static function borrowSoloGameMap(string $name, GameType $gameType, ?int $numberOfPlayers = null): Map {
-        foreach (self::$soloGameMaps as $key => $map) {
+    static function borrowFFAGameMap(string $name, GameType $gameType, ?int $numberOfPlayers = null): Map {
+        foreach (self::$ffaGameMaps as $key => $map) {
             if ($map->getName() === $name) {
                 if ($map->isAdaptedGameType($gameType)) {
                     if ($numberOfPlayers !== null) {
@@ -39,8 +39,8 @@ class MapsStore
                             throw new \Exception("そのマップ({$name})はその人数({$numberOfPlayers})に対応していません");
                         }
                     }
-                    unset(self::$soloGameMaps[$key]);
-                    self::$soloGameMaps = array_values(self::$soloGameMaps);
+                    unset(self::$ffaGameMaps[$key]);
+                    self::$ffaGameMaps = array_values(self::$ffaGameMaps);
                     return $map;
                 } else {
                     throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
@@ -69,8 +69,8 @@ class MapsStore
                             throw new \Exception("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
                         }
                     }
-                    unset(self::$soloGameMaps[$key]);
-                    self::$soloGameMaps = array_values(self::$soloGameMaps);
+                    unset(self::$ffaGameMaps[$key]);
+                    self::$ffaGameMaps = array_values(self::$ffaGameMaps);
                     return $map;
                 } else {
                     throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");

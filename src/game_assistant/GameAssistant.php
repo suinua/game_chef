@@ -7,11 +7,11 @@ namespace game_assistant;
 use game_assistant\models\Game;
 use game_assistant\models\GameId;
 use game_assistant\models\Score;
-use game_assistant\models\SoloGame;
+use game_assistant\models\FFAGame;
 use game_assistant\models\TeamGame;
 use game_assistant\models\TeamId;
 use game_assistant\services\GameService;
-use game_assistant\services\SoloGameService;
+use game_assistant\services\FFAGameService;
 use game_assistant\services\TeamGameService;
 use game_assistant\store\GamesStore;
 use pocketmine\plugin\PluginLogger;
@@ -62,9 +62,9 @@ class GameAssistant
         return true;
     }
 
-    static function joinSoloGame(string $name, GameId $gameId): bool {
+    static function joinFFAGame(string $name, GameId $gameId): bool {
         try {
-            SoloGameService::join($name, $gameId);
+            FFAGameService::join($name, $gameId);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
@@ -130,10 +130,10 @@ class GameAssistant
     static function addPlayerScore(GameId $gameId, string $name, Score $score): bool {
         try {
             $game = GamesStore::getById($gameId);
-            if ($game instanceof SoloGame) {
+            if ($game instanceof FFAGame) {
                 $game->addScore($name, $score);
             } else {
-                self::$logger->error("そのゲームIDはSoloGameのものではありません");
+                self::$logger->error("そのゲームIDはFFAGameのものではありません");
                 return false;
             }
         } catch (\Exception $e) {

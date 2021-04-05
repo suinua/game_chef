@@ -6,7 +6,7 @@ namespace game_assistant\models;
 
 use pocketmine\math\Vector3;
 
-class SoloGameMap extends Map
+class FFAGameMap extends Map
 {
     /**
      * @var Vector3[]

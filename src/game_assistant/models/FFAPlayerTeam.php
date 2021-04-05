@@ -4,7 +4,7 @@
 namespace game_assistant\models;
 
 
-class SoloTeam
+class FFAPlayerTeam
 {
     private TeamId $id;
     private string $name;

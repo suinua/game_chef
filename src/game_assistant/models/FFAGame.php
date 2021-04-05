@@ -3,18 +3,18 @@
 
 namespace game_assistant\models;
 
-
-class SoloGame extends Game
+//FFAみたいなチームの概念がなくてランダムな場所にスポーンするゲームを指す
+class FFAGame extends Game
 {
-    private SoloGameMap $map;
+    private FFAGameMap $map;
     /**
-     * @var SoloTeam[]
-     * name => SoloTeam
+     * @var FFAPlayerTeam[]
+     * name => FFATeam
      */
     private array $teams;
     protected ?int $maxPlayers;
 
-    public function __construct(SoloGameMap $map, GameType $gameType, Score $victoryScore, bool $canJumpIn = true, ?int $timeLimit = null, array $teams = [], ?int $maxPlayers = null) {
+    public function __construct(FFAGameMap $map, GameType $gameType, Score $victoryScore, bool $canJumpIn = true, ?int $timeLimit = null, array $teams = [], ?int $maxPlayers = null) {
         parent::__construct($gameType, $victoryScore, $canJumpIn, $timeLimit);
         $this->map = $map;
         $this->teams = $teams;
@@ -36,7 +36,7 @@ class SoloGame extends Game
         return $this->teams;
     }
 
-    public function getMap(): SoloGameMap {
+    public function getMap(): FFAGameMap {
         return $this->map;
     }
 
@@ -45,10 +45,10 @@ class SoloGame extends Game
     }
 
     /**
-     * @param SoloTeam $team
+     * @param FFAPlayerTeam $team
      * @throws \Exception
      */
-    public function addSoloTeam(SoloTeam $team): void {
+    public function addFFATeam(FFAPlayerTeam $team): void {
         if ($this->canJoin($team->getName())) {
             throw new \Exception("ソロチームを追加できませんでした");
         }
