@@ -40,6 +40,11 @@ class PlayerDataStore
         unset(self::$playerDataList[$name]);
     }
 
+    /**
+     * @param string $name
+     * @return PlayerData
+     * @throws \Exception
+     */
     static function getByName(string $name): PlayerData {
         if (!array_key_exists($name, self::$playerDataList)) {
             throw new \Exception("その名前({$name})のプレイヤーデータは存在しません");
@@ -48,6 +53,10 @@ class PlayerDataStore
         return self::$playerDataList[$name];
     }
 
+    /**
+     * @param PlayerData $playerData
+     * @throws \Exception
+     */
     static function update(PlayerData $playerData): void {
         if (!array_key_exists($playerData->getName(), self::$playerDataList)) {
             throw new \Exception("その名前({$playerData->getName()})のプレイヤーデータは存在しません");

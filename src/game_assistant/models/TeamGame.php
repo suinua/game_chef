@@ -17,6 +17,8 @@ class TeamGame extends Game
     protected ?int $maxPlayersDifference;
     private bool $canMoveTeam;
 
+
+    //TODO:$mapも$teamsも似たようなデータを持ってしまっている
     public function __construct(TeamGameMap $map, GameType $gameType, ?Score $victoryScore, bool $canJumpIn = true, ?int $timeLimit = null, array $teams = [], ?int $maxPlayersDifference = null, bool $canMoveTeam = true) {
         parent::__construct($gameType, $victoryScore, $canJumpIn, $timeLimit);
         $this->map = $map;
