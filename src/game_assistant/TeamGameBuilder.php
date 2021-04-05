@@ -12,15 +12,12 @@ use game_assistant\models\TeamGameMap;
 use game_assistant\store\MapsStore;
 
 //GoFのBuilderパターンではない
-class TeamGameBuilder
+class TeamGameBuilder extends GameBuilder
 {
     private TeamGameMap $map;
     private GameType $gameType;
     private int $numberOfTeams;
-    private ?int $timeLimit = null;
-    private ?Score $victoryScore = null;
-    private bool $canJumpIn = false;
-    private ?int $maxPlayersDifference = null;
+
     private bool $canMoveTeam = false;
 
     //設定しない場合、$maxPlayerと$minPlayerはマップに登録されたデフォルト値になり $numberOfTeamsよりランダムで選択されます
@@ -81,22 +78,6 @@ class TeamGameBuilder
         $teamDataOnMap = $this->map->getTeamDataOnMapByName($teamName);
 
         $this->useTeams[] = new Team($teamDataOnMap->getTeamName(), $teamDataOnMap->getSpawnPoints(), $teamDataOnMap->getTeamColorFormat(), $maxPlayer, $minPlayer);
-    }
-
-    public function setTimeLimit(?int $timeLimit): void {
-        $this->timeLimit = $timeLimit;
-    }
-
-    public function setVictoryScore(?Score $victoryScore): void {
-        $this->victoryScore = $victoryScore;
-    }
-
-    public function setCanJumpIn(bool $canJumpIn): void {
-        $this->canJumpIn = $canJumpIn;
-    }
-
-    public function setMaxPlayersDifference(?int $difference): void {
-        $this->maxPlayersDifference = $difference;
     }
 
     public function setCanMoveTeam(bool $canMoveTeam): void {
