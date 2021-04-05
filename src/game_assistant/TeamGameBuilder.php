@@ -4,8 +4,6 @@
 namespace game_assistant;
 
 
-use game_assistant\models\GameType;
-use game_assistant\models\Score;
 use game_assistant\models\Team;
 use game_assistant\models\TeamGame;
 use game_assistant\models\TeamGameMap;
@@ -15,24 +13,17 @@ use game_assistant\store\MapsStore;
 class TeamGameBuilder extends GameBuilder
 {
     private TeamGameMap $map;
-    private GameType $gameType;
     private int $numberOfTeams;
-
+    protected ?int $maxPlayersDifference = null;
     private bool $canMoveTeam = false;
 
-    //設定しない場合、$maxPlayerと$minPlayerはマップに登録されたデフォルト値になり $numberOfTeamsよりランダムで選択されます
+    /**
+     * @var Team[]|null
+     * 設定しない場合、$maxPlayerと$minPlayerはマップに登録されたデフォルト値になり $numberOfTeamsよりランダムで選択されます
+     */
     private ?array $useTeams = null;
 
     public function __construct() { }
-
-    /**
-     * @param GameType $gameType
-     * @throws \Exception
-     */
-    public function setGameType(GameType $gameType): void {
-        if ($this->gameType !== null) throw new \Exception("再度セットすることは出来ません");
-        $this->gameType = $gameType;
-    }
 
     /**
      * @param int $numberOfTeams
@@ -75,23 +66,35 @@ class TeamGameBuilder extends GameBuilder
             throw new \Exception("Mapに登録されてないチーム名は使用することができません");
         }
 
-        $teamDataOnMap = $this->map->getTeamDataOnMapByName($teamName);
+        if ($this->useTeams !== null) {
+            foreach ($this->useTeams as $useTeam) {
+                if ($useTeam->getName() === $teamName) {
+                    throw new \Exception("同じチーム名($teamName)は使用することができません");
+                }
+            }
+        }
 
+        $teamDataOnMap = $this->map->getTeamDataOnMapByName($teamName);
         $this->useTeams[] = new Team($teamDataOnMap->getTeamName(), $teamDataOnMap->getSpawnPoints(), $teamDataOnMap->getTeamColorFormat(), $maxPlayer, $minPlayer);
+    }
+
+    public function setMaxPlayersDifference(?int $difference): void {
+        $this->maxPlayersDifference = $difference;
     }
 
     public function setCanMoveTeam(bool $canMoveTeam): void {
         $this->canMoveTeam = $canMoveTeam;
     }
 
-
     /**
      * @return TeamGame
      * @throws \Exception
      */
-    public function createGame(): TeamGame {
+    public function build(): TeamGame {
+        //TODO:FFAGameBuilderと共通
         if ($this->map === null) throw new \Exception("mapをセットしていない状態でゲームを作ることはできません");
         if ($this->gameType === null) throw new \Exception("gameTypeをセットしていない状態でゲームを作ることはできません");
+
         if ($this->numberOfTeams === null) throw new \Exception("numberOfTeamsをセットしていない状態でゲームを作ることはできません");
 
         if ($this->useTeams === null) {
