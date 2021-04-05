@@ -14,8 +14,8 @@ class SoloGame extends Game
     private array $teams;
     protected ?int $maxPlayers;
 
-    public function __construct(SoloGameMap $map, GameType $gameType, Score $victoryScore, bool $canJumpIn = true, array $teams = [], ?int $maxPlayers = null) {
-        parent::__construct($gameType, $victoryScore, $canJumpIn);
+    public function __construct(SoloGameMap $map, GameType $gameType, Score $victoryScore, bool $canJumpIn = true, ?int $timeLimit = null, array $teams = [], ?int $maxPlayers = null) {
+        parent::__construct($gameType, $victoryScore, $canJumpIn, $timeLimit);
         $this->map = $map;
         $this->teams = $teams;
         $this->maxPlayers = $maxPlayers;
