@@ -24,13 +24,11 @@ class MapsStore
      * @param string $name
      * @param GameType $gameType
      * @param int|null $numberOfPlayers
-     * @return Map
-     * @throws \Exception
-     *
-     * numberOfPlayersを設定すると、スポーン地点よりプレイヤーが多い場合エラーを吐きます
+     * @return FFAGameMap
+     * @throws \Exception numberOfPlayersを設定すると、スポーン地点よりプレイヤーが多い場合エラーを吐きます
      * 同じところにスポーンしていい場合を除き、設定することを推奨します
      */
-    static function borrowFFAGameMap(string $name, GameType $gameType, ?int $numberOfPlayers = null): Map {
+    static function borrowFFAGameMap(string $name, GameType $gameType, ?int $numberOfPlayers = null): FFAGameMap {
         foreach (self::$ffaGameMaps as $key => $map) {
             if ($map->getName() === $name) {
                 if ($map->isAdaptedGameType($gameType)) {
