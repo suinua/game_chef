@@ -14,12 +14,12 @@ class GameTimer
 {
     private GameId $gameId;
 
-    private int $timeLimit;
+    private ?int $timeLimit;
     private int $elapsedTime;
 
     private TaskHandler $handler;
 
-    public function __construct(GameId $gameId, int $timeLimit) {
+    public function __construct(GameId $gameId, ?int $timeLimit) {
         $this->gameId = $gameId;
         $this->timeLimit = $timeLimit;
         $this->elapsedTime = 0;
@@ -30,8 +30,10 @@ class GameTimer
             $this->elapsedTime++;
             (new UpdatedGameTimerEvent($this->gameId))->call();
 
-            if ($this->elapsedTime >= $this->timeLimit) {
-                GameService::finish($this->gameId);
+            if ($this->timeLimit !== null) {
+                if ($this->elapsedTime >= $this->timeLimit) {
+                    GameService::finish($this->gameId);
+                }
             }
         }), 20);
     }
