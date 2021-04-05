@@ -7,18 +7,42 @@ namespace game_assistant\models;
 class TeamGameMap extends Map
 {
     /**
-     * @var string[]
+     * @var TeamDataOnMap[]
+     * $teamName => TeamDataOnMap
      */
-    private array $teamNames;
-    /**
-     * @var TeamSpawnPointBunch[]
-     */
-    private array $teamSpawnPointBunches;
+    private array $teamDataList;
 
-    //TODO:teamNamesとspawnPointGroupListが一致しなきゃダメ
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $teamNames, array $teamSpawnPointBunches) {
+    /**
+     * TeamGameMap constructor.
+     * @param string $name
+     * @param string $levelName
+     * @param GameType[] $adaptedGameTypes
+     * @param TeamDataOnMap[] $teamDataList
+     */
+    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $teamDataList) {
         parent::__construct($name, $levelName, $adaptedGameTypes);
-        $this->teamNames = $teamNames;
-        $this->teamSpawnPointBunches = $teamSpawnPointBunches;
+        $this->teamDataList = [];
+        foreach ($teamDataList as $teamData) {
+            $this->teamDataList[$teamData->getTeamName()] = $teamData;
+        }
+    }
+
+    /**
+     * @return TeamDataOnMap[]
+     */
+    public function getTeamDataList(): array {
+        return array_values($this->teamDataList);
+    }
+
+    /**
+     * @param string $teamName
+     * @return TeamDataOnMap
+     * @throws \Exception
+     */
+    public function getTeamDataOnMapByName(string $teamName): TeamDataOnMap {
+        if (!array_key_exists($teamName,$this->teamDataList)) {
+            throw new \Exception("そのチームデータ($teamName)はこのマップ({$this->name})に登録されていません");
+        }
+        return $this->teamDataList[$teamName];
     }
 }
