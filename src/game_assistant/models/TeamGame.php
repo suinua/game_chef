@@ -96,7 +96,7 @@ class TeamGame extends Game
         $this->getTeamById($teamId)->addScore($score);
     }
 
-    public function isFriendlyFire(): bool {
+    public function getFriendlyFire(): bool {
         return $this->friendlyFire;
     }
 }
