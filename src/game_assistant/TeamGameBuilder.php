@@ -14,7 +14,8 @@ class TeamGameBuilder extends GameBuilder
 {
     private TeamGameMap $map;
     private int $numberOfTeams;
-    protected ?int $maxPlayersDifference = null;
+    private bool $friendlyFire;
+    private ?int $maxPlayersDifference = null;
     private bool $canMoveTeam = false;
 
     /**
@@ -78,6 +79,10 @@ class TeamGameBuilder extends GameBuilder
         $this->useTeams[] = new Team($teamDataOnMap->getTeamName(), $teamDataOnMap->getSpawnPoints(), $teamDataOnMap->getTeamColorFormat(), $maxPlayer, $minPlayer);
     }
 
+    public function setFriendlyFire(bool $friendlyFire): void {
+        $this->friendlyFire = $friendlyFire;
+    }
+
     public function setMaxPlayersDifference(?int $difference): void {
         $this->maxPlayersDifference = $difference;
     }
@@ -115,6 +120,7 @@ class TeamGameBuilder extends GameBuilder
             $this->canJumpIn,
             $this->timeLimit,
             $teams,
+            $this->friendlyFire,
             $this->maxPlayersDifference,
             $this->canMoveTeam,
         );
