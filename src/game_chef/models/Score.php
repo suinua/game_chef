@@ -19,4 +19,12 @@ class Score
     public function add(Score $score): Score {
         return new Score($this->value + $score->value);
     }
+
+    public function isBiggerThan(Score $score): bool {
+        return $this->value >= $score->value;
+    }
+
+    public function isSmallerThan(Score $score): bool {
+        return $this->value <= $score->value;
+    }
 }
