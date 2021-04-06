@@ -79,5 +79,15 @@ class MapsStore
         throw new \Exception("そのマップ({$name})が存在しないか、すでに使用しています");
     }
 
-    static function return(Map $map): Map { }
+    static function returnFFAGameMap(FFAGameMap $map): void { }
+    static function returnTeamGameMap(TeamGameMap $map): void { }
+
+    static function updateFFAGameMap(FFAGameMap $map): void { }
+    static function updateTeamGameMap(TeamGameMap $map): void { }
+
+    static function registerFFAGameMap(FFAGameMap $map): void { }
+    static function registerTeamGameMap(TeamGameMap $map): void { }
+
+    static function removeFFAGameMap(FFAGameMap $map): void { }
+    static function removeTeamGameMap(TeamGameMap $map): void { }
 }
