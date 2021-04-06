@@ -21,8 +21,8 @@ class Main extends PluginBase implements Listener
 {
     public function onEnable() {
         DataFolderPath::init($this->getDataFolder());
-        GameAssistant::setLogger($this->getLogger());
-        GameAssistant::setScheduler($this->getScheduler());
+        GameChef::setLogger($this->getLogger());
+        GameChef::setScheduler($this->getScheduler());
     }
 
     public function onJoin(PlayerJoinEvent $event) {

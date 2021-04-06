@@ -17,7 +17,7 @@ use game_chef\store\GamesStore;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
 
-class GameAssistant
+class GameChef
 {
     static private PluginLogger $logger;
     static private TaskScheduler $scheduler;
