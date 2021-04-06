@@ -4,6 +4,8 @@
 namespace game_chef\models;
 
 
+use game_chef\pmmp\events\AddedScoreEvent;
+use game_chef\services\GameService;
 use game_chef\store\PlayerDataStore;
 
 class TeamGame extends Game
@@ -94,6 +96,13 @@ class TeamGame extends Game
      */
     public function addScore(TeamId $teamId, Score $score): void {
         $this->getTeamById($teamId)->addScore($score);
+        $team = $this->getTeamById($teamId);
+
+        (new AddedScoreEvent($this->id, $teamId, $team->getScore(), $score))->call();
+        if ($this->victoryScore === null) return;
+        if ($team->getScore()->isBiggerThan($this->victoryScore)) {
+            GameService::finish($this->id);
+        }
     }
 
     public function getFriendlyFire(): bool {
