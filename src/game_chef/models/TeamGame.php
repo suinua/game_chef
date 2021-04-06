@@ -45,7 +45,7 @@ class TeamGame extends Game
                 break;
             }
 
-            $teamPlayerDataList = PlayerDataStore::getTeamPlayerData($team->getId());
+            $teamPlayerDataList = PlayerDataStore::getByTeamId($team->getId());
             if (($team->getMaxPlayer() - count($teamPlayerDataList)) >= 1) {
                 $hasEmpty = true;
                 break;

@@ -24,8 +24,8 @@ class SortTeamsByPlayers
 
     //small to big
     static private function compare(Team $a, Team $b): int {
-        $teamAPlayersCount = count(PlayerDataStore::getTeamPlayerData($a->getId()));
-        $teamBPlayersCount = count(PlayerDataStore::getTeamPlayerData($b->getId()));
+        $teamAPlayersCount = count(PlayerDataStore::getByTeamId($a->getId()));
+        $teamBPlayersCount = count(PlayerDataStore::getByTeamId($b->getId()));
 
         if ($teamAPlayersCount === $teamBPlayersCount) {
             return 0;

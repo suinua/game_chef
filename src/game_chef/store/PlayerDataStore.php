@@ -4,6 +4,7 @@
 namespace game_chef\store;
 
 
+use game_chef\models\GameId;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamId;
 
@@ -66,10 +67,24 @@ class PlayerDataStore
     }
 
     /**
+     * @param GameId $gameId
+     * @return PlayerData[]
+     */
+    static function getByGameId(GameId $gameId): array {
+        $result = [];
+        foreach (self::$playerDataList as $playerData) {
+            if ($playerData->getBelongGameId() === null) continue;
+            if ($playerData->getBelongGameId()->equals($gameId)) $result[] = $playerData;
+        }
+
+        return $result;
+    }
+
+    /**
      * @param TeamId $teamId
      * @return PlayerData[]
      */
-    static function getTeamPlayerData(TeamId $teamId): array {
+    static function getByTeamId(TeamId $teamId): array {
         $result = [];
         foreach (self::$playerDataList as $playerData) {
             if ($playerData->getBelongTeamId() === null) continue;

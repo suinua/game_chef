@@ -56,7 +56,7 @@ class TeamGameService
             //指定のチームに参加できるかどうか
             //人数制限
             $team = $game->getTeamById($teamId);
-            if (count(PlayerDataStore::getTeamPlayerData($teamId)) >= $team->getMaxPlayer()) {
+            if (count(PlayerDataStore::getByTeamId($teamId)) >= $team->getMaxPlayer()) {
                 //TODO:これは別に例外ではない。ここで使うのは間違い
                 throw new \Exception("人数制限の関係でチームには参加できません");
             }
@@ -69,8 +69,8 @@ class TeamGameService
                 $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
                 PlayerDataStore::update($newPlayerData);
             } else {
-                $desertedTeamPlayers = PlayerDataStore::getTeamPlayerData($desertedTeam->getId());
-                $teamPlayers = PlayerDataStore::getTeamPlayerData($teamId);
+                $desertedTeamPlayers = PlayerDataStore::getByTeamId($desertedTeam->getId());
+                $teamPlayers = PlayerDataStore::getByTeamId($teamId);
 
                 if ($game->getMaxPlayersDifference() === null) {
                     //人数差制限なし
@@ -130,7 +130,7 @@ class TeamGameService
             //指定のチームに移動できるかどうか
             //人数制限
             $team = $game->getTeamById($teamId);
-            if (count(PlayerDataStore::getTeamPlayerData($teamId)) >= $team->getMaxPlayer()) {
+            if (count(PlayerDataStore::getByTeamId($teamId)) >= $team->getMaxPlayer()) {
                 //TODO:これは別に例外ではない。ここで使うのは間違い
                 throw new \Exception("人数制限の関係でチームに移動できません");
             }
@@ -142,8 +142,8 @@ class TeamGameService
                 //移動しようとしているチームが一番不人気なら
                 PlayerDataStore::update(new PlayerData($playerData->getName(), $game->getId(), $teamId));
             } else {
-                $desertedTeamPlayers = PlayerDataStore::getTeamPlayerData($desertedTeam->getId());
-                $teamPlayers = PlayerDataStore::getTeamPlayerData($teamId);
+                $desertedTeamPlayers = PlayerDataStore::getByTeamId($desertedTeam->getId());
+                $teamPlayers = PlayerDataStore::getByTeamId($teamId);
 
                 if ($game->getMaxPlayersDifference() === null) {
                     //人数差制限なし
