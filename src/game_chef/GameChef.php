@@ -14,6 +14,9 @@ use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
+use game_chef\store\PlayerDataStore;
+use pocketmine\level\Position;
+use pocketmine\Player;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
 
@@ -104,7 +107,24 @@ class GameChef
         return true;
     }
 
-    static function setSpawnPoint(): bool { }
+    static function setTeamGamePlayerSpawnPoint(Player $player): bool {
+        try {
+            $position = TeamGameService::getRandomSpawnPoint($player->getName());
+            $player->setSpawn($position);
+        } catch (\Exception $e) {
+            self::$logger->error($e);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Player $player
+     */
+    static function setFFAPlayerSpawnPoint(Player $player): void {
+
+    }
 
     static function setGamePlayersSpawnPoint(): bool { }
 

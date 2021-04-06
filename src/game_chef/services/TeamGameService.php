@@ -11,6 +11,8 @@ use game_chef\models\TeamId;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use game_chef\utilities\SortTeamsByPlayers;
+use pocketmine\level\Position;
+use pocketmine\Server;
 
 class TeamGameService
 {
@@ -159,6 +161,33 @@ class TeamGameService
                     throw new \Exception("人数差の関係でそのチームに移動できません");
                 }
             }
+        }
+    }
+
+    /**
+     * @param string $playerName
+     * @return Position
+     * @throws \Exception
+     */
+    static function getRandomSpawnPoint(string $playerName): Position {
+        $playerData = PlayerDataStore::getByName($playerName);
+        if ($playerData->getBelongGameId() === null) {
+            throw new \Exception("ゲームに参加していないプレイヤーのスポーン地点を取得することはできません");
+        }
+
+        $game = GamesStore::getById($playerData->getBelongGameId());
+        if (!($game instanceof TeamGame)) {
+            throw new \Exception("TeamGameに参加していないプレイヤーのスポーン地点を取得することはできません");
+        }
+
+        $team = $game->getTeamById($playerData->getBelongTeamId());
+
+        $key = array_rand($team->getSpawnPoints());
+        if (is_numeric($key)) {
+            $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
+            return Position::fromObject($team->getSpawnPoints()[$key], $level);
+        } else {
+            throw new \Exception("spawnPointsのkeyに不正な値が入っています");
         }
     }
 }

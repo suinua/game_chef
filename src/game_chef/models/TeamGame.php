@@ -99,4 +99,11 @@ class TeamGame extends Game
     public function getFriendlyFire(): bool {
         return $this->friendlyFire;
     }
+
+    /**
+     * @return TeamGameMap
+     */
+    public function getMap(): TeamGameMap {
+        return $this->map;
+    }
 }
