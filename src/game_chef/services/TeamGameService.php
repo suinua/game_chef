@@ -183,6 +183,11 @@ class TeamGameService
         $team = $game->getTeamById($playerData->getBelongTeamId());
 
         $key = array_rand($team->getSpawnPoints());
+
+        if ($key === null) {
+            throw new \Exception("Map({$game->getMap()->getName()})のspawnPointsが設定されておらず空です");
+        }
+
         if (is_numeric($key)) {
             $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
             return Position::fromObject($team->getSpawnPoints()[$key], $level);
