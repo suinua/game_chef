@@ -52,7 +52,7 @@ class TeamGameMapDTO
         $teamDataList = [];
         foreach ($array["team_data_list"] as $value) {
             $spawnPoints = [];
-            foreach ($array["spawn_points"] as $spawnPointAsArray) {
+            foreach ($value["spawn_points"] as $spawnPointAsArray) {
                 $spawnPoints[] = new Vector3($spawnPointAsArray["x"], $spawnPointAsArray["y"], $spawnPointAsArray["z"]);
             }
 
