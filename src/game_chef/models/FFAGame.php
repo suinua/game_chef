@@ -32,8 +32,24 @@ class FFAGame extends Game
         return false;
     }
 
+    /**
+     * @return FFAPlayerTeam[]
+     */
     public function getTeams(): array {
         return $this->teams;
+    }
+
+    /**
+     * @param string $playerName
+     * @return FFAPlayerTeam
+     * @throws \Exception
+     */
+    public function getTeamByPlayerName(string $playerName): FFAPlayerTeam {
+        foreach ($this->teams as $team) {
+            if ($team->getName() === $playerName) return $team;
+        }
+
+        throw new \Exception("そのプレイヤー({$playerName})のチームは存在しません");
     }
 
     public function getMap(): FFAGameMap {

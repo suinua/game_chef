@@ -122,8 +122,16 @@ class GameChef
     /**
      * @param Player $player
      */
-    static function setFFAPlayerSpawnPoint(Player $player): void {
+    static function setFFAPlayerSpawnPoint(Player $player): bool {
+        try {
+            $position = FFAGameService::getRandomSpawnPoint($player->getName());
+            $player->setSpawn($position);
+        } catch (\Exception $e) {
+            self::$logger->error($e);
+            return false;
+        }
 
+        return true;
     }
 
     static function setGamePlayersSpawnPoint(): bool { }
