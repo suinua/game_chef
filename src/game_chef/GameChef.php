@@ -19,6 +19,7 @@ use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 
 class GameChef
 {
@@ -108,6 +109,11 @@ class GameChef
     }
 
     static function setTeamGamePlayerSpawnPoint(Player $player): bool {
+        if (!$player->isOnline()) {
+            self::$logger->error("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");
+            return false;
+        }
+
         try {
             $position = TeamGameService::getRandomSpawnPoint($player->getName());
             $player->setSpawn($position);
@@ -134,9 +140,21 @@ class GameChef
         return true;
     }
 
-    static function setGamePlayersSpawnPoint(): bool { }
+    static function setFFAGamePlayersSpawnPoint(GameId $gameId): bool {
 
-    static function setTeamPlayersSpawnPoint(): bool { }
+    }
+
+    static function setTeamPlayersSpawnPoint(GameId $gameId): bool {
+        foreach (PlayerDataStore::getByGameId($gameId) as $playerData) {
+            $player = Server::getInstance()->getPlayer($playerData->getName());
+            $r = self::setTeamGamePlayerSpawnPoint($player);
+            if ($r === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     static function addTeamScore(GameId $gameId, TeamId $teamId, Score $score): bool {
         try {
