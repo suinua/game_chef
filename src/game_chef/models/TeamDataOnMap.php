@@ -4,12 +4,17 @@
 namespace game_chef\models;
 
 
+use pocketmine\math\Vector3;
+
 class TeamDataOnMap
 {
     private string $teamName;
     private string $teamColorFormat;
     protected ?int $maxPlayer;
     protected ?int $minPlayer;
+    /**
+     * @var Vector3[]
+     */
     private array $spawnPoints;
 
     /**
@@ -18,7 +23,7 @@ class TeamDataOnMap
      * @param string $teamColorFormat
      * @param int|null $maxPlayer
      * @param int|null $minPlayer
-     * @param array $spawnPoints
+     * @param Vector3[] $spawnPoints
      * @throws \Exception
      */
     public function __construct(string $teamName, string $teamColorFormat, ?int $maxPlayer, ?int $minPlayer, array $spawnPoints) {
@@ -51,6 +56,9 @@ class TeamDataOnMap
         return $this->maxPlayer;
     }
 
+    /**
+     * @return Vector3[]
+     */
     public function getSpawnPoints(): array {
         return $this->spawnPoints;
     }
