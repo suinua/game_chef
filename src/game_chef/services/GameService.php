@@ -8,6 +8,7 @@ use game_chef\models\Game;
 use game_chef\models\GameId;
 use game_chef\models\GameTimer;
 use game_chef\models\PlayerData;
+use game_chef\pmmp\events\FinishedGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\GameTimersStore;
 use game_chef\store\PlayerDataStore;
@@ -49,8 +50,14 @@ class GameService
         $timer->stop();
         $game->finished();
 
+        (new FinishedGameEvent($gameId))->call();
+
+        //最後に実行
         GameTimersStore::delete($gameId);
         GamesStore::delete($gameId);
+        foreach (PlayerDataStore::getByGameId($gameId) as $playerData) {
+            PlayerDataStore::update(new PlayerData($playerData->getName()));
+        }
     }
 
     /**
