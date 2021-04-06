@@ -125,9 +125,6 @@ class GameChef
         return true;
     }
 
-    /**
-     * @param Player $player
-     */
     static function setFFAPlayerSpawnPoint(Player $player): bool {
         try {
             $position = FFAGameService::getRandomSpawnPoint($player->getName());
@@ -141,7 +138,26 @@ class GameChef
     }
 
     static function setFFAGamePlayersSpawnPoint(GameId $gameId): bool {
+        $game = GamesStore::getById($gameId);
+        if (!($game instanceof FFAGame)) {
+            self::$logger->error("FFAGame以外のスポーン地点を取得することはできません");
+            return false;
+        }
 
+        $indexList = array_rand($game->getMap()->getSpawnPoints(), $game->getTeams());
+
+        foreach ($indexList as $key => $index) {
+            $positions = $game->getMap()->getSpawnPoints()[$index];
+            $player = Server::getInstance()->getPlayer($game->getTeams()[$key]->getName());
+            if (!$player->isOnline()) {
+                self::$logger->error("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");
+                return false;
+            }
+
+            $player->setSpawn($positions[$index]);
+        }
+
+        return true;
     }
 
     static function setTeamPlayersSpawnPoint(GameId $gameId): bool {
