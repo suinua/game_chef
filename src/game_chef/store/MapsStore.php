@@ -8,17 +8,14 @@ use game_chef\models\GameType;
 use game_chef\models\Map;
 use game_chef\models\FFAGameMap;
 use game_chef\models\TeamGameMap;
+use game_chef\repository\FFAGameMapRepository;
+use game_chef\repository\TeamGameMapRepository;
 
 class MapsStore
 {
-    /**
-     * @var FFAGameMap[]
-     */
-    static array $ffaGameMaps;
-    /**
-     * @var TeamGameMap[]
-     */
-    static array $teamGameMaps;
+
+    static array $loanOutFFAGameMapNames;
+    static array $loanOutTeamGameMapName;
 
     /**
      * @param string $name
@@ -29,24 +26,22 @@ class MapsStore
      * 同じところにスポーンしていい場合を除き、設定することを推奨します
      */
     static function borrowFFAGameMap(string $name, GameType $gameType, ?int $numberOfPlayers = null): FFAGameMap {
-        foreach (self::$ffaGameMaps as $key => $map) {
-            if ($map->getName() === $name) {
-                if ($map->isAdaptedGameType($gameType)) {
-                    if ($numberOfPlayers !== null) {
-                        if ($map->getSpawnPoints() <= $numberOfPlayers) {
-                            throw new \Exception("そのマップ({$name})はその人数({$numberOfPlayers})に対応していません");
-                        }
-                    }
-                    unset(self::$ffaGameMaps[$key]);
-                    self::$ffaGameMaps = array_values(self::$ffaGameMaps);
-                    return $map;
-                } else {
-                    throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
-                }
-            }
+        if (in_array($name, self::$loanOutTeamGameMapName)) {
+            throw new \Exception("そのマップ({$name})はすでに使用されています");
         }
 
-        throw new \Exception("そのマップ({$name})が存在しないか、すでに使用しています");
+        $map = FFAGameMapRepository::loadByName($name);
+        if ($map->isAdaptedGameType($gameType)) {
+            if ($numberOfPlayers !== null) {
+                if ($map->getSpawnPoints() <= $numberOfPlayers) {
+                    throw new \Exception("そのマップ({$name})はその人数({$numberOfPlayers})に対応していません");
+                }
+            }
+            self::$loanOutFFAGameMapNames[] = $name;
+            return $map;
+        } else {
+            throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
+        }
     }
 
 
@@ -58,36 +53,22 @@ class MapsStore
      * @throws \Exception
      */
     static function borrowTeamGameMap(string $name, GameType $gameType, int $numberOfTeams): TeamGameMap {
-        foreach (self::$teamGameMaps as $key => $map) {
-            if ($map->getName() === $name) {
-                if ($map->isAdaptedGameType($gameType)) {
-                    if ($numberOfTeams !== null) {
-                        //登録してあるチームデータより、多いチームすうはムリ
-                        if ($map->getTeamDataList() <= $numberOfTeams) {
-                            throw new \Exception("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
-                        }
-                    }
-                    unset(self::$ffaGameMaps[$key]);
-                    self::$ffaGameMaps = array_values(self::$ffaGameMaps);
-                    return $map;
-                } else {
-                    throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
-                }
-            }
+        if (in_array($name, self::$loanOutTeamGameMapName)) {
+            throw new \Exception("そのマップ({$name})はすでに使用されています");
         }
 
-        throw new \Exception("そのマップ({$name})が存在しないか、すでに使用しています");
+        $map = TeamGameMapRepository::loadByName($name);
+        if ($map->isAdaptedGameType($gameType)) {
+            if ($numberOfTeams !== null) {
+                //登録してあるチームデータより、多いチームすうはムリ
+                if ($map->getTeamDataList() <= $numberOfTeams) {
+                    throw new \Exception("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
+                }
+            }
+            self::$loanOutTeamGameMapName[] = $name;
+            return $map;
+        } else {
+            throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
+        }
     }
-
-    static function returnFFAGameMap(FFAGameMap $map): void { }
-    static function returnTeamGameMap(TeamGameMap $map): void { }
-
-    static function updateFFAGameMap(FFAGameMap $map): void { }
-    static function updateTeamGameMap(TeamGameMap $map): void { }
-
-    static function registerFFAGameMap(FFAGameMap $map): void { }
-    static function registerTeamGameMap(TeamGameMap $map): void { }
-
-    static function removeFFAGameMap(FFAGameMap $map): void { }
-    static function removeTeamGameMap(TeamGameMap $map): void { }
 }
