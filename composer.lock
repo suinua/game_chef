@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fea8ecc58b92789c64dded6dcac3fe1c",
+    "content-hash": "bbb19987ae78b8277704435b9bfdd4a8",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -53,6 +53,33 @@
                 "source": "https://github.com/adhocore/php-json-comment/tree/0.1.0"
             },
             "time": "2020-01-03T13:51:23+00:00"
+        },
+        {
+            "name": "mine_deep_rock/form_builder",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MineDeepRock/form_builder",
+                "reference": "3c5822f9ac3810924f0b8868209042dab827551b"
+            },
+            "require": {
+                "pocketmine/pocketmine-mp": "*"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": [
+                        "src/"
+                    ]
+                }
+            },
+            "authors": [
+                {
+                    "name": "suinua"
+                }
+            ],
+            "time": "2020-09-16T13:56:43+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
@@ -2345,7 +2372,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "mine_deep_rock/form_builder": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

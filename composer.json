@@ -13,10 +13,16 @@
     }
   },
   "repositories": [
+    {
+      "type": "git",
+      "name": "mine_deep_rock/form_builder",
+      "url": "https://github.com/MineDeepRock/form_builder"
+    }
   ],
   "require": {
     "pocketmine/pocketmine-mp": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "mine_deep_rock/form_builder": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.5"
