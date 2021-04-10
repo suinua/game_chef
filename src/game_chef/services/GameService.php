@@ -64,6 +64,7 @@ class GameService
      * @param string $name
      * @throws \Exception
      */
+    //TODO:イベントを呼ぶように
     static function quit(string $name) {
         PlayerDataStore::update(new PlayerData($name));
     }

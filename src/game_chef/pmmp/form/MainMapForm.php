@@ -9,6 +9,7 @@ use form_builder\models\SimpleForm;
 use game_chef\pmmp\form\team_game_map_forms\TeamGameMapForm;
 use pocketmine\Player;
 
+//TODO:同時に複数の人がマップを編集できるかどうか
 class MainMapForm extends SimpleForm
 {
 
