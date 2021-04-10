@@ -33,7 +33,6 @@ class ConfirmDeletingFFAGameMap extends ModalForm
             FFAGameMapService::delete($this->map->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
-            $player->sendForm(new FFAGameMapDetailForm($this->map));
             return;
         }
 

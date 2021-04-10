@@ -33,7 +33,6 @@ class ConfirmDeletingTeamGameMap extends ModalForm
             TeamGameMapService::delete($this->map->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
-            $player->sendForm(new TeamGameMapDetailForm($this->map));
             return;
         }
 
