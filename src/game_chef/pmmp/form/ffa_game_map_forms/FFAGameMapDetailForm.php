@@ -7,6 +7,9 @@ namespace game_chef\pmmp\form\ffa_game_map_forms;
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
 use game_chef\models\FFAGameMap;
+use game_chef\models\FFAGameMapSpawnPointEditor;
+use game_chef\store\FFAGameMapSpawnPointEditorStore;
+use game_chef\TaskSchedulerStorage;
 use pocketmine\Player;
 
 class FFAGameMapDetailForm extends SimpleForm
@@ -28,7 +31,22 @@ class FFAGameMapDetailForm extends SimpleForm
                 "スポーン地点の変更",
                 null,
                 function (Player $player) {
-                    //TODO:実装
+                    $editor = new FFAGameMapSpawnPointEditor($this->ffaGameMap, $player, TaskSchedulerStorage::get());
+                    try {
+                        FFAGameMapSpawnPointEditorStore::add($player->getName(), $editor);
+                    } catch (\Exception $e) {
+                        $player->sendMessage($e);
+                        return;
+                    }
+
+                    try {
+                        $editor->start();
+                    } catch (\Exception $exception) {
+                        $player->sendMessage($exception->getMessage());
+                        return;
+                    }
+
+                    //TODO:インベントリに [スポーン地点追加]+[戻る] のメニューを追加
                 }
             ),
             new SimpleFormButton(
