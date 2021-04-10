@@ -6,6 +6,7 @@ namespace game_chef\pmmp\entities;
 
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\Player;
 
 //TODO: テレポートできないように(座標を変えさせない)
 class FFAGameMapSpawnPointMarkerEntity extends NPCBase
@@ -44,5 +45,9 @@ class FFAGameMapSpawnPointMarkerEntity extends NPCBase
      */
     public function getUserName(): string {
         return $this->userName;
+    }
+
+    public function onTap(Player $player): void {
+        //TODO:スポーン地点の編集メニューを表示(form) [削除] [戻る]
     }
 }

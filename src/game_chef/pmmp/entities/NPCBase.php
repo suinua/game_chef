@@ -9,11 +9,12 @@ use pocketmine\entity\Human;
 use pocketmine\entity\Skin;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\Player;
 use pocketmine\utils\UUID;
 
 class NPCBase extends Human
 {
-    protected const NAME ="";
+    protected const NAME = "";
 
     protected string $skinId = "Standard_CustomSlim";
     public string $skinName = "";
@@ -61,4 +62,6 @@ class NPCBase extends Human
             file_get_contents(DataFolderPath::$geometry . $this->geometryName)
         ));
     }
+
+    public function onTap(Player $player): void { }
 }
