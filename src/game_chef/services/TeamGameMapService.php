@@ -33,4 +33,15 @@ class TeamGameMapService
         TeamGameMapRepository::delete($name);
     }
 
+    /**
+     * @param TeamGameMap $teamGameMap
+     * @throws \Exception
+     */
+    static function update(TeamGameMap $teamGameMap): void {
+        if (in_array($teamGameMap->getName(), MapsStore::getLoanOutTeamGameMapName())) {
+            throw new \Exception("使用中のマップは編集できません");
+        }
+
+        TeamGameMapRepository::update($teamGameMap);
+    }
 }

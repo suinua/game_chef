@@ -32,4 +32,16 @@ class FFAGameMapService
 
         FFAGameMapRepository::delete($name);
     }
+
+    /**
+     * @param FFAGameMap $ffaGameMap
+     * @throws \Exception
+     */
+    static function update(FFAGameMap $ffaGameMap): void {
+        if (in_array($ffaGameMap->getName(), MapsStore::getLoanOutFFAGameMapNames())) {
+            throw new \Exception("使用中のマップは編集できません");
+        }
+
+        FFAGameMapRepository::update($ffaGameMap);
+    }
 }
