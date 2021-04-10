@@ -6,7 +6,6 @@ namespace game_chef;
 
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
-use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
 use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
 use game_chef\store\FFAGameMapSpawnPointEditorStore;
