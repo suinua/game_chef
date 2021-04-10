@@ -14,8 +14,8 @@ use game_chef\repository\TeamGameMapRepository;
 class MapsStore
 {
 
-    static array $loanOutFFAGameMapNames;
-    static array $loanOutTeamGameMapName;
+    static private array $loanOutFFAGameMapNames;
+    static private array $loanOutTeamGameMapName;
 
     /**
      * @param string $name
@@ -70,5 +70,19 @@ class MapsStore
         } else {
             throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
         }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getLoanOutFFAGameMapNames(): array {
+        return self::$loanOutFFAGameMapNames;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getLoanOutTeamGameMapName(): array {
+        return self::$loanOutTeamGameMapName;
     }
 }
