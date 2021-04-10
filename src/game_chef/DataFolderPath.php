@@ -10,11 +10,20 @@ class DataFolderPath
     static string $teamGameMaps;
     static string $ffaGameMaps;
 
-    static function init(string $dataPath) {
+    static string $skin;
+    static string $geometry;
+
+    static function init(string $dataPath, string $resourcePath) {
         self::$maps = $dataPath . "maps/";
         if (!file_exists(self::$maps)) mkdir(self::$maps);
 
         self::$teamGameMaps = self::$maps . "team_game_maps/";
         self::$ffaGameMaps = self::$maps . "ffa_game_maps/";
+
+        self::$skin = $resourcePath . "skin/";
+        if (!file_exists(self::$skin)) mkdir(self::$skin);
+
+        self::$geometry = $resourcePath . "geometry/";
+        if (!file_exists(self::$geometry)) mkdir(self::$geometry);
     }
 }
