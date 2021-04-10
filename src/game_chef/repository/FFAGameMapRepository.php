@@ -49,7 +49,7 @@ class FFAGameMapRepository
     }
 
     /**
-     * @return array
+     * @return FFAGameMap[]
      * @throws \Exception
      */
     static function loadAll(): array {

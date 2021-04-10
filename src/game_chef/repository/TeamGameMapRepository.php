@@ -49,7 +49,7 @@ class TeamGameMapRepository
     }
 
     /**
-     * @return array
+     * @return TeamGameMap[]
      * @throws \Exception
      */
     static function loadAll(): array {
