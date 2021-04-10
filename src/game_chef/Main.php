@@ -6,10 +6,14 @@ namespace game_chef;
 
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
+use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
+use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
+use game_chef\store\FFAGameMapSpawnPointEditorStore;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
@@ -20,7 +24,8 @@ use pocketmine\plugin\PluginBase;
 class Main extends PluginBase implements Listener
 {
     public function onEnable() {
-        DataFolderPath::init($this->getDataFolder());
+        TaskSchedulerStorage::init($this->getScheduler());
+        DataFolderPath::init($this->getDataFolder(), $this->getFile() . "resources/");
         GameChef::setLogger($this->getLogger());
         GameChef::setScheduler($this->getScheduler());
     }
@@ -35,11 +40,21 @@ class Main extends PluginBase implements Listener
     }
 
     public function onQuit(PlayerQuitEvent $event) {
+        $player = $event->getPlayer();
+
         try {
-            PlayerDataStore::delete($event->getPlayer()->getName());
+            PlayerDataStore::delete($player->getName());
         } catch (\Exception $e) {
             $this->getLogger()->error($e->getMessage());
             $event->setCancelled();
+        }
+
+        if (FFAGameMapSpawnPointEditorStore::isExist($player->getName())) {
+            try {
+                FFAGameMapSpawnPointEditorStore::get($player->getName())->stop();
+            } catch (\Exception $e) {
+                $this->getLogger()->error($e);
+            }
         }
     }
 
@@ -77,6 +92,23 @@ class Main extends PluginBase implements Listener
             if ($attacker instanceof Player) {
                 (new PlayerKilledPlayerEvent($attacker, $killedPlayer))->call();
             }
+        }
+    }
+
+    public function onDamagedNPC(EntityDamageEvent $event) {
+
+        $npc = $event->getEntity();
+        if (!$npc instanceof NPCBase) return;
+        if (!$event instanceof EntityDamageByEntityEvent) {
+            $event->setCancelled();
+            return;
+        }
+
+        $player = $event->getDamager();
+        if ($player instanceof Player) {
+            $npc->onTap($player);
+        } else {
+            $event->setCancelled();
         }
     }
 }
