@@ -50,7 +50,7 @@ class Main extends PluginBase implements Listener
 
         if (FFAGameMapSpawnPointEditorStore::isExist($player->getName())) {
             try {
-                FFAGameMapSpawnPointEditorStore::get($player->getName())->stop();
+                FFAGameMapSpawnPointEditorStore::delete($player->getName());
             } catch (\Exception $e) {
                 $this->getLogger()->error($e);
             }

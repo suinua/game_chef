@@ -5,6 +5,7 @@ namespace game_chef\models;
 
 use game_chef\models\FFAGameMap;
 use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
+use game_chef\pmmp\form\ffa_game_map_forms\FFAGameMapDetailForm;
 use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
 use game_chef\pmmp\hotbar_menu\EditFFAGameSpawnPointsHotbarMenu;
 use game_chef\repository\FFAGameMapRepository;
@@ -85,6 +86,12 @@ class FFAGameMapSpawnPointEditor
 
         $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
         $this->deleteAllMarkerEntity($level);
+
+        if ($this->user !== null) {
+            if ($this->user->isOnline()) {
+                $this->user->sendForm(new FFAGameMapDetailForm($this->map));
+            }
+        }
     }
 
     private function summonParticle(Level $level, Vector3 $vector3): void {
