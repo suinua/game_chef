@@ -204,4 +204,9 @@ class GameChef
 
         return true;
     }
+
+    static function getPlayerDataList(GameId $gameId): array { }
+    static function getTeamPlayerDataList(GameId $gameId, TeamId $teamId): array { }
+    static function findGameById(GameId $gameId): array { }
+    static function findTeamById(GameId $gameId): array { }
 }
