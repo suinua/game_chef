@@ -15,7 +15,6 @@ use game_chef\services\FFAGameService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
-use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
@@ -66,9 +65,9 @@ class GameChef
         return true;
     }
 
-    static function joinFFAGame(string $name, GameId $gameId): bool {
+    static function joinFFAGame(Player $player, GameId $gameId): bool {
         try {
-            FFAGameService::join($name, $gameId);
+            FFAGameService::join($player, $gameId);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
@@ -76,9 +75,9 @@ class GameChef
         return true;
     }
 
-    static function joinTeamGame(string $name, GameId $gameId, ?TeamId $teamId = null, bool $force = false): bool {
+    static function joinTeamGame(Player $player, GameId $gameId, ?TeamId $teamId = null, bool $force = false): bool {
         try {
-            TeamGameService::join($name, $gameId, $teamId, $force);
+            TeamGameService::join($player, $gameId, $teamId, $force);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
@@ -86,9 +85,9 @@ class GameChef
         return true;
     }
 
-    static function moveTeam(string $name, TeamId $teamId, bool $force = false): bool {
+    static function moveTeam(Player $player, TeamId $teamId, bool $force = false): bool {
         try {
-            TeamGameService::moveTeam($name, $teamId, $force);
+            TeamGameService::moveTeam($player, $teamId, $force);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
@@ -97,9 +96,9 @@ class GameChef
         return true;
     }
 
-    static function quitGame(string $name): bool {
+    static function quitGame(Player $player): bool {
         try {
-            GameService::quit($name);
+            GameService::quit($player);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;

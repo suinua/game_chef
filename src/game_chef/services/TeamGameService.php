@@ -8,23 +8,26 @@ use game_chef\models\GameId;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamId;
+use game_chef\pmmp\events\PlayerJoinedGameEvent;
+use game_chef\pmmp\events\PlayerMovedTeamEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use game_chef\utilities\SortTeamsByPlayers;
 use pocketmine\level\Position;
+use pocketmine\Player;
 use pocketmine\Server;
 
 class TeamGameService
 {
     /**
-     * @param string $name
+     * @param Player $player
      * @param GameId $gameId
      * @param TeamId|null $teamId
      * @param bool $force
      * @throws \Exception
      */
-    static function join(string $name, GameId $gameId, ?TeamId $teamId = null, bool $force = false): void {
-        $playerData = PlayerDataStore::getByName($name);
+    static function join(Player $player, GameId $gameId, ?TeamId $teamId = null, bool $force = false): void {
+        $playerData = PlayerDataStore::getByName($player->getName());
         $game = GamesStore::getById($gameId);
 
         if (!($game instanceof TeamGame)) {
@@ -44,6 +47,7 @@ class TeamGameService
 
             $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
             PlayerDataStore::update($newPlayerData);
+            (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $teamId))->call();
             return;
         }
 
@@ -51,6 +55,7 @@ class TeamGameService
             //指定あり、強制
             $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
             PlayerDataStore::update($newPlayerData);
+            (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $teamId))->call();
         } else {
             //指定あり、非強制
             $sortedTeams = SortTeamsByPlayers::sort($game->getTeams());
@@ -70,6 +75,7 @@ class TeamGameService
                 //参加しようとしているチームが一番不人気なら
                 $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
                 PlayerDataStore::update($newPlayerData);
+                (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $teamId))->call();
             } else {
                 $desertedTeamPlayers = PlayerDataStore::getByTeamId($desertedTeam->getId());
                 $teamPlayers = PlayerDataStore::getByTeamId($teamId);
@@ -78,10 +84,12 @@ class TeamGameService
                     //人数差制限なし
                     $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
                     PlayerDataStore::update($newPlayerData);
+                    (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $teamId))->call();
                 } else if (count($teamPlayers) - count($desertedTeamPlayers) < $game->getMaxPlayersDifference()) {
                     //人数差制限クリア
                     $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
                     PlayerDataStore::update($newPlayerData);
+                    (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $teamId))->call();
                 } else {
                     //人数差制限
                     //TODO:これは別に例外ではない。ここで使うのは間違い
@@ -92,13 +100,14 @@ class TeamGameService
     }
 
     /**
-     * @param string $name
+     * @param Player $player
      * @param TeamId $teamId
      * @param bool $force
      * @throws \Exception
      */
-    static function moveTeam(string $name, TeamId $teamId, bool $force = false): void {
-        $playerData = PlayerDataStore::getByName($name);
+    static function moveTeam(Player $player, TeamId $teamId, bool $force = false): void {
+        $playerData = PlayerDataStore::getByName($player->getName());
+        $oldTeamId = $playerData->getBelongTeamId();
         $gameId = $playerData->getBelongGameId();
 
         //参加していなかったらダメ
@@ -124,7 +133,8 @@ class TeamGameService
 
         //TODO:joinとかぶるものが多いので、リファクタリング対象
         if ($force) {
-            PlayerDataStore::update(new PlayerData($name,));
+            PlayerDataStore::update(new PlayerData($player->getName(), $gameId, $teamId));
+            (new PlayerMovedTeamEvent($player, $game->getId(), $game->getType(), $teamId, $oldTeamId))->call();
         } else {
             //指定あり、非強制
             $sortedTeams = SortTeamsByPlayers::sort($game->getTeams());
@@ -143,6 +153,7 @@ class TeamGameService
             if ($desertedTeam->getId()->equals($teamId)) {
                 //移動しようとしているチームが一番不人気なら
                 PlayerDataStore::update(new PlayerData($playerData->getName(), $game->getId(), $teamId));
+                (new PlayerMovedTeamEvent($player, $game->getId(), $game->getType(), $teamId, $oldTeamId))->call();
             } else {
                 $desertedTeamPlayers = PlayerDataStore::getByTeamId($desertedTeam->getId());
                 $teamPlayers = PlayerDataStore::getByTeamId($teamId);
@@ -151,10 +162,12 @@ class TeamGameService
                     //人数差制限なし
                     $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
                     PlayerDataStore::update($newPlayerData);
+                    (new PlayerMovedTeamEvent($player, $game->getId(), $game->getType(), $teamId, $oldTeamId))->call();
                 } else if (count($teamPlayers) - count($desertedTeamPlayers) < $game->getMaxPlayersDifference()) {
                     //人数差制限クリア
                     $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $teamId);
                     PlayerDataStore::update($newPlayerData);
+                    (new PlayerMovedTeamEvent($player, $game->getId(), $game->getType(), $teamId, $oldTeamId))->call();
                 } else {
                     //人数差制限
                     //TODO:これは別に例外ではない。ここで使うのは間違い

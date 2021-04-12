@@ -9,10 +9,14 @@ use game_chef\models\GameId;
 use game_chef\models\GameTimer;
 use game_chef\models\PlayerData;
 use game_chef\pmmp\events\FinishedGameEvent;
+use game_chef\pmmp\events\PlayerQuitGameEvent;
+use game_chef\pmmp\events\StartedGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\GameTimersStore;
 use game_chef\store\PlayerDataStore;
+use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
+use pocketmine\Server;
 
 class GameService
 {
@@ -37,6 +41,7 @@ class GameService
 
         $game->start();
         $timer->start($scheduler);
+        (new StartedGameEvent($gameId, $game->getType()))->call();
     }
 
     /**
@@ -61,11 +66,21 @@ class GameService
     }
 
     /**
-     * @param string $name
+     * @param Player $player
      * @throws \Exception
      */
-    //TODO:イベントを呼ぶように
-    static function quit(string $name) {
-        PlayerDataStore::update(new PlayerData($name));
+    static function quit(Player $player) {
+        if (!$player->isOnline()) {
+            throw new \Exception("オンラインでないプライヤーは操作できません");
+        }
+
+        $playerData = PlayerDataStore::getByName($player->getName());
+        if ($playerData->getBelongTeamId() === null) {
+            throw new \Exception("そのプレイヤー({$player->getName()})は試合に参加していません");
+        }
+
+        $game = GamesStore::getById($playerData->getBelongGameId());
+        PlayerDataStore::update(new PlayerData($player->getName()));
+        (new PlayerQuitGameEvent($player, $game->getId(), $game->getType(), $playerData->getBelongTeamId()))->call();
     }
 }

@@ -9,19 +9,22 @@ use game_chef\models\PlayerData;
 use game_chef\models\FFAGame;
 use game_chef\models\FFAPlayerTeam;
 use game_chef\models\TeamGame;
+use game_chef\pmmp\events\PlayerJoinedGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use pocketmine\level\Position;
+use pocketmine\Player;
 use pocketmine\Server;
 
 class FFAGameService
 {
     /**
-     * @param string $name
+     * @param Player $player
      * @param GameId $gameId
      * @throws \Exception
      */
-    static function join(string $name, GameId $gameId) {
+    static function join(Player $player, GameId $gameId) {
+        $name = $player->getName();
         $playerData = PlayerDataStore::getByName($name);
         $game = GamesStore::getById($gameId);
 
@@ -38,6 +41,7 @@ class FFAGameService
 
         $game->addFFATeam($ffaTeam);
         PlayerDataStore::update($newPlayerData);
+        (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $ffaTeam->getId()))->call();
     }
 
     /**
