@@ -131,14 +131,14 @@ class FFAGameMapSpawnPointEditor
             ]),
         ]);
 
-        $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->map->getName(), $vector3, $level, $nbt);
+        $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->map, $vector3, $level, $nbt);
         $marker->spawnTo($this->user);
     }
 
     private function deleteAllMarkerEntity(Level $level): void {
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof FFAGameMapSpawnPointMarkerEntity) {
-                if ($entity->getBelongMapName() === $this->map->getName()) $entity->kill();
+                if ($entity->getBelongMap()->getName() === $this->map->getName()) $entity->kill();
             }
         }
     }
