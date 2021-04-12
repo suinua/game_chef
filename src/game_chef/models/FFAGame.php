@@ -42,17 +42,25 @@ class FFAGame extends Game
         return $this->teams;
     }
 
+    public function getTeamById(TeamId $teamId): Team {
+        foreach ($this->teams as $team) {
+            if ($team->getId()->equals($teamId)) return $team;
+        }
+
+        throw new \Exception("そのID({$teamId})のチームは存在しません");
+    }
+
     /**
      * @param string $playerName
      * @return FFAPlayerTeam
      * @throws \Exception
      */
     public function getTeamByPlayerName(string $playerName): FFAPlayerTeam {
-        foreach ($this->teams as $team) {
-            if ($team->getName() === $playerName) return $team;
+        if (array_key_exists($playerName, $this->teams)) {
+            return $this->teams[$playerName];
+        } else {
+            throw new \Exception("そのプレイヤー({$playerName})のチームは存在しません");
         }
-
-        throw new \Exception("そのプレイヤー({$playerName})のチームは存在しません");
     }
 
     public function getMap(): FFAGameMap {
