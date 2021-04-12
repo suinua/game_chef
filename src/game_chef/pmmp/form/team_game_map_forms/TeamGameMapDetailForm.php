@@ -28,7 +28,7 @@ class TeamGameMapDetailForm extends SimpleForm
                 "チームのデータの変更",
                 null,
                 function (Player $player) {
-                    //TODO:実装
+                    $player->sendForm(new TeamDataListForm($this->teamGameMap));
                 }
             ),
             new SimpleFormButton(

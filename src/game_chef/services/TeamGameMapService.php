@@ -4,6 +4,7 @@
 namespace game_chef\services;
 
 
+use game_chef\models\TeamDataOnMap;
 use game_chef\models\TeamGameMap;
 use game_chef\repository\TeamGameMapRepository;
 use game_chef\store\MapsStore;
@@ -43,5 +44,29 @@ class TeamGameMapService
         }
 
         TeamGameMapRepository::update($teamGameMap);
+    }
+
+    /**
+     * @param string $mapName
+     * @param TeamDataOnMap $target
+     * @throws \Exception
+     */
+    static function updateTeamData(string $mapName, TeamDataOnMap $target): void {
+        $map = TeamGameMapRepository::loadByName($mapName);
+        $newTeams = [];
+        foreach ($map->getTeamDataList() as $teamDataOnMap) {
+            if ($teamDataOnMap->getTeamName() === $target->getTeamName()) {
+                $newTeams[] = $target;
+            } else {
+                $newTeams[] = $teamDataOnMap;
+            }
+        }
+
+        self::update(new TeamGameMap(
+            $map->getName(),
+            $map->getLevelName(),
+            $map->getAdaptedGameTypes(),
+            $newTeams
+        ));
     }
 }

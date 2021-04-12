@@ -45,8 +45,6 @@ class FFAGameMapDetailForm extends SimpleForm
                         $player->sendMessage($exception->getMessage());
                         return;
                     }
-
-                    //TODO:インベントリに [スポーン地点追加]+[戻る] のメニューを追加
                 }
             ),
             new SimpleFormButton(
