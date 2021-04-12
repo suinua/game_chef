@@ -5,6 +5,7 @@ namespace game_chef\pmmp\hotbar_menu;
 
 
 use game_chef\models\FFAGameMap;
+use game_chef\repository\FFAGameMapRepository;
 use game_chef\services\FFAGameMapService;
 use game_chef\store\FFAGameMapSpawnPointEditorStore;
 use pocketmine\item\ItemIds;
@@ -13,7 +14,11 @@ use pocketmine\Player;
 
 class DeleteFFASpawnPointHotbarMenu extends HotbarMenu
 {
+    private FFAGameMap $map;
+
     public function __construct(Player $player, FFAGameMap $map, Vector3 $spawnPoint) {
+        $this->map = $map;
+
         parent::__construct($player,
             [
                 new HotbarMenuItem(ItemIds::FEATHER, "戻る", function () {
@@ -35,8 +40,15 @@ class DeleteFFASpawnPointHotbarMenu extends HotbarMenu
     }
 
     public function close(): void {
-        $menu = new EditFFAGameSpawnPointsHotbarMenu($this->player);
+        try {
+            $map = FFAGameMapRepository::loadByName($this->map->getName());
+        } catch (\Exception $e) {
+            $this->player->sendMessage($e->getMessage());
+            parent::close();
+            return;
+        }
+
+        $menu = new FFAGameSpawnPointsHotbarMenu($this->player, $map);
         $menu->send();
-        parent::close();
     }
 }

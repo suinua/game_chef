@@ -7,7 +7,7 @@ use game_chef\models\FFAGameMap;
 use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
 use game_chef\pmmp\form\ffa_game_map_forms\FFAGameMapDetailForm;
 use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
-use game_chef\pmmp\hotbar_menu\EditFFAGameSpawnPointsHotbarMenu;
+use game_chef\pmmp\hotbar_menu\FFAGameSpawnPointsHotbarMenu;
 use game_chef\repository\FFAGameMapRepository;
 use pocketmine\block\Ice;
 use pocketmine\level\Level;
@@ -75,7 +75,7 @@ class FFAGameMapSpawnPointEditor
             }
         }), 20);
 
-        $menu = new EditFFAGameSpawnPointsHotbarMenu($this->user);
+        $menu = new FFAGameSpawnPointsHotbarMenu($this->user,$this->map);
         $menu->send();
     }
 

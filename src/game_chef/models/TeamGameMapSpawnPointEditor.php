@@ -6,7 +6,7 @@ namespace game_chef\models;
 
 use game_chef\pmmp\entities\TeamGameMapSpawnPointMarkerEntity;
 use game_chef\pmmp\form\team_game_map_forms\TeamDataDetailForm;
-use game_chef\pmmp\hotbar_menu\EditTeamGameSpawnPointsHotbarMenu;
+use game_chef\pmmp\hotbar_menu\TeamGameSpawnPointsHotbarMenu;
 use game_chef\repository\TeamGameMapRepository;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
@@ -73,7 +73,7 @@ class TeamGameMapSpawnPointEditor
             }
         }), 20);
 
-        $menu = new EditTeamGameSpawnPointsHotbarMenu($this->user);
+        $menu = new TeamGameSpawnPointsHotbarMenu($this->user);
         $menu->send();
     }
 

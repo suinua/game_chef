@@ -48,7 +48,7 @@ class FFAGameMapService
     }
 
     /**
-     * @param Map $map
+     * @param FFAGameMap $map
      * @param Vector3 $vector3
      * @throws \Exception
      */
@@ -66,6 +66,30 @@ class FFAGameMapService
                 $map->getLevelName(),
                 $map->getAdaptedGameTypes(),
                 $newSpawnPoints
+            )
+        );
+    }
+
+    /**
+     * @param FFAGameMap $map
+     * @param Vector3 $vector3
+     * @throws \Exception
+     */
+    static function addSpawnPoint(FFAGameMap $map, Vector3 $vector3): void {
+        $spawnPoints = $map->getSpawnPoints();
+        foreach ($spawnPoints as $spawnPoint) {
+            if ($spawnPoint->equals($vector3)) {
+                throw new \Exception("FFAGameMapでは同じ座標に２つ以上スポーン地点を追加することはできません");
+            }
+        }
+        $spawnPoints[] = $vector3;
+
+        self::update(
+            new FFAGameMap(
+                $map->getName(),
+                $map->getLevelName(),
+                $map->getAdaptedGameTypes(),
+                $spawnPoints
             )
         );
     }

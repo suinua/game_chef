@@ -34,7 +34,7 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                             $teamDataOnMap->getTeamColorFormat(),
                             $teamDataOnMap->getMaxPlayer(),
                             $teamDataOnMap->getMinPlayer(),
-                            $teamDataOnMap->getSpawnPoints(),
+                            $newSpawnPoints,
                         );
 
                         TeamGameMapService::updateTeamData($map, $newTeam);
@@ -51,8 +51,8 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
     }
 
     public function close(): void {
-        $menu = new EditFFAGameSpawnPointsHotbarMenu($this->player);
-        $menu->send();
         parent::close();
+        $menu = new TeamGameSpawnPointsHotbarMenu($this->player);
+        $menu->send();
     }
 }
