@@ -1,7 +1,7 @@
 <?php
 
 
-namespace game_chef;
+namespace game_chef\api;
 
 
 use game_chef\models\FFAGame;

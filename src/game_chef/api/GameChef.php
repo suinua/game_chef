@@ -1,7 +1,7 @@
 <?php
 
 
-namespace game_chef;
+namespace game_chef\api;
 
 
 use game_chef\models\Game;
@@ -205,8 +205,22 @@ class GameChef
         return true;
     }
 
-    static function getPlayerDataList(GameId $gameId): array { }
-    static function getTeamPlayerDataList(GameId $gameId, TeamId $teamId): array { }
-    static function findGameById(GameId $gameId): array { }
-    static function findTeamById(GameId $gameId): array { }
+    static function getPlayerDataList(GameId $gameId): array {
+        return PlayerDataStore::getByGameId($gameId);
+    }
+
+    static function getTeamPlayerDataList(TeamId $teamId): array {
+        return PlayerDataStore::getByTeamId($teamId);
+    }
+
+    static function findGameById(GameId $gameId): ?Game {
+        try {
+            $game = GamesStore::getById($gameId);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return null;
+        }
+
+        return $game;
+    }
 }

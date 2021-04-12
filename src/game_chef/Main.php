@@ -4,6 +4,7 @@
 namespace game_chef;
 
 
+use game_chef\api\GameChef;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
 use game_chef\pmmp\entities\NPCBase;
