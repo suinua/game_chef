@@ -5,6 +5,9 @@ namespace game_chef\models;
 
 use game_chef\models\FFAGameMap;
 use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
+use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
+use game_chef\pmmp\hotbar_menu\EditFFAGameSpawnPointsHotbarMenu;
+use game_chef\repository\FFAGameMapRepository;
 use pocketmine\block\Ice;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
@@ -35,16 +38,15 @@ class FFAGameMapSpawnPointEditor
         $this->scheduler = $scheduler;
     }
 
-    //TODO:サービスでアップデート成功時にこれを呼び出すように
     /**
      * @param FFAGameMap $map
      * @throws \Exception
      */
-    public function updateMap(FFAGameMap $map): void {
+    public function reloadMap(): void {
         if ($this->handler !== null) {
             $this->handler->cancel();
         }
-        $this->map = $map;
+        $this->map = FFAGameMapRepository::loadByName($this->map->getName());
         $this->start();
     }
 
@@ -71,6 +73,9 @@ class FFAGameMapSpawnPointEditor
                 $this->summonParticle($level, $spawnPoint);
             }
         }), 20);
+
+        $menu = new EditFFAGameSpawnPointsHotbarMenu($this->user);
+        $menu->send();
     }
 
     public function stop(): void {
@@ -105,7 +110,7 @@ class FFAGameMapSpawnPointEditor
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
                 new DoubleTag('', $vector3->getX()),
-                new DoubleTag('', $vector3->getY()),
+                new DoubleTag('', $vector3->getY() + 1),
                 new DoubleTag('', $vector3->getZ())
             ]),
             'Motion' => new ListTag('Motion', [
@@ -119,7 +124,7 @@ class FFAGameMapSpawnPointEditor
             ]),
         ]);
 
-        $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->map->getName(), $level, $nbt);
+        $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->map->getName(), $vector3, $level, $nbt);
         $marker->spawnTo($this->user);
     }
 

@@ -7,6 +7,7 @@ namespace game_chef\services;
 use game_chef\models\FFAGameMap;
 use game_chef\repository\FFAGameMapRepository;
 use game_chef\store\MapsStore;
+use pocketmine\math\Vector3;
 
 class FFAGameMapService
 {
@@ -43,5 +44,29 @@ class FFAGameMapService
         }
 
         FFAGameMapRepository::update($ffaGameMap);
+    }
+
+    /**
+     * @param string $name
+     * @param Vector3 $vector3
+     * @throws \Exception
+     */
+    static function deleteSpawnPoint(string $name, Vector3 $vector3): void {
+        $map = FFAGameMapRepository::loadByName($name);
+        $newSpawnPoints = [];
+        foreach ($map->getSpawnPoints() as $spawnPoint) {
+            if (!$spawnPoint->equals($vector3)) {
+                $newSpawnPoints[] = $spawnPoint;
+            }
+        }
+
+        self::update(
+            new FFAGameMap(
+                $map->getName(),
+                $map->getLevelName(),
+                $map->getAdaptedGameTypes(),
+                $newSpawnPoints
+            )
+        );
     }
 }
