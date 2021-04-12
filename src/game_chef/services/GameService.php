@@ -22,7 +22,7 @@ class GameService
      */
     static function register(Game $game) {
         GamesStore::add($game);
-        $timer = new GameTimer($game->getId(), $game->getTimeLimit());
+        $timer = new GameTimer($game->getId(), $game->getType(), $game->getTimeLimit());
         GameTimersStore::add($timer);
     }
 
@@ -50,7 +50,7 @@ class GameService
         $timer->stop();
         $game->finished();
 
-        (new FinishedGameEvent($gameId))->call();
+        (new FinishedGameEvent($gameId, $game->getType()))->call();
 
         //最後に実行
         GameTimersStore::delete($gameId);

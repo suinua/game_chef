@@ -86,11 +86,22 @@ class Main extends PluginBase implements Listener
     public function onPlayerKilledPlayer(PlayerDeathEvent $event) {
         $killedPlayer = $event->getPlayer();
         $cause = $killedPlayer->getLastDamageCause();
-        if ($cause instanceof EntityDamageByEntityEvent) {
-            $attacker = $cause->getDamager();
-            if ($attacker instanceof Player) {
-                (new PlayerKilledPlayerEvent($attacker, $killedPlayer))->call();
-            }
+        if (!$cause instanceof EntityDamageByEntityEvent) return;
+
+        $attacker = $cause->getDamager();
+        if (!$attacker instanceof Player) return;
+
+        try {
+            $attackerData = PlayerDataStore::getByName($attacker->getName());
+            $killedPlayerData = PlayerDataStore::getByName($killedPlayer->getName());
+        } catch (\Exception $e) {
+            $this->getLogger()->error($e->getMessage());
+            return;
+        }
+
+        if ($attackerData->getBelongGameId() === null || $killedPlayerData->getBelongGameId() === null) return;
+        if ($attackerData->getBelongGameId()->equals($killedPlayerData->getBelongGameId())) {
+            (new PlayerKilledPlayerEvent($attacker, $killedPlayer))->call();
         }
     }
 

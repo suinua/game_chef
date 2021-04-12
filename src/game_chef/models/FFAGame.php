@@ -88,7 +88,7 @@ class FFAGame extends Game
         $team = $this->teams[$name];
         $team->addScore($score);
 
-        (new AddedScoreEvent($this->id, $team->getId(), $team->getScore(), $score))->call();
+        (new AddedScoreEvent($this->id, $this->type, $team->getId(), $team->getScore(), $score))->call();
         if ($this->victoryScore === null) return;
         if ($team->getScore()->isBiggerThan($this->victoryScore)) {
             GameService::finish($this->id);

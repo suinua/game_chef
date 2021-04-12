@@ -13,14 +13,16 @@ use pocketmine\scheduler\TaskScheduler;
 class GameTimer
 {
     private GameId $gameId;
+    private GameType $gameType;
 
     private ?int $timeLimit;
     private int $elapsedTime;
 
     private TaskHandler $handler;
 
-    public function __construct(GameId $gameId, ?int $timeLimit) {
+    public function __construct(GameId $gameId, GameType $gameType, ?int $timeLimit) {
         $this->gameId = $gameId;
+        $this->gameType = $gameType;
         $this->timeLimit = $timeLimit;
         $this->elapsedTime = 0;
     }
@@ -28,7 +30,7 @@ class GameTimer
     public function start(TaskScheduler $scheduler): void {
         $this->handler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {
             $this->elapsedTime++;
-            (new UpdatedGameTimerEvent($this->gameId, $this->timeLimit, $this->elapsedTime))->call();
+            (new UpdatedGameTimerEvent($this->gameId, $this->gameType, $this->timeLimit, $this->elapsedTime))->call();
 
             if ($this->timeLimit !== null) {
                 if ($this->elapsedTime >= $this->timeLimit) {

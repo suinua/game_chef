@@ -98,7 +98,7 @@ class TeamGame extends Game
         $this->getTeamById($teamId)->addScore($score);
         $team = $this->getTeamById($teamId);
 
-        (new AddedScoreEvent($this->id, $teamId, $team->getScore(), $score))->call();
+        (new AddedScoreEvent($this->id, $this->type, $teamId, $team->getScore(), $score))->call();
         if ($this->victoryScore === null) return;
         if ($team->getScore()->isBiggerThan($this->victoryScore)) {
             GameService::finish($this->id);
