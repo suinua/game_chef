@@ -7,6 +7,7 @@ namespace game_chef\api;
 use game_chef\models\FFAGameMap;
 use game_chef\models\Game;
 use game_chef\models\GameId;
+use game_chef\models\GameType;
 use game_chef\models\PlayerData;
 use game_chef\models\Score;
 use game_chef\models\FFAGame;
@@ -285,10 +286,29 @@ class GameChef
     }
 
     static function getAvailableTeamGameMapNames(): array {
-
+        //TODO:実装
     }
 
     static function getAvailableFFAGameMapNames(): array {
+        //TODO:実装
+    }
 
+    static function isRelatedWith(Player $player, GameType $gameType): bool {
+        try {
+            $playerData = PlayerDataStore::getByName($player->getName());
+        } catch (\Exception $e) {
+            self::$logger->error($e);
+            return false;
+        }
+
+        $gameId = $playerData->getBelongGameId();
+        try {
+            $game = GamesStore::getById($gameId);
+        } catch (\Exception $e) {
+            self::$logger->error($e);
+            return false;
+        }
+
+        return $game->getType()->equals($gameType);
     }
 }
