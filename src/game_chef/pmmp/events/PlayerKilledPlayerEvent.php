@@ -17,11 +17,14 @@ class PlayerKilledPlayerEvent extends Event
     private Player $attacker;
     private Player $killedPlayer;
 
-    public function __construct(GameId $gameId,GameType $gameType,Player $attacker, Player $killedPlayer) {
+    private bool $isFriendlyFire;
+
+    public function __construct(GameId $gameId, GameType $gameType, Player $attacker, Player $killedPlayer, bool $isFriendlyFire) {
         $this->gameId = $gameId;
         $this->gameType = $gameType;
         $this->attacker = $attacker;
         $this->killedPlayer = $killedPlayer;
+        $this->isFriendlyFire = $isFriendlyFire;
     }
 
     public function getAttacker(): Player {
@@ -38,5 +41,9 @@ class PlayerKilledPlayerEvent extends Event
 
     public function getGameType(): GameType {
         return $this->gameType;
+    }
+
+    public function isFriendlyFire(): bool {
+        return $this->isFriendlyFire;
     }
 }

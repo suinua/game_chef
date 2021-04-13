@@ -115,7 +115,9 @@ class Main extends PluginBase implements Listener
                 return;
             }
 
-            (new PlayerKilledPlayerEvent($game->getId(), $game->getType(), $attacker, $killedPlayer))->call();
+            $isFriendlyFire = $attackerData->getBelongTeamId()->equals($killedPlayerData->getBelongTeamId());
+
+            (new PlayerKilledPlayerEvent($game->getId(), $game->getType(), $attacker, $killedPlayer, $isFriendlyFire))->call();
         }
     }
 
