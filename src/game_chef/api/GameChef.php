@@ -168,7 +168,7 @@ class GameChef
         return true;
     }
 
-    static function setTeamPlayersSpawnPoint(GameId $gameId): bool {
+    static function setTeamGamePlayersSpawnPoint(GameId $gameId): bool {
         try {
             $game = GamesStore::getById($gameId);
         } catch (\Exception $e) {
