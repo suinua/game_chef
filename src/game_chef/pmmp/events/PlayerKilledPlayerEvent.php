@@ -31,4 +31,12 @@ class PlayerKilledPlayerEvent extends Event
     public function getKilledPlayer(): Player {
         return $this->killedPlayer;
     }
+
+    public function getGameId(): GameId {
+        return $this->gameId;
+    }
+
+    public function getGameType(): GameType {
+        return $this->gameType;
+    }
 }

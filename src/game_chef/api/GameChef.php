@@ -4,11 +4,14 @@
 namespace game_chef\api;
 
 
+use game_chef\models\FFAGameMap;
 use game_chef\models\Game;
 use game_chef\models\GameId;
+use game_chef\models\PlayerData;
 use game_chef\models\Score;
 use game_chef\models\FFAGame;
 use game_chef\models\TeamGame;
+use game_chef\models\TeamGameMap;
 use game_chef\models\TeamId;
 use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
@@ -205,14 +208,37 @@ class GameChef
         return true;
     }
 
+    static function getPlayerData(string $name): ?PlayerData {
+        try {
+            $playerData = PlayerDataStore::getByName($name);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return null;
+        }
+
+        return $playerData;
+    }
+
+    /**
+     * @param GameId $gameId
+     * @return PlayerData[]
+     */
     static function getPlayerDataList(GameId $gameId): array {
         return PlayerDataStore::getByGameId($gameId);
     }
 
+    /**
+     * @param TeamId $teamId
+     * @return PlayerData[]
+     */
     static function getTeamPlayerDataList(TeamId $teamId): array {
         return PlayerDataStore::getByTeamId($teamId);
     }
 
+    /**
+     * @param GameId $gameId
+     * @return FFAGame|TeamGame|null
+     */
     static function findGameById(GameId $gameId): ?Game {
         try {
             $game = GamesStore::getById($gameId);
@@ -222,5 +248,29 @@ class GameChef
         }
 
         return $game;
+    }
+
+    static function findFFAGameById(GameId $gameId): ?FFAGame {
+        $game = self::findGameById($gameId);
+        if ($game instanceof FFAGame) {
+            return $game;
+        }
+        return null;
+    }
+
+    static function findTeamGameById(GameId $gameId): ?TeamGame {
+        $game = self::findGameById($gameId);
+        if ($game instanceof TeamGame) {
+            return $game;
+        }
+        return null;
+    }
+
+    static function getAvailableTeamGameMapNames(): array {
+
+    }
+
+    static function getAvailableFFAGameMapNames(): array {
+
     }
 }

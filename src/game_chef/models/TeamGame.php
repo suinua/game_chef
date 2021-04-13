@@ -81,6 +81,14 @@ class TeamGame extends Game
         throw new \Exception("そのIDのチームは存在しません");
     }
 
+    public function findTeamById(TeamId $teamId): ?Team {
+        foreach ($this->teams as $team) {
+            if ($team->getId()->equals($teamId)) return $team;
+        }
+
+        return null;
+    }
+
     public function getMaxPlayersDifference(): ?int {
         return $this->maxPlayersDifference;
     }
