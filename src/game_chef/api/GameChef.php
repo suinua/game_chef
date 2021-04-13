@@ -140,7 +140,13 @@ class GameChef
     }
 
     static function setFFAGamePlayersSpawnPoint(GameId $gameId): bool {
-        $game = GamesStore::getById($gameId);
+        try {
+            $game = GamesStore::getById($gameId);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
+
         if (!($game instanceof FFAGame)) {
             self::$logger->error("FFAGame以外のスポーン地点を取得することはできません");
             return false;
@@ -163,6 +169,18 @@ class GameChef
     }
 
     static function setTeamPlayersSpawnPoint(GameId $gameId): bool {
+        try {
+            $game = GamesStore::getById($gameId);
+        } catch (\Exception $e) {
+            self::$logger->error($e->getMessage());
+            return false;
+        }
+
+        if (!($game instanceof TeamGame)) {
+            self::$logger->error("TeamGame以外のスポーン地点を取得することはできません");
+            return false;
+        }
+
         foreach (PlayerDataStore::getByGameId($gameId) as $playerData) {
             $player = Server::getInstance()->getPlayer($playerData->getName());
             $r = self::setTeamGamePlayerSpawnPoint($player);
