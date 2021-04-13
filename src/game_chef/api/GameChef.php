@@ -192,7 +192,7 @@ class GameChef
         return true;
     }
 
-    static function addTeamScore(GameId $gameId, TeamId $teamId, Score $score): bool {
+    static function addTeamGameScore(GameId $gameId, TeamId $teamId, Score $score): bool {
         try {
             $game = GamesStore::getById($gameId);
             if ($game instanceof TeamGame) {
@@ -209,11 +209,11 @@ class GameChef
         return true;
     }
 
-    static function addPlayerScore(GameId $gameId, string $name, Score $score): bool {
+    static function addFFAGameScore(GameId $gameId, string $playerName, Score $score): bool {
         try {
             $game = GamesStore::getById($gameId);
             if ($game instanceof FFAGame) {
-                $game->addScore($name, $score);
+                $game->addScore($playerName, $score);
             } else {
                 self::$logger->error("そのゲームIDはFFAGameのものではありません");
                 return false;

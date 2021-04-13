@@ -55,4 +55,8 @@ class Game
 
         $this->status = GameStatus::Finished();
     }
+
+    public function getStatus(): GameStatus {
+        return $this->status;
+    }
 }
