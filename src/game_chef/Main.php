@@ -7,6 +7,7 @@ namespace game_chef;
 use game_chef\api\GameChef;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
+use game_chef\pmmp\bossbar\BossbarListener;
 use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
 use game_chef\services\GameService;
@@ -29,6 +30,9 @@ class Main extends PluginBase implements Listener
         DataFolderPath::init($this->getDataFolder(), $this->getFile() . "resources/");
         GameChef::setLogger($this->getLogger());
         GameChef::setScheduler($this->getScheduler());
+
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getPluginManager()->registerEvents(new BossbarListener(), $this);
     }
 
     public function onJoin(PlayerJoinEvent $event) {
