@@ -104,7 +104,14 @@ class Main extends PluginBase implements Listener
 
         if ($attackerData->getBelongGameId() === null || $killedPlayerData->getBelongGameId() === null) return;
         if ($attackerData->getBelongGameId()->equals($killedPlayerData->getBelongGameId())) {
-            (new PlayerKilledPlayerEvent($attacker, $killedPlayer))->call();
+            try {
+                $game = GamesStore::getById($attackerData->getBelongGameId());
+            } catch (\Exception $e) {
+                $this->getLogger()->error($e->getMessage());
+                return;
+            }
+
+            (new PlayerKilledPlayerEvent($game->getId(), $game->getType(), $attacker, $killedPlayer))->call();
         }
     }
 
