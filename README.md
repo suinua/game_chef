@@ -1,5 +1,27 @@
 # Game Chef
 
+## マップの設定
+### FFAGameMap
+ - name
+ - game type
+ - spawn points
+ - custom vector data list
+ - custom vectors data list
+ 
+## TeamGameMap
+ - name
+ - game type
+ - team data list
+    - name
+    - color format
+    - max players
+    - min players
+    - spawn points
+    - custom team vector data list
+    - custom team vectors data list
+ - custom vector data list
+ - custom vectors data list
+ 
 ## FFA,TeamGame共通のAPI
 ### 試合の登録
 ```php
@@ -60,6 +82,8 @@ try {
 ### チームの移動
 ```php
 ```
+### マップに設定した座標データを取得
+### マップに設定した配列の座標データを取得
 ### スポーン地点を設定
 ```php
 ```
@@ -106,9 +130,6 @@ try {
 ```php
 ```
 ### IDからゲーム取得
-```php
-```
-### IDからチーム取得
 ```php
 ```
 
