@@ -4,6 +4,8 @@
 namespace game_chef\repository\dto;
 
 
+use game_chef\models\CustomTeamVectorData;
+use game_chef\models\CustomTeamVectorsData;
 use game_chef\models\GameType;
 use game_chef\models\TeamDataOnMap;
 use game_chef\models\TeamGameMap;
@@ -24,12 +26,44 @@ class TeamGameMapDTO
                 ];
             }
 
+            $customTeamVectorDataList = [];
+            foreach ($teamDataOnMap->getCustomTeamVectorDataList() as $customTeamVectorData) {
+                $vector = $customTeamVectorData->getVector3();
+                $customTeamVectorDataList[] = [
+                    "key" => $customTeamVectorData->getKey(),
+                    "team_name" => $customTeamVectorData->getTeamName(),
+                    "x" => $vector->getX(),
+                    "y" => $vector->getY(),
+                    "z" => $vector->getZ()
+                ];
+            }
+
+            $customTeamVectorsDataList = [];
+            foreach ($teamDataOnMap->getCustomTeamVectorsDataList() as $customTeamVectorsData) {
+                $vector3List = [];
+                foreach ($customTeamVectorsData->getVector3List() as $vector3) {
+                    $vector3List[] = [
+                        "x" => $vector3->getX(),
+                        "y" => $vector3->getY(),
+                        "z" => $vector3->getZ()
+                    ];
+                }
+
+                $customTeamVectorsDataList[] = [
+                    "key" => $customTeamVectorsData->getKey(),
+                    "team_name" => $customTeamVectorsData->getTeamName(),
+                    "vector_list" => $vector3List
+                ];
+            }
+
             $teamDataList[] = [
                 "name" => $teamDataOnMap->getTeamName(),
                 "color_format" => $teamDataOnMap->getTeamColorFormat(),
                 "max_players" => $teamDataOnMap->getMaxPlayer(),
                 "min_players" => $teamDataOnMap->getMinPlayer(),
                 "spawn_points" => $spawnPoints,
+                "custom_team_vector_data_list" => $customTeamVectorDataList,
+                "custom_team_vectors_data_list" => $customTeamVectorsDataList
             ];
         }
 
@@ -56,12 +90,33 @@ class TeamGameMapDTO
                 $spawnPoints[] = new Vector3($spawnPointAsArray["x"], $spawnPointAsArray["y"], $spawnPointAsArray["z"]);
             }
 
+            $customTeamVectorDataList = [];
+            foreach ($value["custom_team_vector_data_list"] as $item) {
+                $customTeamVectorDataList[] = new CustomTeamVectorData($item["key"], $item["team_name"], new Vector3($item["x"], $item["y"], $item["z"]));
+            }
+
+            $customTeamVectorsDataList = [];
+            foreach ($value["custom_team_vectors_data_list"] as $item) {
+                $vectors = [];
+                foreach ($item["vector_list"] as $vectorAsArray) {
+                    $vectors[] = new Vector3($vectorAsArray["x"], $vectorAsArray["y"], $vectorAsArray["z"]);
+                }
+
+                $customTeamVectorsDataList[] = new CustomTeamVectorsData(
+                    $item["key"],
+                    $item["team_name"],
+                    $vectors
+                );
+            }
+
             $teamDataList[$value["name"]] = new TeamDataOnMap(
                 $value["name"],
                 $value["color_format"],
                 $value["max_players"],
                 $value["min_players"],
-                $spawnPoints
+                $spawnPoints,
+                $customTeamVectorDataList,
+                $customTeamVectorsDataList
             );
         }
 
@@ -74,7 +129,7 @@ class TeamGameMapDTO
             $array["name"],
             $array["level_name"],
             $adaptedGameTypes,
-            $teamDataList
+            $teamDataList,
         );
     }
 }

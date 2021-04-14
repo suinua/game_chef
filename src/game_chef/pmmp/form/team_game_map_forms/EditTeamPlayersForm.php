@@ -61,6 +61,8 @@ class EditTeamPlayersForm extends CustomForm
             $max,
             $min,
             $this->teamData->getSpawnPoints(),
+            $this->teamData->getCustomTeamVectorDataList(),
+            $this->teamData->getCustomTeamVectorsDataList()
         );
 
         try {

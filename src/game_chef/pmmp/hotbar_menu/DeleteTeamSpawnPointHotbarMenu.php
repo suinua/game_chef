@@ -35,6 +35,8 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                             $teamDataOnMap->getMaxPlayer(),
                             $teamDataOnMap->getMinPlayer(),
                             $newSpawnPoints,
+                            $teamDataOnMap->getCustomTeamVectorDataList(),
+                            $teamDataOnMap->getCustomTeamVectorsDataList()
                         );
 
                         TeamGameMapService::updateTeamData($map, $newTeam);

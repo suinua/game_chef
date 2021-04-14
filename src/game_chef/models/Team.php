@@ -4,7 +4,7 @@
 namespace game_chef\models;
 
 
-//Memo:マップと同期してなくてはだめ。マップにセットされてるものから選択できるように
+//TODO:extends TeamDataOnMapで実装する
 use pocketmine\math\Vector3;
 
 class Team
@@ -19,6 +19,14 @@ class Team
      * @var Vector3[]
      */
     private array $spawnPoints;
+    /**
+     * @var CustomTeamVectorData[]
+     */
+    private array $customTeamVectorDataList;
+    /**
+     * @var CustomTeamVectorsData[]
+     */
+    private array $customTeamVectorsDataList;
 
     /**
      * Team constructor.
@@ -27,9 +35,18 @@ class Team
      * @param string $TeamColorFormat
      * @param int|null $maxPlayer
      * @param int|null $minPlayer
+     * @param CustomTeamVectorData[] $customTeamVectorDataList
+     * @param array $customTeamVectorsDataList
      * @throws \Exception
      */
-    public function __construct(string $name, array $spawnPoints, string $TeamColorFormat = "", ?int $maxPlayer = null, ?int $minPlayer = null) {
+    public function __construct(
+        string $name,
+        array $spawnPoints,
+        string $TeamColorFormat = "",
+        ?int $maxPlayer = null,
+        ?int $minPlayer = null,
+        array $customTeamVectorDataList = [],
+        array $customTeamVectorsDataList = []) {
         if ($this->maxPlayer !== null and $this->minPlayer !== null) {
             if ($this->maxPlayer <= $this->minPlayer) {
                 throw new \Exception("最大人数は最少人数より小さくすることはできません");
@@ -43,6 +60,8 @@ class Team
         $this->maxPlayer = $maxPlayer;
         $this->minPlayer = $minPlayer;
         $this->spawnPoints = $spawnPoints;
+        $this->customTeamVectorDataList = $customTeamVectorDataList;
+        $this->customTeamVectorsDataList = $customTeamVectorsDataList;
     }
 
     public function getId(): TeamId {
@@ -78,6 +97,22 @@ class Team
      */
     public function getSpawnPoints(): array {
         return $this->spawnPoints;
+    }
+
+    public function getCustomVectorData(string $key): ?Vector3 {
+        if (array_key_exists($key, $this->customTeamVectorDataList)) {
+            return $this->customTeamVectorDataList[$key]->getVector3();
+        } else {
+            return null;
+        }
+    }
+
+    public function getCustomVectorsData(string $key): array {
+        if (array_key_exists($key, $this->customTeamVectorDataList)) {
+            return $this->customTeamVectorsDataList[$key]->getVector3List();
+        } else {
+            return [];
+        }
     }
 }
 

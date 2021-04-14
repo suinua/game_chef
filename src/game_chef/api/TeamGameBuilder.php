@@ -76,7 +76,15 @@ class TeamGameBuilder extends GameBuilder
         }
 
         $teamDataOnMap = $this->map->getTeamDataOnMapByName($teamName);
-        $this->useTeams[] = new Team($teamDataOnMap->getTeamName(), $teamDataOnMap->getSpawnPoints(), $teamDataOnMap->getTeamColorFormat(), $maxPlayer, $minPlayer);
+        $this->useTeams[] = new Team(
+            $teamDataOnMap->getTeamName(),
+            $teamDataOnMap->getSpawnPoints(),
+            $teamDataOnMap->getTeamColorFormat(),
+            $maxPlayer,
+            $minPlayer,
+            $teamDataOnMap->getCustomTeamVectorDataList(),
+            $teamDataOnMap->getCustomTeamVectorsDataList()
+        );
     }
 
     public function setFriendlyFire(bool $friendlyFire): void {
@@ -107,7 +115,15 @@ class TeamGameBuilder extends GameBuilder
             $indexList = array_rand($this->map->getTeamDataList(), $this->numberOfTeams);
             foreach ($indexList as $index) {
                 $teamDataOnMap = $this->map->getTeamDataList()[$index];
-                $teams[] = new Team($teamDataOnMap->getTeamName(), $teamDataOnMap->getSpawnPoints(), $teamDataOnMap->getTeamColorFormat(), $teamDataOnMap->getMaxPlayer(), $teamDataOnMap->getMinPlayer());
+                $teams[] = new Team(
+                    $teamDataOnMap->getTeamName(),
+                    $teamDataOnMap->getSpawnPoints(),
+                    $teamDataOnMap->getTeamColorFormat(),
+                    $teamDataOnMap->getMaxPlayer(),
+                    $teamDataOnMap->getMinPlayer(),
+                    $teamDataOnMap->getCustomTeamVectorDataList(),
+                    $teamDataOnMap->getCustomTeamVectorsDataList()
+                );
             }
         } else {
             $teams = $this->useTeams;
