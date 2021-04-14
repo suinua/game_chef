@@ -8,7 +8,6 @@ use game_chef\models\GameId;
 use game_chef\models\PlayerData;
 use game_chef\models\FFAGame;
 use game_chef\models\FFAPlayerTeam;
-use game_chef\models\TeamGame;
 use game_chef\pmmp\events\PlayerJoinedGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;

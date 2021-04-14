@@ -3,16 +3,12 @@
 
 namespace game_chef\models;
 
-use game_chef\models\FFAGameMap;
 use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
 use game_chef\pmmp\form\ffa_game_map_forms\FFAGameMapDetailForm;
-use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
 use game_chef\pmmp\hotbar_menu\FFAGameSpawnPointsHotbarMenu;
 use game_chef\repository\FFAGameMapRepository;
-use pocketmine\block\Ice;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
-use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -40,7 +36,6 @@ class FFAGameMapSpawnPointEditor
     }
 
     /**
-     * @param FFAGameMap $map
      * @throws \Exception
      */
     public function reloadMap(): void {

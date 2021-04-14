@@ -5,7 +5,6 @@ namespace game_chef\store;
 
 
 use game_chef\models\GameType;
-use game_chef\models\Map;
 use game_chef\models\FFAGameMap;
 use game_chef\models\TeamGameMap;
 use game_chef\repository\FFAGameMapRepository;

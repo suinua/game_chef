@@ -16,7 +16,6 @@ use game_chef\store\GameTimersStore;
 use game_chef\store\PlayerDataStore;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskScheduler;
-use pocketmine\Server;
 
 class GameService
 {

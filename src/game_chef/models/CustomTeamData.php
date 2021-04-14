@@ -4,8 +4,6 @@
 namespace game_chef\models;
 
 
-use pocketmine\math\Vector3;
-
 class CustomTeamData
 {
     private string $key;

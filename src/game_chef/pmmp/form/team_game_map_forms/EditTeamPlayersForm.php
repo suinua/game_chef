@@ -7,7 +7,6 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 use form_builder\models\custom_form_elements\Slider;
 use form_builder\models\custom_form_elements\Toggle;
 use form_builder\models\CustomForm;
-use game_chef\models\Team;
 use game_chef\models\TeamDataOnMap;
 use game_chef\models\TeamGameMap;
 use game_chef\services\TeamGameMapService;
@@ -34,7 +33,7 @@ class EditTeamPlayersForm extends CustomForm
         $this->minElement = new Slider("最小人数", 0, 100, $min ?? 100);
         $this->maxToggle = new Toggle("最大人数を設定しない", $max === null);
         $this->minToggle = new Toggle("最小人数を設定しない", $min === null);
-        parent::__construct("チームの最大、最小人数を設定", [
+        parent::__construct("チーム({$teamDataOnMap->getTeamName()})の最大、最小人数を設定", [
             $this->maxToggle,
             $this->maxElement,
             $this->minToggle,

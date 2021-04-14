@@ -4,9 +4,6 @@
 namespace game_chef\pmmp\scoreboard;
 
 
-use game_chef\pmmp\scoreboard\Score;
-use game_chef\pmmp\scoreboard\Scoreboard;
-use game_chef\pmmp\scoreboard\ScoreboardSlot;
 use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetScorePacket;

@@ -9,12 +9,12 @@ use pocketmine\Player;
 class BossbarsStore
 {
     /**
-     * @var BossBar[]
+     * @var Bossbar[]
      */
-    static private $bossBars = [];
+    static private $bossbars = [];
 
     static function getAll(): array {
-        return self::$bossBars;
+        return self::$bossbars;
     }
 
     /**
@@ -23,7 +23,7 @@ class BossbarsStore
      */
     static function searchAll(Player $player): array {
         $result = [];
-        foreach (self::$bossBars as $bossBar) {
+        foreach (self::$bossbars as $bossBar) {
             if ($bossBar->getOwner()->getName() === $player->getName()) {
                 $result[] = $bossBar;
             }
@@ -33,7 +33,7 @@ class BossbarsStore
     }
 
     static function findById(BossBarId $id): ?BossBar {
-        foreach (self::$bossBars as $bossBar) {
+        foreach (self::$bossbars as $bossBar) {
             if ($bossBar->getId()->equals($id)) return $bossBar;
         }
 
@@ -42,7 +42,7 @@ class BossbarsStore
 
     static function findByType(Player $player, BossBarType $type): ?BossBar {
 
-        foreach (self::$bossBars as $bossBar) {
+        foreach (self::$bossbars as $bossBar) {
             if ($bossBar->getType()->equals($type) && $bossBar->getOwner()->getName() === $player->getName()) {
                 return $bossBar;
             }
@@ -60,15 +60,15 @@ class BossbarsStore
             throw new \LogicException("ownerおよびtypeが等しいボスバーがすでに存在します");
         }
 
-        self::$bossBars[] = $bossBar;
+        self::$bossbars[] = $bossBar;
     }
 
     static function remove(BossBarId $id): void {
-        foreach (self::$bossBars as $index => $bossBar) {
-            if ($bossBar->getId()->equals($id)) unset(self::$bossBars[$index]);
+        foreach (self::$bossbars as $index => $bossBar) {
+            if ($bossBar->getId()->equals($id)) unset(self::$bossbars[$index]);
         }
 
-        self::$bossBars = array_values(self::$bossBars);
+        self::$bossbars = array_values(self::$bossbars);
     }
 
     static function update(BossBar $bossBar): void {

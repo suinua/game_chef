@@ -38,7 +38,6 @@ class TeamGameMapSpawnPointEditor
     }
 
     /**
-     * @param FFAGameMap $map
      * @throws \Exception
      */
     public function reloadMap(): void {
@@ -73,7 +72,7 @@ class TeamGameMapSpawnPointEditor
             }
         }), 20);
 
-        $menu = new TeamGameSpawnPointsHotbarMenu($this->user);
+        $menu = new TeamGameSpawnPointsHotbarMenu($this->user, $this->map, $this->teamData);
         $menu->send();
     }
 

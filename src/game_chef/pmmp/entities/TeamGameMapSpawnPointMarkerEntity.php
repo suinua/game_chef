@@ -4,10 +4,8 @@
 namespace game_chef\pmmp\entities;
 
 
-use game_chef\models\FFAGameMap;
 use game_chef\models\TeamDataOnMap;
 use game_chef\models\TeamGameMap;
-use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
 use game_chef\pmmp\hotbar_menu\DeleteTeamSpawnPointHotbarMenu;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;

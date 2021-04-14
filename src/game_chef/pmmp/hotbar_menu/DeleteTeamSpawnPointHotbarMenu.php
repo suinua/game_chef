@@ -14,7 +14,12 @@ use pocketmine\Player;
 
 class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
 {
+    private TeamGameMap $map;
+    private TeamDataOnMap $teamData;
+
     public function __construct(Player $player, TeamGameMap $map, TeamDataOnMap $teamDataOnMap, Vector3 $targetSpawnPoint) {
+        $this->map = $map;
+        $this->teamData = $teamDataOnMap;
         parent::__construct($player,
             [
                 new HotbarMenuItem(ItemIds::FEATHER, "戻る", function () {
@@ -54,7 +59,7 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
 
     public function close(): void {
         parent::close();
-        $menu = new TeamGameSpawnPointsHotbarMenu($this->player);
+        $menu = new TeamGameSpawnPointsHotbarMenu($this->player, $this->map, $this->teamData);
         $menu->send();
     }
 }

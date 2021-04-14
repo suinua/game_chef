@@ -4,7 +4,6 @@
 namespace game_chef\api;
 
 
-use game_chef\models\FFAGameMap;
 use game_chef\models\Game;
 use game_chef\models\GameId;
 use game_chef\models\GameType;
@@ -12,7 +11,6 @@ use game_chef\models\PlayerData;
 use game_chef\models\Score;
 use game_chef\models\FFAGame;
 use game_chef\models\TeamGame;
-use game_chef\models\TeamGameMap;
 use game_chef\models\TeamId;
 use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
