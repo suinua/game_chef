@@ -23,10 +23,10 @@ class TeamDataOnMap
      */
     private array $customTeamVectorDataList;
     /**
-     * @var CustomTeamVectorsData[]
+     * @var CustomTeamArrayVectorData[]
      * string => CustomTeamVectorsData
      */
-    private array $customTeamVectorsDataList;
+    private array $customTeamArrayVectorDataList;
 
     /**
      * TeamDataOnMap constructor.
@@ -36,7 +36,7 @@ class TeamDataOnMap
      * @param int|null $minPlayer
      * @param Vector3[] $spawnPoints
      * @param CustomTeamVectorData[] $customTeamVectorDataList
-     * @param array $customTeamVectorsDataList
+     * @param array $customTeamArrayVectorDataList
      * @throws \Exception
      */
     public function __construct(
@@ -46,7 +46,7 @@ class TeamDataOnMap
         ?int $minPlayer,
         array $spawnPoints,
         array $customTeamVectorDataList,
-        array $customTeamVectorsDataList) {
+        array $customTeamArrayVectorDataList) {
         if ($this->maxPlayer !== null and $this->minPlayer !== null) {
             if ($this->maxPlayer <= $this->minPlayer) {
                 throw new \Exception("最大人数は最少人数より小さくすることはできません");
@@ -66,11 +66,11 @@ class TeamDataOnMap
             $this->customTeamVectorDataList[$customTeamVectorData->getKey()] = $customTeamVectorData;
         }
 
-        foreach ($customTeamVectorsDataList as $customTeamVectorsData) {
-            if ($customTeamVectorsData->getTeamName() !== $teamName) {
+        foreach ($customTeamArrayVectorDataList as $customTeamArrayVectorData) {
+            if ($customTeamArrayVectorData->getTeamName() !== $teamName) {
                 throw new \Exception("{$teamName}以外のカスタムチームデータを入れることはできません");
             }
-            $this->customTeamVectorsDataList[$customTeamVectorsData->getKey()] = $customTeamVectorsData;
+            $this->customTeamArrayVectorDataList[$customTeamArrayVectorData->getKey()] = $customTeamArrayVectorData;
         }
     }
 
@@ -105,9 +105,9 @@ class TeamDataOnMap
     }
 
     /**
-     * @return CustomTeamVectorsData[]
+     * @return CustomTeamArrayVectorData[]
      */
-    public function getCustomTeamVectorsDataList(): array {
-        return $this->customTeamVectorsDataList;
+    public function getCustomTeamArrayVectorDataList(): array {
+        return $this->customTeamArrayVectorDataList;
     }
 }

@@ -27,9 +27,9 @@ class FFAGameMapDTO
             $vectorDataList[] = CustomMapVectorDataDTO::encodeVectorData($vectorData);
         }
 
-        $vectorsDataList= [];
-        foreach ($gameMap->getCustomMapVectorsDataList() as $vectorsData) {
-            $vectorsDataList[] = CustomMapVectorDataDTO::encodeVectorsData($vectorsData);
+        $arrayVectorDataList= [];
+        foreach ($gameMap->getCustomMapArrayVectorDataList() as $arrayVectorData) {
+            $arrayVectorDataList[] = CustomMapVectorDataDTO::encodeArrayVectorsData($arrayVectorData);
         }
 
         return [
@@ -37,7 +37,7 @@ class FFAGameMapDTO
             "level_name" => $gameMap->getLevelName(),
             "adapted_game_types" => array_map(fn(GameType $type) => strval($type), $gameMap->getAdaptedGameTypes()),
             "custom_map_vector_data_list" => $vectorDataList,
-            "custom_map_vectors_data_list" => $vectorsDataList,
+            "custom_map_array_vector_data_list" => $arrayVectorDataList,
             "spawn_points" => $spawnPoints,
         ];
     }
@@ -59,9 +59,9 @@ class FFAGameMapDTO
             $vectorDataList[] = CustomMapVectorDataDTO::decodeVectorData($vectorDataAsArray);
         }
 
-        $vectorsDataList= [];
-        foreach ($array["custom_map_vectors_data_list"] as $vectorsDataAsArray) {
-            $vectorsDataList[] = CustomMapVectorDataDTO::decodeVectorsData($vectorsDataAsArray);
+        $arrayVectorDataList= [];
+        foreach ($array["custom_map_array_vector_data_list"] as $arrayVectorDataAsArray) {
+            $arrayVectorDataList[] = CustomMapVectorDataDTO::decodeArrayVectorData($arrayVectorDataAsArray);
         }
 
         return new FFAGameMap(
@@ -69,7 +69,7 @@ class FFAGameMapDTO
             $array["level_name"],
             $adaptedGameTypes,
             $vectorDataList,
-            $vectorsDataList,
+            $arrayVectorDataList,
             $spawnPoints
         );
     }

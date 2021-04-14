@@ -24,9 +24,9 @@ class Team
      */
     private array $customTeamVectorDataList;
     /**
-     * @var CustomTeamVectorsData[]
+     * @var CustomTeamArrayVectorData[]
      */
-    private array $customTeamVectorsDataList;
+    private array $customTeamArrayVectorDataList;
 
     /**
      * Team constructor.
@@ -36,7 +36,7 @@ class Team
      * @param int|null $maxPlayer
      * @param int|null $minPlayer
      * @param CustomTeamVectorData[] $customTeamVectorDataList
-     * @param array $customTeamVectorsDataList
+     * @param CustomTeamArrayVectorData[] $customTeamArrayVectorDataList
      * @throws \Exception
      */
     public function __construct(
@@ -46,7 +46,7 @@ class Team
         ?int $maxPlayer = null,
         ?int $minPlayer = null,
         array $customTeamVectorDataList = [],
-        array $customTeamVectorsDataList = []) {
+        array $customTeamArrayVectorDataList = []) {
         if ($this->maxPlayer !== null and $this->minPlayer !== null) {
             if ($this->maxPlayer <= $this->minPlayer) {
                 throw new \Exception("最大人数は最少人数より小さくすることはできません");
@@ -61,7 +61,7 @@ class Team
         $this->minPlayer = $minPlayer;
         $this->spawnPoints = $spawnPoints;
         $this->customTeamVectorDataList = $customTeamVectorDataList;
-        $this->customTeamVectorsDataList = $customTeamVectorsDataList;
+        $this->customTeamArrayVectorDataList = $customTeamArrayVectorDataList;
     }
 
     public function getId(): TeamId {
@@ -107,9 +107,9 @@ class Team
         }
     }
 
-    public function getCustomVectorsData(string $key): array {
+    public function getCustomArrayVectorData(string $key): array {
         if (array_key_exists($key, $this->customTeamVectorDataList)) {
-            return $this->customTeamVectorsDataList[$key]->getVector3List();
+            return $this->customTeamArrayVectorDataList[$key]->getVector3List();
         } else {
             return [];
         }

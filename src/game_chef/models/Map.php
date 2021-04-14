@@ -21,16 +21,16 @@ class Map
     private array $customMapVectorDataList;
 
     /**
-     * @var CustomMapVectorsData[]
+     * @var CustomMapArrayVectorData[]
      */
-    private array $customMapVectorsDataList;
+    private array $customMapArrayVectorDataList;
 
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapVectorsDataList) {
+    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapArrayVectorDataList) {
         $this->name = $name;
         $this->levelName = $levelName;
         $this->adaptedGameTypes = $adaptedGameTypes;
         $this->customMapVectorDataList = $customMapVectorDataList;
-        $this->customMapVectorsDataList = $customMapVectorsDataList;
+        $this->customMapArrayVectorDataList = $customMapArrayVectorDataList;
     }
 
     public function getName(): string {
@@ -74,15 +74,15 @@ class Map
     }
 
     /**
-     * @return CustomMapVectorsData[]
+     * @return CustomMapArrayVectorData[]
      */
-    public function getCustomMapVectorsDataList(): array {
-        return $this->customMapVectorsDataList;
+    public function getCustomMapArrayVectorDataList(): array {
+        return $this->customMapArrayVectorDataList;
     }
 
-    public function getCustomVectorsData(string $key): array {
-        if (array_key_exists($key, $this->customMapVectorsDataList)) {
-            return $this->customMapVectorsDataList[$key]->getVector3List();
+    public function getCustomArrayVectorData(string $key): array {
+        if (array_key_exists($key, $this->customMapArrayVectorDataList)) {
+            return $this->customMapArrayVectorDataList[$key]->getVector3List();
         } else {
             return [];
         }

@@ -35,7 +35,7 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
                         $teamDataOnMap->getMinPlayer(),
                         $spawnPoints,
                         $teamDataOnMap->getCustomTeamVectorDataList(),
-                        $teamDataOnMap->getCustomTeamVectorsDataList()
+                        $teamDataOnMap->getCustomTeamArrayVectorDataList()
                     );
 
                     TeamGameMapService::updateTeamData($teamGameMap, $newTeam);

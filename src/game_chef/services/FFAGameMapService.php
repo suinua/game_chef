@@ -65,7 +65,7 @@ class FFAGameMapService
                 $map->getLevelName(),
                 $map->getAdaptedGameTypes(),
                 $map->getCustomMapVectorDataList(),
-                $map->getCustomMapVectorsDataList(),
+                $map->getCustomMapArrayVectorDataList(),
                 $newSpawnPoints
             )
         );
@@ -91,7 +91,7 @@ class FFAGameMapService
                 $map->getLevelName(),
                 $map->getAdaptedGameTypes(),
                 $map->getCustomMapVectorDataList(),
-                $map->getCustomMapVectorsDataList(),
+                $map->getCustomMapArrayVectorDataList(),
                 $spawnPoints
             )
         );

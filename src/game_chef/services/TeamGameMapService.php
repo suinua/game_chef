@@ -67,7 +67,7 @@ class TeamGameMapService
             $map->getLevelName(),
             $map->getAdaptedGameTypes(),
             $map->getCustomMapVectorDataList(),
-            $map->getCustomMapVectorsDataList(),
+            $map->getCustomMapArrayVectorDataList(),
             $newTeams
         ));
     }

@@ -6,16 +6,16 @@ namespace game_chef\models;
 
 use pocketmine\math\Vector3;
 
-class CustomMapVectorsData extends CustomMapData
+class CustomTeamArrayVectorData extends CustomTeamData
 {
     /**
      * @var Vector3[]
      */
     private array $vector3List;
 
-    public function __construct(string $key, array $vector3List) {
+    public function __construct(string $key, string $teamName, array $vector3List) {
         $this->vector3List = $vector3List;
-        parent::__construct($key);
+        parent::__construct($key, $teamName);
     }
 
     /**

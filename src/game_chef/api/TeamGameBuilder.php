@@ -83,7 +83,7 @@ class TeamGameBuilder extends GameBuilder
             $maxPlayer,
             $minPlayer,
             $teamDataOnMap->getCustomTeamVectorDataList(),
-            $teamDataOnMap->getCustomTeamVectorsDataList()
+            $teamDataOnMap->getCustomTeamArrayVectorDataList()
         );
     }
 
@@ -122,7 +122,7 @@ class TeamGameBuilder extends GameBuilder
                     $teamDataOnMap->getMaxPlayer(),
                     $teamDataOnMap->getMinPlayer(),
                     $teamDataOnMap->getCustomTeamVectorDataList(),
-                    $teamDataOnMap->getCustomTeamVectorsDataList()
+                    $teamDataOnMap->getCustomTeamArrayVectorDataList()
                 );
             }
         } else {

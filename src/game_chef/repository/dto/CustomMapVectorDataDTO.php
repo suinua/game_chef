@@ -5,7 +5,7 @@ namespace game_chef\repository\dto;
 
 
 use game_chef\models\CustomMapVectorData;
-use game_chef\models\CustomMapVectorsData;
+use game_chef\models\CustomMapArrayVectorData;
 
 class CustomMapVectorDataDTO
 {
@@ -13,7 +13,7 @@ class CustomMapVectorDataDTO
 
     static function decodeVectorData(array $json): CustomMapVectorData { }
 
-    static function encodeVectorsData(CustomMapVectorsData $data): array { }
+    static function encodeArrayVectorsData(CustomMapArrayVectorData $data): array { }
 
-    static function decodeVectorsData(array $json): CustomMapVectorsData { }
+    static function decodeArrayVectorData(array $json): CustomMapArrayVectorData { }
 }
