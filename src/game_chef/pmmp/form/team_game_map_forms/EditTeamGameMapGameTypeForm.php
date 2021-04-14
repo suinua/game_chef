@@ -35,6 +35,8 @@ class EditTeamGameMapGameTypeForm extends CustomForm
             $this->teamGameMap->getName(),
             $this->teamGameMap->getLevelName(),
             $gameTypeList,
+            $this->teamGameMap->getCustomMapVectorDataList(),
+            $this->teamGameMap->getCustomMapVectorsDataList(),
             $this->teamGameMap->getTeamDataList(),
         );
 

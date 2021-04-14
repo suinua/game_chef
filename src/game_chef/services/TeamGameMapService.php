@@ -18,7 +18,7 @@ class TeamGameMapService
      * @throws \Exception
      */
     static function create(string $name, string $levelName, array $gameTypeList): void {
-        $map = new TeamGameMap($name, $levelName, $gameTypeList, []);
+        $map = new TeamGameMap($name, $levelName, $gameTypeList, [], [], []);
         TeamGameMapRepository::add($map);
     }
 
@@ -66,6 +66,8 @@ class TeamGameMapService
             $map->getName(),
             $map->getLevelName(),
             $map->getAdaptedGameTypes(),
+            $map->getCustomMapVectorDataList(),
+            $map->getCustomMapVectorsDataList(),
             $newTeams
         ));
     }

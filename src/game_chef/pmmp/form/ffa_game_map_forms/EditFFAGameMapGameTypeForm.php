@@ -35,7 +35,9 @@ class EditFFAGameMapGameTypeForm extends CustomForm
             $this->ffaGameMap->getName(),
             $this->ffaGameMap->getLevelName(),
             $gameTypeList,
-            $this->ffaGameMap->getSpawnPoints(),
+            $this->ffaGameMap->getCustomMapVectorDataList(),
+            $this->ffaGameMap->getCustomMapVectorsDataList(),
+            $this->ffaGameMap->getSpawnPoints()
         );
 
         try {

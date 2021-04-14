@@ -9,11 +9,11 @@ use game_chef\models\CustomMapVectorsData;
 
 class CustomMapVectorDataDTO
 {
-    static function encodeVectorData(): array { }
+    static function encodeVectorData(CustomMapVectorData $data): array { }
 
-    static function decodeVectorData(): CustomMapVectorData { }
+    static function decodeVectorData(array $json): CustomMapVectorData { }
 
-    static function encodeVectorsData(): array { }
+    static function encodeVectorsData(CustomMapVectorsData $data): array { }
 
-    static function decodeVectorsData(): CustomMapVectorsData { }
+    static function decodeVectorsData(array $json): CustomMapVectorsData { }
 }

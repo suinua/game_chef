@@ -17,10 +17,12 @@ class TeamGameMap extends Map
      * @param string $name
      * @param string $levelName
      * @param GameType[] $adaptedGameTypes
+     * @param array $customMapVectorDataList
+     * @param array $customMapVectorsDataList
      * @param TeamDataOnMap[] $teamDataList
      */
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $teamDataList) {
-        parent::__construct($name, $levelName, $adaptedGameTypes);
+    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapVectorsDataList, array $teamDataList) {
+        parent::__construct($name, $levelName, $adaptedGameTypes, $customMapVectorDataList, $customMapVectorsDataList);
         $this->teamDataList = [];
         foreach ($teamDataList as $teamData) {
             $this->teamDataList[$teamData->getTeamName()] = $teamData;
@@ -40,7 +42,7 @@ class TeamGameMap extends Map
      * @throws \Exception
      */
     public function getTeamDataOnMapByName(string $teamName): TeamDataOnMap {
-        if (!array_key_exists($teamName,$this->teamDataList)) {
+        if (!array_key_exists($teamName, $this->teamDataList)) {
             throw new \Exception("そのチームデータ($teamName)はこのマップ({$this->name})に登録されていません");
         }
         return $this->teamDataList[$teamName];

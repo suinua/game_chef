@@ -13,8 +13,8 @@ class FFAGameMap extends Map
      */
     private array $spawnPoints;
 
-    public function __construct(string $name, string $levelName, array $adaptedGameType, array $spawnPoints) {
-        parent::__construct($name, $levelName, $adaptedGameType);
+    public function __construct(string $name, string $levelName, array $adaptedGameType, array $customMapVectorDataList, array $customMapVectorsDataList, array $spawnPoints) {
+        parent::__construct($name, $levelName, $adaptedGameType, $customMapVectorDataList, $customMapVectorsDataList);
         $this->spawnPoints = $spawnPoints;
     }
 

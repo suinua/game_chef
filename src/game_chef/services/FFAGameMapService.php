@@ -5,7 +5,6 @@ namespace game_chef\services;
 
 
 use game_chef\models\FFAGameMap;
-use game_chef\models\Map;
 use game_chef\repository\FFAGameMapRepository;
 use game_chef\store\MapsStore;
 use pocketmine\math\Vector3;
@@ -19,7 +18,7 @@ class FFAGameMapService
      * @throws \Exception
      */
     static function create(string $name, string $levelName, array $gameTypeList): void {
-        $map = new FFAGameMap($name, $levelName, $gameTypeList, []);
+        $map = new FFAGameMap($name, $levelName, $gameTypeList, [], [], []);
         FFAGameMapRepository::add($map);
     }
 
@@ -65,6 +64,8 @@ class FFAGameMapService
                 $map->getName(),
                 $map->getLevelName(),
                 $map->getAdaptedGameTypes(),
+                $map->getCustomMapVectorDataList(),
+                $map->getCustomMapVectorsDataList(),
                 $newSpawnPoints
             )
         );
@@ -89,6 +90,8 @@ class FFAGameMapService
                 $map->getName(),
                 $map->getLevelName(),
                 $map->getAdaptedGameTypes(),
+                $map->getCustomMapVectorDataList(),
+                $map->getCustomMapVectorsDataList(),
                 $spawnPoints
             )
         );

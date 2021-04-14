@@ -67,11 +67,23 @@ class TeamGameMapDTO
             ];
         }
 
+        $vectorDataList= [];
+        foreach ($gameMap->getCustomMapVectorDataList() as $vectorData) {
+            $vectorDataList[] = CustomMapVectorDataDTO::encodeVectorData($vectorData);
+        }
+
+        $vectorsDataList= [];
+        foreach ($gameMap->getCustomMapVectorsDataList() as $vectorsData) {
+            $vectorsDataList[] = CustomMapVectorDataDTO::encodeVectorsData($vectorsData);
+        }
+
 
         return [
             "name" => $gameMap->getName(),
             "level_name" => $gameMap->getLevelName(),
             "adapted_game_types" => array_map(fn(GameType $type) => strval($type), $gameMap->getAdaptedGameTypes()),
+            "custom_map_vector_data_list" => $vectorDataList,
+            "custom_map_vectors_data_list" => $vectorsDataList,
             "team_data_list" => $teamDataList,
         ];
     }
@@ -125,11 +137,23 @@ class TeamGameMapDTO
             $adaptedGameTypes[] = new GameType($gameTypeAsString);
         }
 
+        $vectorDataList= [];
+        foreach ($array["custom_map_vector_data_list"] as $vectorDataAsArray) {
+            $vectorDataList[] = CustomMapVectorDataDTO::decodeVectorData($vectorDataAsArray);
+        }
+
+        $vectorsDataList= [];
+        foreach ($array["custom_map_vectors_data_list"] as $vectorsDataAsArray) {
+            $vectorsDataList[] = CustomMapVectorDataDTO::decodeVectorsData($vectorsDataAsArray);
+        }
+
         return new TeamGameMap(
             $array["name"],
             $array["level_name"],
             $adaptedGameTypes,
-            $teamDataList,
+            $vectorDataList,
+            $vectorsDataList,
+            $teamDataList
         );
     }
 }

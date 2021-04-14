@@ -25,10 +25,12 @@ class Map
      */
     private array $customMapVectorsDataList;
 
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes) {
+    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapVectorsDataList) {
         $this->name = $name;
         $this->levelName = $levelName;
         $this->adaptedGameTypes = $adaptedGameTypes;
+        $this->customMapVectorDataList = $customMapVectorDataList;
+        $this->customMapVectorsDataList = $customMapVectorsDataList;
     }
 
     public function getName(): string {
