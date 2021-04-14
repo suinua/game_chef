@@ -1,28 +1,50 @@
 # Game Chef
 
-## マップの設定
-### FFAGameMap
- - name
- - game type
- - spawn points
- - custom vector data list
- - custom vectors data list
+## マップと試合の設定内容
+### FFAGame
+#### Game
+ - ゲームタイプ
+ - 時間制限
+ - 勝利判定スコア
+ - 途中参加の許可
+ - 最大人数
  
-## TeamGameMap
- - name
- - game type
- - team data list
-    - name
-    - color format
-    - max players
-    - min players
-    - spawn points
-    - custom team vector data list
-    - custom team vectors data list
- - custom vector data list
- - custom vectors data list
+#### Map
+ - マップ名
+ - 対応するゲームタイプ
+ - スポーン地点
+ - 座標データ
+ - 配列型の座標データ
+ 
+### TeamGame
+#### Game
+ - ゲームタイプ
+ - チーム数
+ - 時間制限
+ - 勝利判定スコア
+ - 途中参加の許可
+ - フレンドリーファイア
+ - チームの最大人数差
+ - チーム移動の許可
+ 
+#### Map
+ - マップ名
+ - 対応するゲームタイプ
+ - チーム
+    - チーム名
+    - カラーフォーマット
+    - 最大人数
+    - 最小人数
+    - スポーン地点
+    - 座標データ
+    - 配列型の座標データ
+ - 座標データ
+ - 配列型の座標データ
  
 ## FFA,TeamGame共通のAPI
+### IDから試合取得
+```php
+```
 ### 試合の登録
 ```php
 ```
@@ -38,8 +60,14 @@
 ### 試合を終了させる
 ```php
 ```
+### マップに設定した座標データを取得
+```php
+```
+### マップに設定した配列型の座標データを取得
+```php
+```
+
 ## FFAGameのAPI
-### マップの作成
 ### 試合の作成
 ```php
 ```
@@ -52,38 +80,20 @@
 ### スコアを追加
 ```php
 ```
+
 ## TeamGameのAPI
-### マップの作成
 ### 試合の作成
 ```php
-use game_chef\TeamGameBuilder;
-use game_chef\models\GameType;
-use game_chef\models\Score;
-
-try {
-    $builder = new TeamGameBuilder();
-    $builder->setNumberOfTeams(2);//チーム数
-    //TODO:GameTypeの解説
-    $builder->setGameType(new GameType(""));
-    $builder->setTimeLimit(400);//時間制限
-    $builder->setVictoryScore(new Score(30));//勝利判定スコア
-    $builder->setCanJumpIn(true);//途中参加
-    $builder->selectMapByName("");//TODO: マップ選択 細かい説明
-
-    //マップ中から使用するチームだけをsetUpする
-    $builder->setUpTeam("", 10, 0);
-    $builder->setFriendlyFire(false);//フレンドリーファイアー
-    $builder->setMaxPlayersDifference(2);//チームの最大人数差
-    $builder->setCanMoveTeam(true);//チーム移動
-} catch (Exception $exception) {
-
-}
 ```
 ### チームの移動
 ```php
 ```
-### マップに設定した座標データを取得
-### マップに設定した配列の座標データを取得
+### チームに設定した座標データを取得
+```php
+```
+### チームに設定した配列型の座標データを取得
+```php
+```
 ### スポーン地点を設定
 ```php
 ```
@@ -94,8 +104,22 @@ try {
 ```php
 ```
 
+## プレイヤー関連のAPI
+### プレイヤーのデータ取得
+```php
+```
+### 特定のゲームに参加しているプレイヤー一覧
+```php
+```
+### 特定のチームに参加しているプレイヤー一覧
+```php
+```
 
-## Event
+## ボスバーのAPI
+
+## スコアボードのAPI
+
+## イベント一覧
 
 ### StartedGameEvent
 ```php
@@ -118,21 +142,5 @@ try {
 ### AddedScoreEvent
 ```php
 ```
-
-## その他API
-### プレイヤーのデータ取得
-```php
-```
-### 特定のゲームに参加しているプレイヤー一覧
-```php
-```
-### 特定のチームに参加しているプレイヤー一覧
-```php
-```
-### IDからゲーム取得
-```php
-```
-
 # 依存関係
-できるだけ減らす  
 form_builder  
