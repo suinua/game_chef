@@ -15,13 +15,13 @@ use pocketmine\Player;
 class TeamGameMapSpawnPointMarkerEntity extends NPCBase
 {
     const NAME = "TeamGameMapSpawnPointMarkerEntity";
-    public string $skinName = self::NAME;
-    protected string $geometryId = "geometry." . self::NAME;
-    protected string $geometryName = self::NAME . ".geo.json";
+    public string $skinName = "empty";
+    protected string $geometryId = "geometry.empty";
+    protected string $geometryName = "empty.geo.json";
 
     public $width = 1.0;
-    public $height = 2.0;
-    public $eyeHeight = 2.0;
+    public $height = 1.0;
+    public $eyeHeight = 1.0;
     protected $gravity = 0;
 
 
@@ -57,5 +57,9 @@ class TeamGameMapSpawnPointMarkerEntity extends NPCBase
     public function onTap(Player $player): void {
         $menu = new DeleteTeamSpawnPointHotbarMenu($player, $this->belongMap, $this->teamData, $this->mapSpawnPoint);
         $menu->send();
+    }
+
+    public function getMapSpawnPoint(): Vector3 {
+        return $this->mapSpawnPoint;
     }
 }

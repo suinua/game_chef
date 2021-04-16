@@ -11,7 +11,7 @@ class TeamGameMapSpawnPointEditorStore
     /**
      * @var TeamGameMapSpawnPointEditor[]
      */
-    static private array $editors;
+    static private array $editors = [];
 
     /**
      * @param string $playerName

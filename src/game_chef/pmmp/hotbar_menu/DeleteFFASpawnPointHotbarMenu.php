@@ -27,6 +27,7 @@ class DeleteFFASpawnPointHotbarMenu extends HotbarMenu
                 new HotbarMenuItem(ItemIds::TNT, "削除", function (Player $player) use ($map, $spawnPoint) {
                     try {
                         FFAGameMapService::deleteSpawnPoint($map, $spawnPoint);
+                        $this->map = FFAGameMapRepository::loadByName($map->getName());
                         $editor = FFAGameMapSpawnPointEditorStore::get($player->getName());
                         $editor->reloadMap();
                     } catch (\Exception $exception) {
@@ -40,15 +41,8 @@ class DeleteFFASpawnPointHotbarMenu extends HotbarMenu
     }
 
     public function close(): void {
-        try {
-            $map = FFAGameMapRepository::loadByName($this->map->getName());
-        } catch (\Exception $e) {
-            $this->player->sendMessage($e->getMessage());
-            parent::close();
-            return;
-        }
-
-        $menu = new FFAGameSpawnPointsHotbarMenu($this->player, $map);
+        parent::close();
+        $menu = new FFAGameSpawnPointsHotbarMenu($this->player, $this->map);
         $menu->send();
     }
 }

@@ -5,6 +5,7 @@ namespace game_chef\pmmp\form\ffa_game_map_forms;
 
 
 use form_builder\models\custom_form_elements\Input;
+use form_builder\models\custom_form_elements\Label;
 use form_builder\models\CustomForm;
 use game_chef\models\GameType;
 use game_chef\services\FFAGameMapService;
@@ -17,10 +18,11 @@ class CreateFFAGameMapForm extends CustomForm
 
     public function __construct() {
         $this->nameElement = new Input("", "マップ名", "");
-        $this->gameTypeListElement = new Input("", "マップ名", "");
+        $this->gameTypeListElement = new Input("", "ゲームタイプ", "");
 
         parent::__construct("新しいFFA用のマップを作成", [
             $this->nameElement,
+            new Label("type1,type2"),
             $this->gameTypeListElement
         ]);
     }
@@ -29,16 +31,17 @@ class CreateFFAGameMapForm extends CustomForm
         try {
             $gameTypeList = [];
             foreach (explode(",", $this->gameTypeListElement->getResult()) as $value) {
-                $gameTypeList = new GameType($value);
+                if ($value === "") continue;
+                $gameTypeList[] = new GameType($value);
             }
-            FFAGameMapService::create($this->nameElement->getResult(), $player->getLevel(), $gameTypeList);
+            FFAGameMapService::create($this->nameElement->getResult(), $player->getLevel()->getName(), $gameTypeList);
 
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;
         }
 
-        //$player->sendForm(new TeamGameMapListForm());
+        $player->sendForm(new FFAGameMapListForm());
     }
 
     function onClickCloseButton(Player $player): void {

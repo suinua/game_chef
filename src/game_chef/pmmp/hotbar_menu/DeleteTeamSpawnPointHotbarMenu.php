@@ -6,6 +6,7 @@ namespace game_chef\pmmp\hotbar_menu;
 
 use game_chef\models\TeamDataOnMap;
 use game_chef\models\TeamGameMap;
+use game_chef\repository\TeamGameMapRepository;
 use game_chef\services\TeamGameMapService;
 use game_chef\store\TeamGameMapSpawnPointEditorStore;
 use pocketmine\item\ItemIds;
@@ -45,6 +46,7 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                         );
 
                         TeamGameMapService::updateTeamData($map, $newTeam);
+                        $this->map = TeamGameMapRepository::loadByName($map->getName());
                         $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
                         $editor->reloadMap();
                     } catch (\Exception $exception) {

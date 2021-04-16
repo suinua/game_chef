@@ -43,6 +43,8 @@ class FFAGameMapSpawnPointEditor
             $this->handler->cancel();
         }
         $this->map = FFAGameMapRepository::loadByName($this->map->getName());
+        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
+        $this->reloadMarkerEntity($level);
         $this->start();
     }
 
@@ -68,9 +70,9 @@ class FFAGameMapSpawnPointEditor
             foreach ($this->map->getSpawnPoints() as $spawnPoint) {
                 $this->summonParticle($level, $spawnPoint);
             }
-        }), 20);
+        }), 10);
 
-        $menu = new FFAGameSpawnPointsHotbarMenu($this->user,$this->map);
+        $menu = new FFAGameSpawnPointsHotbarMenu($this->user, $this->map);
         $menu->send();
     }
 
@@ -90,20 +92,20 @@ class FFAGameMapSpawnPointEditor
     }
 
     private function summonParticle(Level $level, Vector3 $vector3): void {
-        $center = $vector3;
+        $center = $vector3->add(0.5, 1.3, 0.5);
 
         //スポーン地点を中心に直径1の円
         for ($i = 0; $i < 360; $i += 30) {
-            $x = 0.5 * sin(deg2rad($i));
-            $z = 0.5 * cos(deg2rad($i));
+            $x = 1 * sin(deg2rad($i));
+            $z = 1 * cos(deg2rad($i));
 
-            $pos = $center->add($x, 0.3, $z);
+            $pos = $center->add($x, 0, $z);
             $level->addParticle(new CriticalParticle($pos));
         }
 
-        //100m 縦に伸びるパーティクル
-        for ($i = 0; $i < 100; $i += 1) {
-            $pos = $vector3->add(0, $i, 0);
+        //50m 縦に伸びるパーティクル
+        for ($i = 0; $i < 50; $i += 1) {
+            $pos = $center->add(0, $i, 0);
             $level->addParticle(new CriticalParticle($pos));
         }
     }
@@ -111,9 +113,9 @@ class FFAGameMapSpawnPointEditor
     private function summonMarkerEntity(Level $level, Vector3 $vector3): void {
         $nbt = new CompoundTag('', [
             'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $vector3->getX()),
-                new DoubleTag('', $vector3->getY() + 1),
-                new DoubleTag('', $vector3->getZ())
+                new DoubleTag('', $vector3->getX() + 0.5),
+                new DoubleTag('', $vector3->getY() + 1.3),
+                new DoubleTag('', $vector3->getZ() + 0.5)
             ]),
             'Motion' => new ListTag('Motion', [
                 new DoubleTag('', 0),
@@ -135,6 +137,21 @@ class FFAGameMapSpawnPointEditor
             if ($entity instanceof FFAGameMapSpawnPointMarkerEntity) {
                 if ($entity->getBelongMap()->getName() === $this->map->getName()) $entity->kill();
             }
+        }
+    }
+
+    private function reloadMarkerEntity(Level $level): void {
+        foreach ($level->getEntities() as $entity) {
+            if (!$entity instanceof FFAGameMapSpawnPointMarkerEntity) continue;
+            if ($entity->getBelongMap()->getName() !== $this->map->getName()) continue;
+
+            $isExistOnMapData = false;
+            foreach ($this->map->getSpawnPoints() as $spawnPoint) {
+                if ($entity->getMapSpawnPoint()->equals($spawnPoint)) {
+                    $isExistOnMapData = true;
+                }
+            }
+            if (!$isExistOnMapData) $entity->kill();
         }
     }
 }

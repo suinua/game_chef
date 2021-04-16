@@ -13,8 +13,8 @@ use game_chef\repository\TeamGameMapRepository;
 class MapsStore
 {
 
-    static private array $loanOutFFAGameMapNames;
-    static private array $loanOutTeamGameMapName;
+    static private array $loanOutFFAGameMapNames = [];
+    static private array $loanOutTeamGameMapName = [];
 
     /**
      * @param string $name

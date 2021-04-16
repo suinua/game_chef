@@ -13,6 +13,7 @@ class HotbarMenuItem extends Item
     private \Closure $onTapBlock;
 
     public function __construct(int $itemId, string $name, \Closure $onTapBlock) {
+        $this->onTapBlock = $onTapBlock;
         parent::__construct($itemId, 0, $name);
     }
 

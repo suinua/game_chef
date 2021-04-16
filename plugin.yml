@@ -2,3 +2,9 @@ name: game_chef
 main: game_chef\Main
 version: 1.0.0
 api: [3.0.0]
+
+commands:
+  map:
+    usage: "/map"
+    description: "map"
+    permission: op

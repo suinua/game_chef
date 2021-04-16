@@ -15,13 +15,13 @@ use pocketmine\Player;
 class FFAGameMapSpawnPointMarkerEntity extends NPCBase
 {
     const NAME = "FFAGameMapSpawnPointMarkerEntity";
-    public string $skinName = self::NAME;
-    protected string $geometryId = "geometry." . self::NAME;
-    protected string $geometryName = self::NAME . ".geo.json";
+    public string $skinName = "empty";
+    protected string $geometryId = "geometry.empty";
+    protected string $geometryName = "empty.geo.json";
 
     public $width = 1.0;
-    public $height = 2.0;
-    public $eyeHeight = 2.0;
+    public $height = 1.0;
+    public $eyeHeight = 1.0;
     protected $gravity = 0;
 
 
@@ -34,8 +34,8 @@ class FFAGameMapSpawnPointMarkerEntity extends NPCBase
         $this->userName = $userName;
         $this->belongMap = $belongMap;
         $this->mapSpawnPoint = $mapSpawnPoint;
-        $this->setInvisible(true);
         $this->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
+        $this->setNameTagAlwaysVisible(true);
     }
 
     /**
@@ -55,5 +55,9 @@ class FFAGameMapSpawnPointMarkerEntity extends NPCBase
     public function onTap(Player $player): void {
         $menu = new DeleteFFASpawnPointHotbarMenu($player, $this->belongMap, $this->mapSpawnPoint);
         $menu->send();
+    }
+
+    public function getMapSpawnPoint(): Vector3 {
+        return $this->mapSpawnPoint;
     }
 }

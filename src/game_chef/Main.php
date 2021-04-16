@@ -10,14 +10,20 @@ use game_chef\models\TeamGame;
 use game_chef\pmmp\bossbar\BossbarListener;
 use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
+use game_chef\pmmp\form\MainMapForm;
+use game_chef\pmmp\hotbar_menu\HotbarMenuItem;
 use game_chef\services\GameService;
 use game_chef\store\FFAGameMapSpawnPointEditorStore;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\Player;
@@ -35,6 +41,15 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents(new BossbarListener(), $this);
     }
 
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+        if (!$sender instanceof Player) return false;
+        if ($label === "map") {
+            $sender->sendForm(new MainMapForm());
+            return true;
+        }
+        return false;
+    }
+
     public function onJoin(PlayerJoinEvent $event) {
         try {
             PlayerDataStore::add(new PlayerData($event->getPlayer()->getName()));
@@ -48,11 +63,11 @@ class Main extends PluginBase implements Listener
         $player = $event->getPlayer();
 
         try {
-            GameService::quit($player);
+            if (PlayerDataStore::getByName($player->getName())->getBelongGameId() !== null) GameService::quit($player);
             PlayerDataStore::delete($player->getName());
         } catch (\Exception $e) {
             $this->getLogger()->error($e->getMessage());
-            $event->setCancelled();
+            return;
         }
 
         if (FFAGameMapSpawnPointEditorStore::isExist($player->getName())) {
@@ -125,16 +140,29 @@ class Main extends PluginBase implements Listener
 
         $npc = $event->getEntity();
         if (!$npc instanceof NPCBase) return;
-        if (!$event instanceof EntityDamageByEntityEvent) {
-            $event->setCancelled();
-            return;
-        }
+        $event->setCancelled();
+        if (!$event instanceof EntityDamageByEntityEvent) return;
 
         $player = $event->getDamager();
-        if ($player instanceof Player) {
-            $npc->onTap($player);
-        } else {
+        if ($player instanceof Player) $npc->onTap($player);
+    }
+
+    public function onBeakBlock(BlockBreakEvent $event) {
+        $player = $event->getPlayer();
+        $item = $player->getInventory()->getItemInHand();
+        if ($item instanceof HotbarMenuItem) {
+            $item->onTapBlock($player, $event->getBlock());
             $event->setCancelled();
+        }
+    }
+
+    public function onTapBlock(PlayerInteractEvent $event) {
+        $player = $event->getPlayer();
+        $item = $player->getInventory()->getItemInHand();
+        if ($item instanceof HotbarMenuItem) {
+            if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+                $item->onTapBlock($player, $event->getBlock());
+            }
         }
     }
 }

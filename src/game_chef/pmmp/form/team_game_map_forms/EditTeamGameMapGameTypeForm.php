@@ -19,6 +19,13 @@ class EditTeamGameMapGameTypeForm extends CustomForm
     private Input $gameTypeListElement;
 
     public function __construct(TeamGameMap $teamGameMap) {
+        $this->teamGameMap = $teamGameMap;
+        $typeListAsString = "";
+        foreach ($teamGameMap->getAdaptedGameTypes() as $key => $type) {
+            $typeListAsString .= strval($type) . ",";
+        }
+        $this->gameTypeListElement = new Input("", "", $typeListAsString);
+
         parent::__construct($teamGameMap->getName(), [
             new Label("ゲームタイプを編集"),
             $this->gameTypeListElement
@@ -28,7 +35,8 @@ class EditTeamGameMapGameTypeForm extends CustomForm
     function onSubmit(Player $player): void {
         $gameTypeList = [];
         foreach (explode(",", $this->gameTypeListElement->getResult()) as $value) {
-            $gameTypeList = new GameType($value);
+            if ($value === "") continue;
+            $gameTypeList[] = new GameType($value);
         }
 
         $newMap = new TeamGameMap(

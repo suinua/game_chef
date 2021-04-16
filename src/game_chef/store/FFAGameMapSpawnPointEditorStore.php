@@ -11,7 +11,7 @@ class FFAGameMapSpawnPointEditorStore
     /**
      * @var FFAGameMapSpawnPointEditor[]
      */
-    static private array $editors;
+    static private array $editors = [];
 
     /**
      * @param string $playerName

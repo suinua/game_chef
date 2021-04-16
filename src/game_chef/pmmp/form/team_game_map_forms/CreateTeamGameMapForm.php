@@ -29,9 +29,10 @@ class CreateTeamGameMapForm extends CustomForm
         try {
             $gameTypeList = [];
             foreach (explode(",", $this->gameTypeListElement->getResult()) as $value) {
-                $gameTypeList = new GameType($value);
+                if ($value === "") continue;
+                $gameTypeList[] = new GameType($value);
             }
-            TeamGameMapService::create($this->nameElement->getResult(), $player->getLevel(), $gameTypeList);
+            TeamGameMapService::create($this->nameElement->getResult(), $player->getLevel()->getName(), $gameTypeList);
 
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());

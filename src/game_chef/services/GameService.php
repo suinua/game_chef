@@ -69,10 +69,6 @@ class GameService
      * @throws \Exception
      */
     static function quit(Player $player) {
-        if (!$player->isOnline()) {
-            throw new \Exception("オンラインでないプライヤーは操作できません");
-        }
-
         $playerData = PlayerDataStore::getByName($player->getName());
         if ($playerData->getBelongTeamId() === null) {
             throw new \Exception("そのプレイヤー({$player->getName()})は試合に参加していません");
