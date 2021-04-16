@@ -15,7 +15,15 @@ class TeamDataListForm extends SimpleForm
 
     public function __construct(TeamGameMap $teamGameMap) {
         $this->teamGameMap = $teamGameMap;
-        $buttons = [];
+        $buttons = [
+            new SimpleFormButton(
+                "新しいチームを追加",
+                null,
+                function (Player $player)  {
+                    $player->sendForm(new CreateNewTeamForm($this->teamGameMap));
+                }
+            )
+        ];
         foreach ($teamGameMap->getTeamDataList() as $teamDataOnMap) {
             $buttons[] = new SimpleFormButton(
                 $teamDataOnMap->getTeamColorFormat() . $teamDataOnMap->getTeamName(),

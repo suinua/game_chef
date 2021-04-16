@@ -16,6 +16,7 @@ use game_chef\services\GameService;
 use game_chef\store\FFAGameMapSpawnPointEditorStore;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
+use game_chef\store\TeamGameMapSpawnPointEditorStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\block\BlockBreakEvent;
@@ -73,6 +74,14 @@ class Main extends PluginBase implements Listener
         if (FFAGameMapSpawnPointEditorStore::isExist($player->getName())) {
             try {
                 FFAGameMapSpawnPointEditorStore::delete($player->getName());
+            } catch (\Exception $e) {
+                $this->getLogger()->error($e);
+            }
+        }
+
+        if (TeamGameMapSpawnPointEditorStore::isExist($player->getName())) {
+            try {
+                TeamGameMapSpawnPointEditorStore::delete($player->getName());
             } catch (\Exception $e) {
                 $this->getLogger()->error($e);
             }

@@ -71,4 +71,27 @@ class TeamGameMapService
             $newTeams
         ));
     }
+
+    /**
+     * @param string $mapName
+     * @param TeamDataOnMap $target
+     * @throws \Exception
+     */
+    static function addTeamData(string $mapName, TeamDataOnMap $target): void {
+        $map = TeamGameMapRepository::loadByName($mapName);
+        foreach ($map->getTeamDataList() as $teamDataOnMap) {
+            if ($teamDataOnMap->getTeamName() === $target->getTeamName()) {
+                throw new \Exception("同じ名前のチーム({$target->getTeamName()})を登録することはできません");
+            }
+        }
+
+        self::update(new TeamGameMap(
+            $map->getName(),
+            $map->getLevelName(),
+            $map->getAdaptedGameTypes(),
+            $map->getCustomMapVectorDataList(),
+            $map->getCustomMapArrayVectorDataList(),
+            $map->getTeamDataList() + [$target]
+        ));
+    }
 }

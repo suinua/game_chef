@@ -26,9 +26,9 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                 new HotbarMenuItem(ItemIds::FEATHER, "戻る", function () {
                     $this->close();
                 }),
-                new HotbarMenuItem(ItemIds::TNT, "削除", function (Player $player) use ($map, $teamDataOnMap, $targetSpawnPoint) {
+                new HotbarMenuItem(ItemIds::TNT, "削除", function (Player $player) use ($targetSpawnPoint) {
                     $newSpawnPoints = [];
-                    foreach ($teamDataOnMap->getSpawnPoints() as $spawnPoint) {
+                    foreach ($this->teamData->getSpawnPoints() as $spawnPoint) {
                         if (!$spawnPoint->equals($targetSpawnPoint)) {
                             $newSpawnPoints[] = $targetSpawnPoint;
                         }
@@ -36,19 +36,21 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
 
                     try {
                         $newTeam = new TeamDataOnMap(
-                            $teamDataOnMap->getTeamName(),
-                            $teamDataOnMap->getTeamColorFormat(),
-                            $teamDataOnMap->getMaxPlayer(),
-                            $teamDataOnMap->getMinPlayer(),
+                            $this->teamData->getTeamName(),
+                            $this->teamData->getTeamColorFormat(),
+                            $this->teamData->getMaxPlayer(),
+                            $this->teamData->getMinPlayer(),
                             $newSpawnPoints,
-                            $teamDataOnMap->getCustomTeamVectorDataList(),
-                            $teamDataOnMap->getCustomTeamArrayVectorDataList()
+                            $this->teamData->getCustomTeamVectorDataList(),
+                            $this->teamData->getCustomTeamArrayVectorDataList()
                         );
 
-                        TeamGameMapService::updateTeamData($map, $newTeam);
-                        $this->map = TeamGameMapRepository::loadByName($map->getName());
+                        TeamGameMapService::updateTeamData($this->map, $newTeam);
+                        $this->map = TeamGameMapRepository::loadByName($this->map->getName());
                         $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
                         $editor->reloadMap();
+                        $this->map = TeamGameMapRepository::loadByName($this->map->getName());
+                        $this->teamData = $this->map->getTeamDataOnMapByName($this->teamData->getTeamName());
                     } catch (\Exception $exception) {
                         $player->sendMessage($exception->getMessage());
                     }

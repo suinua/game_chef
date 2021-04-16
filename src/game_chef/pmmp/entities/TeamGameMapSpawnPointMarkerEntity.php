@@ -36,8 +36,8 @@ class TeamGameMapSpawnPointMarkerEntity extends NPCBase
         $this->belongMap = $belongMap;
         $this->teamData = $teamDataOnMap;
         $this->mapSpawnPoint = $mapSpawnPoint;
-        $this->setInvisible(true);
         $this->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
+        $this->setNameTagAlwaysVisible(true);
     }
 
     /**

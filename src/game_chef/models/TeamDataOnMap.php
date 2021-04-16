@@ -47,17 +47,21 @@ class TeamDataOnMap
         array $spawnPoints,
         array $customTeamVectorDataList,
         array $customTeamArrayVectorDataList) {
-        if ($this->maxPlayer !== null and $this->minPlayer !== null) {
-            if ($this->maxPlayer <= $this->minPlayer) {
+        if ($maxPlayer !== null and $minPlayer !== null) {
+            if ($maxPlayer <= $minPlayer) {
                 throw new \Exception("最大人数は最少人数より小さくすることはできません");
             }
         }
+
+        if ($teamName === "") throw new \Exception("チーム名を空白にすることはできません");
 
         $this->teamName = $teamName;
         $this->teamColorFormat = $teamColorFormat;
         $this->spawnPoints = $spawnPoints;
         $this->maxPlayer = $maxPlayer;
         $this->minPlayer = $minPlayer;
+        $this->customTeamVectorDataList = [];
+        $this->customTeamArrayVectorDataList = [];
 
         foreach ($customTeamVectorDataList as $customTeamVectorData) {
             if ($customTeamVectorData->getTeamName() !== $teamName) {

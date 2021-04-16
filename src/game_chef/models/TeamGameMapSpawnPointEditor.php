@@ -45,6 +45,7 @@ class TeamGameMapSpawnPointEditor
             $this->handler->cancel();
         }
         $this->map = TeamGameMapRepository::loadByName($this->map->getName());
+        $this->teamData = $this->map->getTeamDataOnMapByName($this->teamData->getTeamName());
 
         $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
         $this->reloadMarkerEntity($level);

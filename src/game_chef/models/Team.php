@@ -47,11 +47,14 @@ class Team
         ?int $minPlayer = null,
         array $customTeamVectorDataList = [],
         array $customTeamArrayVectorDataList = []) {
-        if ($this->maxPlayer !== null and $this->minPlayer !== null) {
-            if ($this->maxPlayer <= $this->minPlayer) {
+
+        if ($maxPlayer !== null and $minPlayer !== null) {
+            if ($maxPlayer <= $minPlayer) {
                 throw new \Exception("最大人数は最少人数より小さくすることはできません");
             }
         }
+
+        if ($name === "") throw new \Exception("チーム名を空白にすることはできません");
 
         $this->id = TeamId::asNew();
         $this->name = $name;

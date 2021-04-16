@@ -39,12 +39,6 @@ class TeamDataDetailForm extends SimpleForm
                         $editor = new TeamGameMapSpawnPointEditor($this->teamGameMap, $teamDataOnMap, $player, TaskSchedulerStorage::get());
                         try {
                             TeamGameMapSpawnPointEditorStore::add($player->getName(), $editor);
-                        } catch (\Exception $e) {
-                            $player->sendMessage($e);
-                            return;
-                        }
-
-                        try {
                             $editor->start();
                         } catch (\Exception $exception) {
                             $player->sendMessage($exception->getMessage());

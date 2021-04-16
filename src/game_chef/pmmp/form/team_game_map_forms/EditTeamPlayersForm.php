@@ -9,6 +9,7 @@ use form_builder\models\custom_form_elements\Toggle;
 use form_builder\models\CustomForm;
 use game_chef\models\TeamDataOnMap;
 use game_chef\models\TeamGameMap;
+use game_chef\repository\TeamGameMapRepository;
 use game_chef\services\TeamGameMapService;
 use pocketmine\Player;
 
@@ -66,6 +67,7 @@ class EditTeamPlayersForm extends CustomForm
 
         try {
             TeamGameMapService::updateTeamData($this->map->getName(), $newTeam);
+            $this->map = TeamGameMapRepository::loadByName($this->map->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;

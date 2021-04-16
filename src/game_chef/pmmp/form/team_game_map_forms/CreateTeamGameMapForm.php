@@ -5,6 +5,7 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 
 
 use form_builder\models\custom_form_elements\Input;
+use form_builder\models\custom_form_elements\Label;
 use form_builder\models\CustomForm;
 use game_chef\models\GameType;
 use game_chef\services\TeamGameMapService;
@@ -17,10 +18,11 @@ class CreateTeamGameMapForm extends CustomForm
 
     public function __construct() {
         $this->nameElement = new Input("", "マップ名", "");
-        $this->gameTypeListElement = new Input("", "マップ名", "");
+        $this->gameTypeListElement = new Input("", "ゲームタイプ", "");
 
         parent::__construct("新しいチームゲーム用のマップを作成", [
             $this->nameElement,
+            new Label("type1,type2"),
             $this->gameTypeListElement
         ]);
     }
