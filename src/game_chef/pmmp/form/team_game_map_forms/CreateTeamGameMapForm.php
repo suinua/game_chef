@@ -6,7 +6,8 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 
 use form_builder\models\custom_form_elements\Input;
 use form_builder\models\CustomForm;
-use game_chef\services\TeamGameMapDataService;
+use game_chef\models\map_data\TeamGameMapData;
+use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\utilities\GameTypeListFromString;
 use pocketmine\Player;
 
@@ -28,7 +29,8 @@ class CreateTeamGameMapForm extends CustomForm
     function onSubmit(Player $player): void {
         try {
             $gameTypeList = GameTypeListFromString::execute($this->gameTypeListElement->getResult());
-            TeamGameMapDataService::create($this->nameElement->getResult(), $player->getLevel()->getName(), $gameTypeList);
+            $mapData = TeamGameMapData::asNew($this->nameElement->getResult(), $player->getLevel()->getName(), $gameTypeList);
+            TeamGameMapDataRepository::add($mapData);
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;

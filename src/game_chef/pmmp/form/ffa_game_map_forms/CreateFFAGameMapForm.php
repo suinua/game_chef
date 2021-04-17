@@ -6,7 +6,8 @@ namespace game_chef\pmmp\form\ffa_game_map_forms;
 
 use form_builder\models\custom_form_elements\Input;
 use form_builder\models\CustomForm;
-use game_chef\services\FFAGameMapDataService;
+use game_chef\models\map_data\FFAGameMapData;
+use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\utilities\GameTypeListFromString;
 use pocketmine\Player;
 
@@ -28,7 +29,8 @@ class CreateFFAGameMapForm extends CustomForm
     function onSubmit(Player $player): void {
         try {
             $gameTypeList = GameTypeListFromString::execute($this->gameTypeListElement->getResult());
-            FFAGameMapDataService::create($this->nameElement->getResult(), $player->getLevel()->getName(), $gameTypeList);
+            $mapData = FFAGameMapData::asNew($this->nameElement->getResult(), $player->getLevel()->getName(), $gameTypeList);
+            FFAGameMapDataRepository::add($mapData);
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;

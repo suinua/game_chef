@@ -76,4 +76,72 @@ class MapData
 
         return false;
     }
+
+    /**
+     * @param string $key
+     * @return CustomMapVectorData|mixed
+     * @throws \Exception
+     */
+    public function getCustomMapVectorData(string $key) {
+        foreach ($this->customMapVectorDataList as $customMapVectorData) {
+            if ($customMapVectorData->getKey() === $key) {
+                return $customMapVectorData;
+            }
+        }
+
+        throw new \Exception("そのkey({$key})のカスタム座標データは存在しません");
+    }
+
+    /**
+     * @param CustomMapVectorData $customMapVectorData
+     * @throws \Exception
+     */
+    public function addCustomMapVectorData(CustomMapVectorData $customMapVectorData) {
+        foreach ($this->customMapVectorDataList as $index => $data) {
+            if ($data->getKey() === $customMapVectorData->getKey()) {
+                throw new \Exception("同じKeyの座標データを追加することはできません");
+            }
+        }
+        $this->customMapVectorDataList[] = $customMapVectorData;
+    }
+
+    /**
+     * @param CustomMapVectorData $customMapVectorData
+     * @throws \Exception
+     */
+    public function updateCustomMapVectorData(CustomMapVectorData $customMapVectorData) {
+        $isExist = false;
+        foreach ($this->customMapVectorDataList as $index => $data) {
+            if ($data->getKey() === $customMapVectorData->getKey()) {
+                $isExist = true;
+                $this->customMapVectorDataList[$index] = $customMapVectorData;
+            }
+        }
+
+        if (!$isExist) {
+            throw new \Exception("存在しないカスタム座標データを更新することはできません");
+        }
+    }
+
+    /**
+     * @param CustomMapVectorData $customMapVectorData
+     * @throws \Exception
+     */
+    public function deleteCustomMapVectorData(CustomMapVectorData $customMapVectorData) {
+        $isExist = false;
+        $newList = [];
+        foreach ($this->customMapVectorDataList as $index => $data) {
+            if ($data->getKey() === $customMapVectorData->getKey()) {
+                $isExist = true;
+            } else {
+                $newList[] = $customMapVectorData;
+            }
+        }
+
+        if ($isExist) {
+            $this->customMapVectorDataList = $newList;
+        } else {
+            throw new \Exception("存在しないカスタム座標データを削除することはできません");
+        }
+    }
 }

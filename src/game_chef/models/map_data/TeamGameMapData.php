@@ -13,9 +13,13 @@ class TeamGameMapData extends MapData
      */
     private array $teamDataList;
 
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapArrayVectorDataList, array $teamDataList) {
+    private function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapArrayVectorDataList, array $teamDataList) {
         parent::__construct($name, $levelName, $adaptedGameTypes, $customMapVectorDataList, $customMapArrayVectorDataList);
         $this->teamDataList = $teamDataList;
+    }
+
+    static function asNew(string $name, string $levelName, array $gameTypeList): TeamGameMapData {
+        return new TeamGameMapData($name, $levelName, $gameTypeList, [], [], []);
     }
 
     public function toJson(): array {
@@ -98,7 +102,7 @@ class TeamGameMapData extends MapData
      * @throws \Exception
      */
     public function addTeamData(TeamDataOnMap $teamDataOnMap) {
-        foreach($this->teamDataList as $teamData) {
+        foreach ($this->teamDataList as $teamData) {
             if ($teamData->getName() === $teamDataOnMap->getName()) {
                 throw  new \Exception("同じ名前のチーム({$teamDataOnMap->getName()})を追加することはできません");
             }
@@ -113,13 +117,13 @@ class TeamGameMapData extends MapData
      */
     public function updateTeamData(TeamDataOnMap $teamDataOnMap) {
         $isExist = false;
-        foreach($this->teamDataList as $key =>  $teamData) {
+        foreach ($this->teamDataList as $key => $teamData) {
             if ($teamData->getName() === $teamDataOnMap->getName()) {
                 $isExist = true;
                 $this->teamDataList[$key] = $teamDataOnMap;
             }
         }
 
-        if (!$isExist)  throw  new \Exception("存在しないチーム({$teamDataOnMap->getName()})を更新することはできません");
+        if (!$isExist) throw  new \Exception("存在しないチーム({$teamDataOnMap->getName()})を更新することはできません");
     }
 }

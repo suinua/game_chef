@@ -6,6 +6,7 @@ namespace game_chef\repository;
 
 use game_chef\DataFolderPath;
 use game_chef\models\map_data\TeamGameMapData;
+use game_chef\store\MapsStore;
 
 class TeamGameMapDataRepository
 {
@@ -31,6 +32,10 @@ class TeamGameMapDataRepository
             throw new \Exception("その名前({$teamGameMapData->getName()})のマップは存在しません");
         }
 
+        if (in_array($teamGameMapData->getName(), MapsStore::getLoanOutTeamGameMapName())) {
+            throw new \Exception("使用中のマップは更新できません");
+        }
+
         $json = $teamGameMapData->toJson();
         file_put_contents(DataFolderPath::$teamGameMaps . $teamGameMapData->getName() . ".json", json_encode($json));
     }
@@ -42,6 +47,10 @@ class TeamGameMapDataRepository
     static function delete(string $mapName): void {
         if (!file_exists(DataFolderPath::$teamGameMaps . $mapName . ".json")) {
             throw new \Exception("その名前({$mapName})のマップは存在しません");
+        }
+
+        if (in_array($mapName, MapsStore::getLoanOutTeamGameMapName())) {
+            throw new \Exception("使用中のマップは削除できません");
         }
 
         unlink(DataFolderPath::$teamGameMaps . $mapName . ".json");

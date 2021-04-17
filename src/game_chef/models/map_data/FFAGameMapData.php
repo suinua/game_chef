@@ -14,9 +14,13 @@ class FFAGameMapData extends MapData
      */
     private array $spawnPoints;
 
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapArrayVectorDataList, array $spawnPoints) {
+    private function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapArrayVectorDataList, array $spawnPoints) {
         parent::__construct($name, $levelName, $adaptedGameTypes, $customMapVectorDataList, $customMapArrayVectorDataList);
         $this->spawnPoints = $spawnPoints;
+    }
+
+    static function asNew(string $name, string $levelName, array $gameTypeList): FFAGameMapData {
+        return new FFAGameMapData($name, $levelName, $gameTypeList, [], [], []);
     }
 
     public function toJson(): array {
