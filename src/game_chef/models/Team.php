@@ -4,7 +4,6 @@
 namespace game_chef\models;
 
 
-//TODO:extends TeamDataOnMapで実装する
 use game_chef\models\map_data\CustomTeamArrayVectorData;
 use game_chef\models\map_data\CustomTeamVectorData;
 use game_chef\models\map_data\TeamDataOnMap;
