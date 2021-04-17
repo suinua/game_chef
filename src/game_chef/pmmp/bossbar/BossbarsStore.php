@@ -11,7 +11,7 @@ class BossbarsStore
     /**
      * @var Bossbar[]
      */
-    static private $bossbars = [];
+    static private array $bossbars = [];
 
     static function getAll(): array {
         return self::$bossbars;
