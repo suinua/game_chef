@@ -64,7 +64,7 @@ class TeamGameMapData extends MapData
         return new TeamGameMapData(
             $json["name"],
             $json["level_name"],
-            $json["adapted_game_types"],
+            array_map(fn(string $type) => new GameType($type), $json["adapted_game_types"]),
             $customMapVectorDataList,
             $customMapArrayVectorDataList,
             $teamDataList

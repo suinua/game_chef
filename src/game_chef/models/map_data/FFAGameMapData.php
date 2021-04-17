@@ -60,7 +60,7 @@ class FFAGameMapData extends MapData
         }
         $spawnPoints = [];
         foreach ($json["spawn_points"] as $spawnPoint) {
-            $spawnPoints = new Vector3(
+            $spawnPoints[] = new Vector3(
                 $spawnPoint["x"],
                 $spawnPoint["y"],
                 $spawnPoint["z"]
@@ -71,7 +71,7 @@ class FFAGameMapData extends MapData
         return new FFAGameMapData(
             $json["name"],
             $json["level_name"],
-            $json["adapted_game_types"],
+            array_map(fn(string $type) => new GameType($type), $json["adapted_game_types"]),
             $customMapVectorDataList,
             $customMapArrayVectorDataList,
             $spawnPoints

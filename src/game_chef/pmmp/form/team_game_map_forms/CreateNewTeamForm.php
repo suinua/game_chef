@@ -35,6 +35,7 @@ class CreateNewTeamForm extends CustomForm
         try {
             $teamData = new TeamDataOnMap($name, $colorFormat, [], null, null, [], []);
             $this->mapData->addTeamData($teamData);
+            TeamGameMapDataRepository::update($this->mapData);
             $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
