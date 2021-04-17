@@ -1,12 +1,11 @@
 <?php
 
 
-namespace game_chef\models;
+namespace game_chef\models\editors;
 
+use game_chef\models\map_data\FFAGameMapData;
 use game_chef\pmmp\entities\FFAGameMapSpawnPointMarkerEntity;
-use game_chef\pmmp\form\ffa_game_map_forms\FFAGameMapDetailForm;
-use game_chef\pmmp\hotbar_menu\FFAGameSpawnPointsHotbarMenu;
-use game_chef\repository\FFAGameMapRepository;
+use game_chef\repository\FFAGameMapDataRepository;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\math\Vector3;
@@ -25,12 +24,12 @@ class FFAGameMapSpawnPointEditor
 {
     private Player $user;
 
-    private FFAGameMap $map;
+    private FFAGameMapData $mapData;
     private TaskScheduler $scheduler;
     private TaskHandler $handler;
 
-    public function __construct(FFAGameMap $ffaGameMap, Player $user, TaskScheduler $scheduler) {
-        $this->map = $ffaGameMap;
+    public function __construct(FFAGameMapData $ffaGameMapData, Player $user, TaskScheduler $scheduler) {
+        $this->mapData = $ffaGameMapData;
         $this->user = $user;
         $this->scheduler = $scheduler;
     }
@@ -42,9 +41,9 @@ class FFAGameMapSpawnPointEditor
         if ($this->handler !== null) {
             $this->handler->cancel();
         }
-        $this->map = FFAGameMapRepository::loadByName($this->map->getName());
-        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
-        $this->reloadMarkerEntity($level);
+        $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
+
+        $this->stop();
         $this->start();
     }
 
@@ -60,20 +59,17 @@ class FFAGameMapSpawnPointEditor
             throw new \Exception("ユーザーがオフラインの状態でstartすることはできません");
         }
 
-        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
+        $level = Server::getInstance()->getLevelByName($this->mapData->getLevelName());
 
-        foreach ($this->map->getSpawnPoints() as $spawnPoint) {
+        foreach ($this->mapData->getSpawnPoints() as $spawnPoint) {
             $this->summonMarkerEntity($level, $spawnPoint);
         }
 
         $this->handler = $this->scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick) use ($level): void {
-            foreach ($this->map->getSpawnPoints() as $spawnPoint) {
+            foreach ($this->mapData->getSpawnPoints() as $spawnPoint) {
                 $this->summonParticle($level, $spawnPoint);
             }
         }), 10);
-
-        $menu = new FFAGameSpawnPointsHotbarMenu($this->user, $this->map);
-        $menu->send();
     }
 
     public function stop(): void {
@@ -81,14 +77,8 @@ class FFAGameMapSpawnPointEditor
             $this->handler->cancel();
         }
 
-        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
+        $level = Server::getInstance()->getLevelByName($this->mapData->getLevelName());
         $this->deleteAllMarkerEntity($level);
-
-        if ($this->user !== null) {
-            if ($this->user->isOnline()) {
-                $this->user->sendForm(new FFAGameMapDetailForm($this->map));
-            }
-        }
     }
 
     private function summonParticle(Level $level, Vector3 $vector3): void {
@@ -128,30 +118,15 @@ class FFAGameMapSpawnPointEditor
             ]),
         ]);
 
-        $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->map, $vector3, $level, $nbt);
+        $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->mapData, $vector3, $level, $nbt);
         $marker->spawnTo($this->user);
     }
 
     private function deleteAllMarkerEntity(Level $level): void {
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof FFAGameMapSpawnPointMarkerEntity) {
-                if ($entity->getBelongMap()->getName() === $this->map->getName()) $entity->kill();
+                if ($entity->getBelongMapData()->getName() === $this->mapData->getName()) $entity->kill();
             }
-        }
-    }
-
-    private function reloadMarkerEntity(Level $level): void {
-        foreach ($level->getEntities() as $entity) {
-            if (!$entity instanceof FFAGameMapSpawnPointMarkerEntity) continue;
-            if ($entity->getBelongMap()->getName() !== $this->map->getName()) continue;
-
-            $isExistOnMapData = false;
-            foreach ($this->map->getSpawnPoints() as $spawnPoint) {
-                if ($entity->getMapSpawnPoint()->equals($spawnPoint)) {
-                    $isExistOnMapData = true;
-                }
-            }
-            if (!$isExistOnMapData) $entity->kill();
         }
     }
 }

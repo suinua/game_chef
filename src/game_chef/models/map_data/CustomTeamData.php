@@ -1,13 +1,13 @@
 <?php
 
 
-namespace game_chef\models;
+namespace game_chef\models\map_data;
 
 
 class CustomTeamData
 {
-    private string $key;
-    private string $teamName;
+    protected string $key;
+    protected string $teamName;
 
     public function __construct(string $key, string $teamName) {
         $this->key = $key;

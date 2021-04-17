@@ -4,47 +4,20 @@
 namespace game_chef\models;
 
 
+use game_chef\models\map_data\TeamGameMapData;
+
 class TeamGameMap extends Map
 {
-    /**
-     * @var TeamDataOnMap[]
-     * $teamName => TeamDataOnMap
-     */
-    private array $teamDataList;
-
-    /**
-     * TeamGameMap constructor.
-     * @param string $name
-     * @param string $levelName
-     * @param GameType[] $adaptedGameTypes
-     * @param array $customMapVectorDataList
-     * @param array $customMapVectorsDataList
-     * @param TeamDataOnMap[] $teamDataList
-     */
-    public function __construct(string $name, string $levelName, array $adaptedGameTypes, array $customMapVectorDataList, array $customMapVectorsDataList, array $teamDataList) {
-        parent::__construct($name, $levelName, $adaptedGameTypes, $customMapVectorDataList, $customMapVectorsDataList);
-        $this->teamDataList = [];
-        foreach ($teamDataList as $teamData) {
-            $this->teamDataList[$teamData->getTeamName()] = $teamData;
-        }
+    public function __construct(string $name, string $levelName, array $customMapVectorDataList, array $customMapVectorsDataList) {
+        parent::__construct($name, $levelName, $customMapVectorDataList, $customMapVectorsDataList);
     }
 
-    /**
-     * @return TeamDataOnMap[]
-     */
-    public function getTeamDataList(): array {
-        return array_values($this->teamDataList);
-    }
-
-    /**
-     * @param string $teamName
-     * @return TeamDataOnMap
-     * @throws \Exception
-     */
-    public function getTeamDataOnMapByName(string $teamName): TeamDataOnMap {
-        if (!array_key_exists($teamName, $this->teamDataList)) {
-            throw new \Exception("そのチームデータ($teamName)はこのマップ({$this->name})に登録されていません");
-        }
-        return $this->teamDataList[$teamName];
+    static function fromMapData(TeamGameMapData $teamGameMapData): TeamGameMap {
+        return new TeamGameMap(
+            $teamGameMapData->getName(),
+            $teamGameMapData->getLevelName(),
+            $teamGameMapData->getCustomMapVectorDataList(),
+            $teamGameMapData->getCustomMapArrayVectorDataList(),
+        );
     }
 }

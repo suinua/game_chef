@@ -42,6 +42,11 @@ class FFAGame extends Game
         return $this->teams;
     }
 
+    /**
+     * @param TeamId $teamId
+     * @return Team
+     * @throws \Exception
+     */
     public function getTeamById(TeamId $teamId): Team {
         foreach ($this->teams as $team) {
             if ($team->getId()->equals($teamId)) return $team;

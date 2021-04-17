@@ -5,6 +5,9 @@ namespace game_chef\models;
 
 
 //TODO:extends TeamDataOnMapで実装する
+use game_chef\models\map_data\CustomTeamArrayVectorData;
+use game_chef\models\map_data\CustomTeamVectorData;
+use game_chef\models\map_data\TeamDataOnMap;
 use pocketmine\math\Vector3;
 
 class Team
@@ -41,8 +44,8 @@ class Team
      */
     public function __construct(
         string $name,
+        string $TeamColorFormat,
         array $spawnPoints,
-        string $TeamColorFormat = "",
         ?int $maxPlayer = null,
         ?int $minPlayer = null,
         array $customTeamVectorDataList = [],
@@ -65,6 +68,23 @@ class Team
         $this->spawnPoints = $spawnPoints;
         $this->customTeamVectorDataList = $customTeamVectorDataList;
         $this->customTeamArrayVectorDataList = $customTeamArrayVectorDataList;
+    }
+
+    /**
+     * @param TeamDataOnMap $teamDataOnMap
+     * @return Team
+     * @throws \Exception
+     */
+    static function fromTeamDataOnMap(TeamDataOnMap $teamDataOnMap): Team {
+        return new Team(
+            $teamDataOnMap->getName(),
+            $teamDataOnMap->getColorFormat(),
+            $teamDataOnMap->getSpawnPoints(),
+            $teamDataOnMap->getMaxPlayers(),
+            $teamDataOnMap->getMinPlayers(),
+            $teamDataOnMap->getCustomTeamVectorDataList(),
+            $teamDataOnMap->getCustomTeamArrayVectorDataList()
+        );
     }
 
     public function getId(): TeamId {

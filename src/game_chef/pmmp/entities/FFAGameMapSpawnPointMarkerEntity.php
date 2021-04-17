@@ -4,7 +4,7 @@
 namespace game_chef\pmmp\entities;
 
 
-use game_chef\models\FFAGameMap;
+use game_chef\models\map_data\FFAGameMapData;
 use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
@@ -26,34 +26,28 @@ class FFAGameMapSpawnPointMarkerEntity extends NPCBase
 
 
     private string $userName;
-    private FFAGameMap $belongMap;
+    private FFAGameMapData $belongMapData;
     private Vector3 $mapSpawnPoint;
 
-    public function __construct(string $userName, FFAGameMap $belongMap, Vector3 $mapSpawnPoint, Level $level, CompoundTag $nbt) {
+    public function __construct(string $userName, FFAGameMapData $belongMapData, Vector3 $mapSpawnPoint, Level $level, CompoundTag $nbt) {
         parent::__construct($level, $nbt);
         $this->userName = $userName;
-        $this->belongMap = $belongMap;
+        $this->belongMapData = $belongMapData;
         $this->mapSpawnPoint = $mapSpawnPoint;
         $this->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
         $this->setNameTagAlwaysVisible(true);
     }
 
-    /**
-     * @return FFAGameMap
-     */
-    public function getBelongMap(): FFAGameMap {
-        return $this->belongMap;
+    public function getBelongMapData(): FFAGameMapData {
+        return $this->belongMapData;
     }
 
-    /**
-     * @return string
-     */
     public function getUserName(): string {
         return $this->userName;
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteFFASpawnPointHotbarMenu($player, $this->belongMap, $this->mapSpawnPoint);
+        $menu = new DeleteFFASpawnPointHotbarMenu($player, $this->belongMapData, $this->mapSpawnPoint);
         $menu->send();
     }
 

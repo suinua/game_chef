@@ -6,9 +6,10 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
-use game_chef\models\TeamDataOnMap;
-use game_chef\models\TeamGameMap;
-use game_chef\models\TeamGameMapSpawnPointEditor;
+use game_chef\models\editors\TeamGameMapSpawnPointEditor;
+use game_chef\models\map_data\TeamDataOnMap;
+use game_chef\models\map_data\TeamGameMapData;
+use game_chef\pmmp\hotbar_menu\TeamGameSpawnPointsHotbarMenu;
 use game_chef\store\TeamGameMapSpawnPointEditorStore;
 use game_chef\TaskSchedulerStorage;
 use pocketmine\Player;
@@ -16,30 +17,33 @@ use pocketmine\Player;
 class TeamDataDetailForm extends SimpleForm
 {
 
-    private TeamGameMap $teamGameMap;
+    private TeamGameMapData $teamGameMapData;
 
-    public function __construct(TeamGameMap $teamGameMap, TeamDataOnMap $teamDataOnMap) {
+    public function __construct(TeamGameMapData $teamGameMapDataData, TeamDataOnMap $teamDataOnMap) {
 
-        $this->teamGameMap = $teamGameMap;
+        $this->teamGameMapData = $teamGameMapDataData;
         parent::__construct(
-            $teamDataOnMap->getTeamColorFormat() . $teamDataOnMap->getTeamName(),
-            $teamGameMap->getName(),
+            $teamDataOnMap->getColorFormat() . $teamDataOnMap->getName(),
+            $teamGameMapDataData->getName(),
             [
                 new SimpleFormButton(
                     "人数制限を変更",
                     null,
                     function (Player $player) use ($teamDataOnMap) {
-                        $player->sendForm(new EditTeamPlayersForm($this->teamGameMap, $teamDataOnMap));
+                        $player->sendForm(new EditTeamPlayersForm($this->teamGameMapData, $teamDataOnMap));
                     }
                 ),
                 new SimpleFormButton(
                     "スポーン地点を変更",
                     null,
                     function (Player $player) use ($teamDataOnMap) {
-                        $editor = new TeamGameMapSpawnPointEditor($this->teamGameMap, $teamDataOnMap, $player, TaskSchedulerStorage::get());
+                        $editor = new TeamGameMapSpawnPointEditor($this->teamGameMapData, $teamDataOnMap, $player, TaskSchedulerStorage::get());
                         try {
                             TeamGameMapSpawnPointEditorStore::add($player->getName(), $editor);
                             $editor->start();
+
+                            $menu = new TeamGameSpawnPointsHotbarMenu($player, $this->teamGameMapData, $teamDataOnMap);
+                            $menu->send();
                         } catch (\Exception $exception) {
                             $player->sendMessage($exception->getMessage());
                             return;
@@ -51,6 +55,6 @@ class TeamDataDetailForm extends SimpleForm
 
 
     function onClickCloseButton(Player $player): void {
-        $player->sendForm(new TeamDataListForm($this->teamGameMap));
+        $player->sendForm(new TeamDataListForm($this->teamGameMapData));
     }
 }

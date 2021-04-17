@@ -4,7 +4,8 @@
 namespace game_chef\store;
 
 
-use game_chef\models\FFAGameMapSpawnPointEditor;
+
+use game_chef\models\editors\FFAGameMapSpawnPointEditor;
 
 class FFAGameMapSpawnPointEditorStore
 {

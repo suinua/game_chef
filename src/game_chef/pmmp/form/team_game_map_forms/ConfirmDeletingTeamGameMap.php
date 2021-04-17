@@ -6,31 +6,31 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 
 use form_builder\models\modal_form_elements\ModalFormButton;
 use form_builder\models\ModalForm;
-use game_chef\models\TeamGameMap;
-use game_chef\services\TeamGameMapService;
+use game_chef\models\map_data\TeamGameMapData;
+use game_chef\repository\TeamGameMapDataRepository;
 use pocketmine\Player;
 
 class ConfirmDeletingTeamGameMap extends ModalForm
 {
-    private TeamGameMap $map;
+    private TeamGameMapData $mapData;
 
-    public function __construct(TeamGameMap $map) {
-        $this->map = $map;
+    public function __construct(TeamGameMapData $mapDataData) {
+        $this->mapData = $mapDataData;
 
         parent::__construct(
             "マップを削除",
-            "本当に{$map->getName()}を削除しますか？",
+            "本当に{$mapDataData->getName()}を削除しますか？",
             new ModalFormButton("削除"),
             new ModalFormButton("キャンセル"));
     }
 
     function onClickCloseButton(Player $player): void {
-        $player->sendForm(new TeamGameMapDetailForm($this->map));
+        $player->sendForm(new TeamGameMapDetailForm($this->mapData));
     }
 
     public function onClickButton1(Player $player): void {
         try {
-            TeamGameMapService::delete($this->map->getName());
+            TeamGameMapDataRepository::delete($this->mapData->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;
@@ -40,6 +40,6 @@ class ConfirmDeletingTeamGameMap extends ModalForm
     }
 
     public function onClickButton2(Player $player): void {
-        $player->sendForm(new TeamGameMapDetailForm($this->map));
+        $player->sendForm(new TeamGameMapDetailForm($this->mapData));
     }
 }

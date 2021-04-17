@@ -7,58 +7,47 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 use form_builder\models\custom_form_elements\Input;
 use form_builder\models\custom_form_elements\Label;
 use form_builder\models\CustomForm;
-use game_chef\models\GameType;
-use game_chef\models\TeamGameMap;
-use game_chef\repository\TeamGameMapRepository;
+use game_chef\models\map_data\TeamGameMapData;
+use game_chef\repository\TeamGameMapDataRepository;
+use game_chef\utilities\GameTypeListFromString;
 use pocketmine\Player;
 
 class EditTeamGameMapGameTypeForm extends CustomForm
 {
-    private TeamGameMap $teamGameMap;
+    private TeamGameMapData $teamGameMapData;
 
     private Input $gameTypeListElement;
 
-    public function __construct(TeamGameMap $teamGameMap) {
-        $this->teamGameMap = $teamGameMap;
+    public function __construct(TeamGameMapData $teamGameMapDataData) {
+        $this->teamGameMapData = $teamGameMapDataData;
         $typeListAsString = "";
-        foreach ($teamGameMap->getAdaptedGameTypes() as $key => $type) {
+        foreach ($teamGameMapDataData->getAdaptedGameTypes() as $key => $type) {
             $typeListAsString .= strval($type) . ",";
         }
         $this->gameTypeListElement = new Input("", "", $typeListAsString);
 
-        parent::__construct($teamGameMap->getName(), [
+        parent::__construct($teamGameMapDataData->getName(), [
             new Label("ゲームタイプを編集"),
             $this->gameTypeListElement
         ]);
     }
 
     function onSubmit(Player $player): void {
-        $gameTypeList = [];
-        foreach (explode(",", $this->gameTypeListElement->getResult()) as $value) {
-            if ($value === "") continue;
-            $gameTypeList[] = new GameType($value);
-        }
-
-        $newMap = new TeamGameMap(
-            $this->teamGameMap->getName(),
-            $this->teamGameMap->getLevelName(),
-            $gameTypeList,
-            $this->teamGameMap->getCustomMapVectorDataList(),
-            $this->teamGameMap->getCustomMapArrayVectorDataList(),
-            $this->teamGameMap->getTeamDataList(),
-        );
-
         try {
-            TeamGameMapRepository::update($newMap);
+            $gameTypeList = GameTypeListFromString::execute($this->gameTypeListElement->getResult());
+            $this->teamGameMapData->setAdaptedGameTypes($gameTypeList);
+            TeamGameMapDataRepository::update($this->teamGameMapData);
+
+            $this->teamGameMapData = TeamGameMapDataRepository::loadByName($this->teamGameMapData->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;
         }
 
-        $player->sendForm(new TeamGameMapDetailForm($newMap));
+        $player->sendForm(new TeamGameMapDetailForm($this->teamGameMapData));
     }
 
     function onClickCloseButton(Player $player): void {
-        $player->sendForm(new TeamGameMapDetailForm($this->teamGameMap));
+        $player->sendForm(new TeamGameMapDetailForm($this->teamGameMapData));
     }
 }

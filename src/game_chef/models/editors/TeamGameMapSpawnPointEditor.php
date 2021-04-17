@@ -1,13 +1,13 @@
 <?php
 
 
-namespace game_chef\models;
+namespace game_chef\models\editors;
 
 
+use game_chef\models\map_data\TeamDataOnMap;
+use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\entities\TeamGameMapSpawnPointMarkerEntity;
-use game_chef\pmmp\form\team_game_map_forms\TeamDataDetailForm;
-use game_chef\pmmp\hotbar_menu\TeamGameSpawnPointsHotbarMenu;
-use game_chef\repository\TeamGameMapRepository;
+use game_chef\repository\TeamGameMapDataRepository;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\math\Vector3;
@@ -25,13 +25,13 @@ class TeamGameMapSpawnPointEditor
 {
     private Player $user;
 
-    private TeamGameMap $map;
+    private TeamGameMapData $mapData;
     private TeamDataOnMap $teamData;
     private TaskScheduler $scheduler;
     private TaskHandler $handler;
 
-    public function __construct(TeamGameMap $teamGameMap, TeamDataOnMap $teamDataOnMap, Player $user, TaskScheduler $scheduler) {
-        $this->map = $teamGameMap;
+    public function __construct(TeamGameMapData $teamGameMapData, TeamDataOnMap $teamDataOnMap, Player $user, TaskScheduler $scheduler) {
+        $this->mapData = $teamGameMapData;
         $this->teamData = $teamDataOnMap;
         $this->user = $user;
         $this->scheduler = $scheduler;
@@ -41,14 +41,10 @@ class TeamGameMapSpawnPointEditor
      * @throws \Exception
      */
     public function reloadMap(): void {
-        if ($this->handler !== null) {
-            $this->handler->cancel();
-        }
-        $this->map = TeamGameMapRepository::loadByName($this->map->getName());
-        $this->teamData = $this->map->getTeamDataOnMapByName($this->teamData->getTeamName());
+        $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
+        $this->teamData = $this->mapData->getTeamData($this->teamData->getName());
 
-        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
-        $this->reloadMarkerEntity($level);
+        $this->stop();
         $this->start();
     }
 
@@ -64,7 +60,7 @@ class TeamGameMapSpawnPointEditor
             throw new \Exception("ユーザーがオフラインの状態でstartすることはできません");
         }
 
-        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
+        $level = Server::getInstance()->getLevelByName($this->mapData->getLevelName());
 
         foreach ($this->teamData->getSpawnPoints() as $spawnPoint) {
             $this->summonMarkerEntity($level, $spawnPoint);
@@ -75,9 +71,6 @@ class TeamGameMapSpawnPointEditor
                 $this->summonParticle($level, $spawnPoint);
             }
         }), 10);
-
-        $menu = new TeamGameSpawnPointsHotbarMenu($this->user, $this->map, $this->teamData);
-        $menu->send();
     }
 
     public function stop(): void {
@@ -85,14 +78,8 @@ class TeamGameMapSpawnPointEditor
             $this->handler->cancel();
         }
 
-        $level = Server::getInstance()->getLevelByName($this->map->getLevelName());
+        $level = Server::getInstance()->getLevelByName($this->mapData->getLevelName());
         $this->deleteAllMarkerEntity($level);
-
-        if ($this->user !== null) {
-            if ($this->user->isOnline()) {
-                $this->user->sendForm(new TeamDataDetailForm($this->map, $this->teamData));
-            }
-        }
     }
 
     private function summonParticle(Level $level, Vector3 $vector3): void {
@@ -132,30 +119,15 @@ class TeamGameMapSpawnPointEditor
             ]),
         ]);
 
-        $marker = new TeamGameMapSpawnPointMarkerEntity($this->user, $this->map, $this->teamData, $vector3, $level, $nbt);
+        $marker = new TeamGameMapSpawnPointMarkerEntity($this->user, $this->mapData, $this->teamData, $vector3, $level, $nbt);
         $marker->spawnTo($this->user);
     }
 
     private function deleteAllMarkerEntity(Level $level): void {
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof TeamGameMapSpawnPointMarkerEntity) {
-                if ($entity->getBelongMap()->getName() === $this->map->getName()) $entity->kill();
+                if ($entity->getBelongMapData()->getName() === $this->mapData->getName()) $entity->kill();
             }
-        }
-    }
-
-    private function reloadMarkerEntity(Level $level): void {
-        foreach ($level->getEntities() as $entity) {
-            if (!$entity instanceof TeamGameMapSpawnPointMarkerEntity) continue;
-            if ($entity->getBelongMap()->getName() !== $this->map->getName()) continue;
-
-            $isExistOnMapData = false;
-            foreach ($this->teamData->getSpawnPoints() as $spawnPoint) {
-                if ($entity->getMapSpawnPoint()->equals($spawnPoint)) {
-                    $isExistOnMapData = true;
-                }
-            }
-            if (!$isExistOnMapData) $entity->kill();
         }
     }
 }

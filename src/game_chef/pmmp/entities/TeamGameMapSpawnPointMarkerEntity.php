@@ -4,8 +4,8 @@
 namespace game_chef\pmmp\entities;
 
 
-use game_chef\models\TeamDataOnMap;
-use game_chef\models\TeamGameMap;
+use game_chef\models\map_data\TeamDataOnMap;
+use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\hotbar_menu\DeleteTeamSpawnPointHotbarMenu;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
@@ -26,36 +26,30 @@ class TeamGameMapSpawnPointMarkerEntity extends NPCBase
 
 
     private string $userName;
-    private TeamGameMap $belongMap;
+    private TeamGameMapData $belongMapData;
     private TeamDataOnMap $teamData;
     private Vector3 $mapSpawnPoint;
 
-    public function __construct(string $userName, TeamGameMap $belongMap, TeamDataOnMap $teamDataOnMap, Vector3 $mapSpawnPoint, Level $level, CompoundTag $nbt) {
+    public function __construct(string $userName, TeamGameMapData $belongMapData, TeamDataOnMap $teamDataOnMap, Vector3 $mapSpawnPoint, Level $level, CompoundTag $nbt) {
         parent::__construct($level, $nbt);
         $this->userName = $userName;
-        $this->belongMap = $belongMap;
+        $this->belongMapData = $belongMapData;
         $this->teamData = $teamDataOnMap;
         $this->mapSpawnPoint = $mapSpawnPoint;
         $this->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
         $this->setNameTagAlwaysVisible(true);
     }
 
-    /**
-     * @return TeamGameMap
-     */
-    public function getBelongMap(): TeamGameMap {
-        return $this->belongMap;
+    public function getBelongMapData(): TeamGameMapData {
+        return $this->belongMapData;
     }
 
-    /**
-     * @return string
-     */
     public function getUserName(): string {
         return $this->userName;
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteTeamSpawnPointHotbarMenu($player, $this->belongMap, $this->teamData, $this->mapSpawnPoint);
+        $menu = new DeleteTeamSpawnPointHotbarMenu($player, $this->belongMapData, $this->teamData, $this->mapSpawnPoint);
         $menu->send();
     }
 

@@ -4,7 +4,8 @@
 namespace game_chef\store;
 
 
-use game_chef\models\TeamGameMapSpawnPointEditor;
+
+use game_chef\models\editors\TeamGameMapSpawnPointEditor;
 
 class TeamGameMapSpawnPointEditorStore
 {

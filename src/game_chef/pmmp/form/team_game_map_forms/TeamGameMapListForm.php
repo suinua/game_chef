@@ -6,14 +6,14 @@ namespace game_chef\pmmp\form\team_game_map_forms;
 
 use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
-use game_chef\repository\TeamGameMapRepository;
+use game_chef\repository\TeamGameMapDataRepository;
 use pocketmine\Player;
 
 class TeamGameMapListForm extends SimpleForm
 {
     public function __construct() {
         try {
-            $mapList = TeamGameMapRepository::loadAll();
+            $mapList = TeamGameMapDataRepository::loadAll();
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
             parent::__construct("エラーが発生しました", $errorMessage, []);

@@ -4,10 +4,9 @@
 namespace game_chef\pmmp\hotbar_menu;
 
 
-use game_chef\models\TeamDataOnMap;
-use game_chef\models\TeamGameMap;
-use game_chef\repository\TeamGameMapRepository;
-use game_chef\services\TeamGameMapService;
+use game_chef\models\map_data\TeamDataOnMap;
+use game_chef\models\map_data\TeamGameMapData;
+use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\store\TeamGameMapSpawnPointEditorStore;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
@@ -15,11 +14,11 @@ use pocketmine\Player;
 
 class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
 {
-    private TeamGameMap $map;
+    private TeamGameMapData $mapData;
     private TeamDataOnMap $teamData;
 
-    public function __construct(Player $player, TeamGameMap $map, TeamDataOnMap $teamDataOnMap, Vector3 $targetSpawnPoint) {
-        $this->map = $map;
+    public function __construct(Player $player, TeamGameMapData $mapData, TeamDataOnMap $teamDataOnMap, Vector3 $targetSpawnPoint) {
+        $this->mapData = $mapData;
         $this->teamData = $teamDataOnMap;
         parent::__construct($player,
             [
@@ -27,30 +26,15 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                     $this->close();
                 }),
                 new HotbarMenuItem(ItemIds::TNT, "削除", function (Player $player) use ($targetSpawnPoint) {
-                    $newSpawnPoints = [];
-                    foreach ($this->teamData->getSpawnPoints() as $spawnPoint) {
-                        if (!$spawnPoint->equals($targetSpawnPoint)) {
-                            $newSpawnPoints[] = $targetSpawnPoint;
-                        }
-                    }
-
                     try {
-                        $newTeam = new TeamDataOnMap(
-                            $this->teamData->getTeamName(),
-                            $this->teamData->getTeamColorFormat(),
-                            $this->teamData->getMaxPlayer(),
-                            $this->teamData->getMinPlayer(),
-                            $newSpawnPoints,
-                            $this->teamData->getCustomTeamVectorDataList(),
-                            $this->teamData->getCustomTeamArrayVectorDataList()
-                        );
+                        $this->teamData->deleteSpawnPoint($targetSpawnPoint);
+                        $this->mapData->updateTeamData($this->teamData);
 
-                        TeamGameMapService::updateTeamData($this->map, $newTeam);
-                        $this->map = TeamGameMapRepository::loadByName($this->map->getName());
                         $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
                         $editor->reloadMap();
-                        $this->map = TeamGameMapRepository::loadByName($this->map->getName());
-                        $this->teamData = $this->map->getTeamDataOnMapByName($this->teamData->getTeamName());
+
+                        $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
+                        $this->teamData = $this->mapData->getTeamData($this->teamData->getName());
                     } catch (\Exception $exception) {
                         $player->sendMessage($exception->getMessage());
                     }
@@ -63,7 +47,7 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
 
     public function close(): void {
         parent::close();
-        $menu = new TeamGameSpawnPointsHotbarMenu($this->player, $this->map, $this->teamData);
+        $menu = new TeamGameSpawnPointsHotbarMenu($this->player, $this->mapData, $this->teamData);
         $menu->send();
     }
 }

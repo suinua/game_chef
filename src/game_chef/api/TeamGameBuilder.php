@@ -4,15 +4,18 @@
 namespace game_chef\api;
 
 
+use game_chef\models\map_data\TeamGameMapData;
 use game_chef\models\Team;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamGameMap;
+use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\store\MapsStore;
 
 //GoFのBuilderパターンではない
 class TeamGameBuilder extends GameBuilder
 {
     private TeamGameMap $map;
+    private TeamGameMapData $mapData;
     private int $numberOfTeams;
     private bool $friendlyFire;
     private ?int $maxPlayersDifference = null;
@@ -45,6 +48,7 @@ class TeamGameBuilder extends GameBuilder
         }
 
         $this->map = MapsStore::borrowTeamGameMap($mapName, $this->gameType, $this->numberOfTeams);
+        $this->mapData = TeamGameMapDataRepository::loadByName($this->map->getName());
     }
 
     /**
@@ -59,8 +63,8 @@ class TeamGameBuilder extends GameBuilder
         }
 
         $existTeamName = [];
-        foreach ($this->map->getTeamDataList() as $teamDataOnMap) {
-            $existTeamName[] = $teamDataOnMap->getTeamName();
+        foreach ($this->mapData->getTeamDataList() as $teamDataOnMap) {
+            $existTeamName[] = $teamDataOnMap->getName();
         }
 
         if (!in_array($teamName, $existTeamName)) {
@@ -75,16 +79,11 @@ class TeamGameBuilder extends GameBuilder
             }
         }
 
-        $teamDataOnMap = $this->map->getTeamDataOnMapByName($teamName);
-        $this->useTeams[] = new Team(
-            $teamDataOnMap->getTeamName(),
-            $teamDataOnMap->getSpawnPoints(),
-            $teamDataOnMap->getTeamColorFormat(),
-            $maxPlayer,
-            $minPlayer,
-            $teamDataOnMap->getCustomTeamVectorDataList(),
-            $teamDataOnMap->getCustomTeamArrayVectorDataList()
-        );
+        $teamDataOnMap = $this->mapData->getTeamData($teamName);
+        $teamDataOnMap->setMaxPlayers($maxPlayer);
+        $teamDataOnMap->setMaxPlayers($minPlayer);
+
+        $this->useTeams[] = Team::fromTeamDataOnMap($teamDataOnMap);
     }
 
     public function setFriendlyFire(bool $friendlyFire): void {
@@ -112,18 +111,10 @@ class TeamGameBuilder extends GameBuilder
 
         if ($this->useTeams === null) {
             $teams = [];
-            $indexList = array_rand($this->map->getTeamDataList(), $this->numberOfTeams);
+            $indexList = array_rand($this->mapData->getTeamDataList(), $this->numberOfTeams);
             foreach ($indexList as $index) {
-                $teamDataOnMap = $this->map->getTeamDataList()[$index];
-                $teams[] = new Team(
-                    $teamDataOnMap->getTeamName(),
-                    $teamDataOnMap->getSpawnPoints(),
-                    $teamDataOnMap->getTeamColorFormat(),
-                    $teamDataOnMap->getMaxPlayer(),
-                    $teamDataOnMap->getMinPlayer(),
-                    $teamDataOnMap->getCustomTeamVectorDataList(),
-                    $teamDataOnMap->getCustomTeamArrayVectorDataList()
-                );
+                $teamDataOnMap = $this->mapData->getTeamDataList()[$index];
+                $teams[] = Team::fromTeamDataOnMap($teamDataOnMap);
             }
         } else {
             $teams = $this->useTeams;

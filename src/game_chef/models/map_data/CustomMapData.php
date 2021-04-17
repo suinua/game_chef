@@ -1,12 +1,12 @@
 <?php
 
 
-namespace game_chef\models;
+namespace game_chef\models\map_data;
 
 
 class CustomMapData
 {
-    private string $key;
+    protected string $key;
 
     public function __construct(string $key) {
         $this->key = $key;

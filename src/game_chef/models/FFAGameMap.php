@@ -4,6 +4,7 @@
 namespace game_chef\models;
 
 
+use game_chef\models\map_data\FFAGameMapData;
 use pocketmine\math\Vector3;
 
 class FFAGameMap extends Map
@@ -13,8 +14,8 @@ class FFAGameMap extends Map
      */
     private array $spawnPoints;
 
-    public function __construct(string $name, string $levelName, array $adaptedGameType, array $customMapVectorDataList, array $customMapVectorsDataList, array $spawnPoints) {
-        parent::__construct($name, $levelName, $adaptedGameType, $customMapVectorDataList, $customMapVectorsDataList);
+    public function __construct(string $name, string $levelName, array $customMapVectorDataList, array $customMapVectorsDataList, array $spawnPoints) {
+        parent::__construct($name, $levelName, $customMapVectorDataList, $customMapVectorsDataList);
         $this->spawnPoints = $spawnPoints;
     }
 
@@ -23,5 +24,15 @@ class FFAGameMap extends Map
      */
     public function getSpawnPoints(): array {
         return $this->spawnPoints;
+    }
+
+    static function fromMapData(FFAGameMapData $ffaGameMapData): FFAGameMap {
+        return new FFAGameMap(
+            $ffaGameMapData->getName(),
+            $ffaGameMapData->getLevelName(),
+            $ffaGameMapData->getCustomMapVectorDataList(),
+            $ffaGameMapData->getCustomMapArrayVectorDataList(),
+            $ffaGameMapData->getSpawnPoints()
+        );
     }
 }

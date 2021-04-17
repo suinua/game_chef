@@ -4,10 +4,10 @@
 namespace game_chef\pmmp\hotbar_menu;
 
 
-use game_chef\models\TeamDataOnMap;
-use game_chef\models\TeamGameMap;
-use game_chef\repository\TeamGameMapRepository;
-use game_chef\services\TeamGameMapService;
+use game_chef\models\map_data\TeamDataOnMap;
+use game_chef\models\map_data\TeamGameMapData;
+use game_chef\pmmp\form\team_game_map_forms\TeamDataDetailForm;
+use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\store\TeamGameMapSpawnPointEditorStore;
 use pocketmine\block\Block;
 use pocketmine\item\ItemIds;
@@ -15,41 +15,25 @@ use pocketmine\Player;
 
 class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
 {
-    private TeamGameMap $map;
+    private TeamGameMapData $mapData;
     private TeamDataOnMap $teamDataOnMap;
 
-    public function __construct(Player $player, TeamGameMap $teamGameMap, TeamDataOnMap $teamDataOnMap) {
-        $this->map = $teamGameMap;
+    public function __construct(Player $player, TeamGameMapData $teamGameMapDataData, TeamDataOnMap $teamDataOnMap) {
+        $this->mapData = $teamGameMapDataData;
         $this->teamDataOnMap = $teamDataOnMap;
 
         parent::__construct($player, [
-            new HotbarMenuItem(ItemIds::BOOK, "スポーン地点を追加", function (Player $player,Block $block)  {
-                $spawnPoints = $this->teamDataOnMap->getSpawnPoints();
-                foreach ($spawnPoints as $spawnPoint) {
-                    if ($spawnPoint->equals($block->asVector3())) {
-                        $player->sendMessage("TeamGameMapでは、１チームが同じ座標に２つ以上スポーン地点を追加することはできません");
-                        return;
-                    }
-                }
-
-                $spawnPoints[] = $block->asVector3();
-
+            new HotbarMenuItem(ItemIds::BOOK, "スポーン地点を追加", function (Player $player, Block $block) {
                 try {
-                    $newTeam = new TeamDataOnMap(
-                        $this->teamDataOnMap->getTeamName(),
-                        $this->teamDataOnMap->getTeamColorFormat(),
-                        $this->teamDataOnMap->getMaxPlayer(),
-                        $this->teamDataOnMap->getMinPlayer(),
-                        $spawnPoints,
-                        $this->teamDataOnMap->getCustomTeamVectorDataList(),
-                        $this->teamDataOnMap->getCustomTeamArrayVectorDataList()
-                    );
+                    $this->teamDataOnMap->addSpawnPoint($block->asVector3());
+                    $this->mapData->updateTeamData($this->teamDataOnMap);
+                    TeamGameMapDataRepository::update($this->mapData);
 
-                    TeamGameMapService::updateTeamData($this->map->getName(), $newTeam);
                     $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
                     $editor->reloadMap();
-                    $this->map = TeamGameMapRepository::loadByName($this->map->getName());
-                    $this->teamDataOnMap = $this->map->getTeamDataOnMapByName($this->teamDataOnMap->getTeamName());
+
+                    $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
+                    $this->teamDataOnMap = $this->mapData->getTeamData($this->teamDataOnMap->getName());
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
                 }
@@ -60,8 +44,14 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
                 }
+                $player->sendForm(new TeamDataDetailForm($this->mapData, $this->teamDataOnMap));
                 $this->close();
             })
         ]);
+    }
+
+    public function close(): void {
+        parent::close();
+        $this->player->sendForm(new TeamDataDetailForm($this->mapData, $this->teamDataOnMap));
     }
 }

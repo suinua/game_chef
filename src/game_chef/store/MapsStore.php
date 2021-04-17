@@ -7,8 +7,8 @@ namespace game_chef\store;
 use game_chef\models\GameType;
 use game_chef\models\FFAGameMap;
 use game_chef\models\TeamGameMap;
-use game_chef\repository\FFAGameMapRepository;
-use game_chef\repository\TeamGameMapRepository;
+use game_chef\repository\FFAGameMapDataRepository;
+use game_chef\repository\TeamGameMapDataRepository;
 
 class MapsStore
 {
@@ -29,15 +29,15 @@ class MapsStore
             throw new \Exception("そのマップ({$name})はすでに使用されています");
         }
 
-        $map = FFAGameMapRepository::loadByName($name);
-        if ($map->isAdaptedGameType($gameType)) {
+        $mapData = FFAGameMapDataRepository::loadByName($name);
+        if ($mapData->isAdaptedGameType($gameType)) {
             if ($numberOfPlayers !== null) {
-                if ($map->getSpawnPoints() <= $numberOfPlayers) {
+                if ($mapData->getSpawnPoints() <= $numberOfPlayers) {
                     throw new \Exception("そのマップ({$name})はその人数({$numberOfPlayers})に対応していません");
                 }
             }
             self::$loanOutFFAGameMapNames[] = $name;
-            return $map;
+            return FFAGameMap::fromMapData($mapData);
         } else {
             throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
         }
@@ -56,16 +56,16 @@ class MapsStore
             throw new \Exception("そのマップ({$name})はすでに使用されています");
         }
 
-        $map = TeamGameMapRepository::loadByName($name);
-        if ($map->isAdaptedGameType($gameType)) {
+        $mapData = TeamGameMapDataRepository::loadByName($name);
+        if ($mapData->isAdaptedGameType($gameType)) {
             if ($numberOfTeams !== null) {
                 //登録してあるチームデータより、多いチームすうはムリ
-                if ($map->getTeamDataList() <= $numberOfTeams) {
+                if ($mapData->getTeamDataList() <= $numberOfTeams) {
                     throw new \Exception("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
                 }
             }
             self::$loanOutTeamGameMapName[] = $name;
-            return $map;
+            return TeamGameMap::fromMapData($mapData);
         } else {
             throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
         }
