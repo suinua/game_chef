@@ -97,7 +97,7 @@ class MapData
      * @throws \Exception
      */
     public function addCustomMapVectorData(CustomMapVectorData $customMapVectorData) {
-        foreach ($this->customMapVectorDataList as $index => $data) {
+        foreach ($this->customMapVectorDataList as $data) {
             if ($data->getKey() === $customMapVectorData->getKey()) {
                 throw new \Exception("同じKeyの座標データを追加することはできません");
             }
@@ -124,24 +124,24 @@ class MapData
     }
 
     /**
-     * @param CustomMapVectorData $customMapVectorData
+     * @param CustomMapVectorData $target
      * @throws \Exception
      */
-    public function deleteCustomMapVectorData(CustomMapVectorData $customMapVectorData) {
+    public function deleteCustomMapVectorData(CustomMapVectorData $target) {
         $isExist = false;
         $newList = [];
-        foreach ($this->customMapVectorDataList as $index => $data) {
-            if ($data->getKey() === $customMapVectorData->getKey()) {
+        foreach ($this->customMapVectorDataList as $data) {
+            if ($data->getKey() === $target->getKey()) {
                 $isExist = true;
             } else {
-                $newList[] = $customMapVectorData;
+                $newList[] = $data;
             }
         }
 
-        if ($isExist) {
-            $this->customMapVectorDataList = $newList;
-        } else {
+        if (!$isExist) {
             throw new \Exception("存在しないカスタム座標データを削除することはできません");
         }
+
+        $this->customMapVectorDataList = array_values($newList);
     }
 }

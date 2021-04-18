@@ -21,6 +21,7 @@ class CustomMapVectorData extends CustomMapData
 
     public function toJson(): array {
         return [
+            "key" => $this->getKey(),
             "x" => $this->vector3->getX(),
             "y" => $this->vector3->getY(),
             "z" => $this->vector3->getZ(),
