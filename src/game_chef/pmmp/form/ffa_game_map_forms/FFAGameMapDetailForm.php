@@ -8,6 +8,7 @@ use form_builder\models\simple_form_elements\SimpleFormButton;
 use form_builder\models\SimpleForm;
 use game_chef\models\editors\FFAGameMapSpawnPointEditor;
 use game_chef\models\map_data\FFAGameMapData;
+use game_chef\pmmp\form\CustomMapArrayVectorDataListForm;
 use game_chef\pmmp\form\CustomMapVectorDataListForm;
 use game_chef\pmmp\hotbar_menu\FFAGameSpawnPointsHotbarMenu;
 use game_chef\store\FFAGameMapSpawnPointEditorStore;
@@ -62,7 +63,7 @@ class FFAGameMapDetailForm extends SimpleForm
                 "配列型のカスタム座標データの管理",
                 null,
                 function (Player $player) {
-                    //TODO:
+                    $player->sendForm(new CustomMapArrayVectorDataListForm($this->ffaGameMapData));
                 }
             ),
             new SimpleFormButton(

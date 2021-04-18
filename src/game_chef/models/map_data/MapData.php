@@ -79,10 +79,52 @@ class MapData
 
     /**
      * @param string $key
-     * @return CustomMapVectorData|mixed
+     * @return CustomMapArrayVectorData
      * @throws \Exception
      */
-    public function getCustomMapVectorData(string $key) {
+    public function getCustomMapArrayVectorData(string $key): CustomMapArrayVectorData {
+        foreach ($this->customMapArrayVectorDataList as $customMapArrayVectorData) {
+            if ($customMapArrayVectorData->getKey() === $key) {
+                return $customMapArrayVectorData;
+            }
+        }
+
+        throw new \Exception("そのkey({$key})の配列型カスタム座標データは存在しません");
+    }
+
+    /**
+     * @param CustomMapArrayVectorData $target
+     * @throws \Exception
+     */
+    public function addCustomMapArrayVectorData(CustomMapArrayVectorData $target) {
+        foreach ($this->customMapVectorDataList as $data) {
+            if ($data->getKey() === $target->getKey()) {
+                throw new \Exception("同じKeyの配列型座標データを追加することはできません");
+            }
+        }
+        $this->customMapArrayVectorDataList[] = $target;
+    }
+
+    public function updateCustomMapArrayVectorData(CustomMapArrayVectorData $target) {
+        $isExist = false;
+        foreach ($this->customMapArrayVectorDataList as $index => $customMapArrayVectorData) {
+            if ($customMapArrayVectorData->getKey() === $target->getKey()) {
+                $isExist = true;
+                $this->customMapArrayVectorDataList[$index] = $target;
+            }
+        }
+
+        if (!$isExist) {
+            throw new \Exception("存在しない配列型カスタム座標データを更新することはできません");
+        }
+    }
+
+    /**
+     * @param string $key
+     * @return CustomMapVectorData
+     * @throws \Exception
+     */
+    public function getCustomMapVectorData(string $key): CustomMapVectorData {
         foreach ($this->customMapVectorDataList as $customMapVectorData) {
             if ($customMapVectorData->getKey() === $key) {
                 return $customMapVectorData;

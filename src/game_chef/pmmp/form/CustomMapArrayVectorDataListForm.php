@@ -11,10 +11,10 @@ use game_chef\models\map_data\MapData;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\form\ffa_game_map_forms\FFAGameMapDetailForm;
 use game_chef\pmmp\form\team_game_map_forms\TeamGameMapDetailForm;
-use game_chef\pmmp\hotbar_menu\CustomMapVectorDataHotbarMenu;
+use game_chef\pmmp\hotbar_menu\CustomMapArrayVectorDataHotbarMenu;
 use pocketmine\Player;
 
-class CustomMapVectorDataListForm extends SimpleForm
+class CustomMapArrayVectorDataListForm extends SimpleForm
 {
     private MapData $mapData;
 
@@ -25,23 +25,22 @@ class CustomMapVectorDataListForm extends SimpleForm
                 "追加",
                 null,
                 function (Player $player) {
-                    $player->sendForm(new CreateCustomMapVectorDataForm($this->mapData));
+                    $player->sendForm(new CreateCustomMapArrayVectorDataForm($this->mapData));
                 }
             )
         ];
-        foreach ($mapData->getCustomMapVectorDataList() as $customMapVectorData) {
-            $vector = $customMapVectorData->getVector3();
+        foreach ($mapData->getCustomMapArrayVectorDataList() as $customMapArrayVectorData) {
             $buttons[] = new SimpleFormButton(
-                $customMapVectorData->getKey() . ":" . strval($vector),
+                $customMapArrayVectorData->getKey(),
                 null,
-                function (Player $player) use ($customMapVectorData) {
-                    $menu = new CustomMapVectorDataHotbarMenu($player, $this->mapData, $customMapVectorData);
+                function (Player $player) use ($customMapArrayVectorData) {
+                    $menu = new CustomMapArrayVectorDataHotbarMenu($player, $this->mapData, $customMapArrayVectorData);
                     $menu->send();
                 }
             );
         }
 
-        parent::__construct("カスタム座標データ", $mapData->getName(), $buttons);
+        parent::__construct("配列型カスタム座標データ", $mapData->getName(), $buttons);
     }
 
     function onClickCloseButton(Player $player): void {

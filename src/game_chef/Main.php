@@ -13,6 +13,7 @@ use game_chef\pmmp\events\PlayerKilledPlayerEvent;
 use game_chef\pmmp\form\MainMapForm;
 use game_chef\pmmp\hotbar_menu\HotbarMenuItem;
 use game_chef\services\GameService;
+use game_chef\store\CustomMapArrayVectorDataEditorStore;
 use game_chef\store\CustomMapVectorDataEditorStore;
 use game_chef\store\FFAGameMapSpawnPointEditorStore;
 use game_chef\store\GamesStore;
@@ -91,6 +92,15 @@ class Main extends PluginBase implements Listener
         if (CustomMapVectorDataEditorStore::isExist($player->getName())) {
             try {
                 CustomMapVectorDataEditorStore::delete($player->getName());
+            } catch (\Exception $e) {
+                $this->getLogger()->error($e);
+            }
+        }
+
+
+        if (CustomMapArrayVectorDataEditorStore::isExist($player->getName())) {
+            try {
+                CustomMapArrayVectorDataEditorStore::delete($player->getName());
             } catch (\Exception $e) {
                 $this->getLogger()->error($e);
             }

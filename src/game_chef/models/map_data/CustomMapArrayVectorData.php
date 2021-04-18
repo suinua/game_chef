@@ -25,6 +25,42 @@ class CustomMapArrayVectorData extends CustomMapData
         return $this->vector3List;
     }
 
+    /**
+     * @param Vector3 $target
+     * @throws \Exception
+     */
+    public function addVector3(Vector3 $target) {
+        foreach ($this->vector3List as $vector3) {
+            if ($vector3->equals($target)) {
+                throw new \Exception("同じ座標を配列カスタム座標データに追加することはできません");
+            }
+        }
+
+        $this->vector3List[] = $target;
+    }
+
+    /**
+     * @param Vector3 $target
+     * @throws \Exception
+     */
+    public function deleteVector3(Vector3 $target) {
+        $isExist = false;
+        $newList = [];
+        foreach ($this->vector3List as $vector3) {
+            if ($vector3->equals($target)) {
+                $isExist = true;
+            } else {
+                $newList[] = $vector3;
+            }
+        }
+
+        if (!$isExist) {
+            throw new \Exception("存在しない座標を削除することはできません");
+        }
+
+        $this->vector3List = array_values($newList);
+    }
+
     public function toJson(): array {
         $vectors = [];
         foreach ($this->vector3List as $vector3) {
