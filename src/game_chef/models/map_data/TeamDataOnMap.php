@@ -151,7 +151,7 @@ class TeamDataOnMap
     public function deleteSpawnPoint(Vector3 $vector3) {
         $newSpawnPoints = [];
         $isExist = false;
-        foreach ($this->spawnPoints as $key => $spawnPoint) {
+        foreach ($this->spawnPoints as $spawnPoint) {
             if ($spawnPoint->equals($vector3)) {
                 $isExist = true;
             } else {
@@ -162,6 +162,6 @@ class TeamDataOnMap
             throw new \Exception("存在しないスポーン地点を削除することはできません");
         }
 
-        $this->spawnPoints = $newSpawnPoints;
+        $this->spawnPoints = array_values($newSpawnPoints);
     }
 }

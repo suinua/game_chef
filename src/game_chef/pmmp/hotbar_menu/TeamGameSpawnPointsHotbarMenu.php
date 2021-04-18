@@ -31,9 +31,6 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
 
                     $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
                     $editor->reloadMap();
-
-                    $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
-                    $this->teamDataOnMap = $this->mapData->getTeamData($this->teamDataOnMap->getName());
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
                 }

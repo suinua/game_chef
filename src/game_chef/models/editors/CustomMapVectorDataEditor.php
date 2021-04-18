@@ -44,9 +44,6 @@ class CustomMapVectorDataEditor
      * @throws \Exception
      */
     public function reloadMap(): void {
-        if ($this->handler !== null) {
-            $this->handler->cancel();
-        }
         if ($this->mapData instanceof TeamGameMapData) {
             $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
         } else if ($this->mapData instanceof FFAGameMapData) {

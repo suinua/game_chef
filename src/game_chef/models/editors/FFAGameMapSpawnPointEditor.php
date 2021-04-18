@@ -38,9 +38,6 @@ class FFAGameMapSpawnPointEditor
      * @throws \Exception
      */
     public function reloadMap(): void {
-        if ($this->handler !== null) {
-            $this->handler->cancel();
-        }
         $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
 
         $this->stop();
