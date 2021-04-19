@@ -105,6 +105,10 @@ class MapData
         $this->customMapArrayVectorDataList[] = $target;
     }
 
+    /**
+     * @param CustomMapArrayVectorData $target
+     * @throws \Exception
+     */
     public function updateCustomMapArrayVectorData(CustomMapArrayVectorData $target) {
         $isExist = false;
         foreach ($this->customMapArrayVectorDataList as $index => $customMapArrayVectorData) {

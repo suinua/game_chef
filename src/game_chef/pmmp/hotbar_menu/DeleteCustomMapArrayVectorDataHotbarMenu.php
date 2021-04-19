@@ -10,7 +10,7 @@ use game_chef\models\map_data\MapData;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
-use game_chef\store\CustomMapArrayVectorDataEditorStore;
+use game_chef\store\EditorsStore;
 use pocketmine\block\Block;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
@@ -40,7 +40,7 @@ class DeleteCustomMapArrayVectorDataHotbarMenu extends HotbarMenu
                             $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
                         }
 
-                        $editor = CustomMapArrayVectorDataEditorStore::get($player->getName());
+                        $editor = EditorsStore::get($player->getName());
                         $editor->reloadMap();
                         $this->close();
                     }

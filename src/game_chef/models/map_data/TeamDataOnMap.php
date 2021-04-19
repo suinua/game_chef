@@ -164,4 +164,74 @@ class TeamDataOnMap
 
         $this->spawnPoints = array_values($newSpawnPoints);
     }
+
+
+    /**
+     * @param string $key
+     * @return CustomTeamVectorData
+     * @throws \Exception
+     */
+    public function getCustomVectorData(string $key): CustomTeamVectorData {
+        foreach ($this->customTeamVectorDataList as $customTeamVectorData) {
+            if ($customTeamVectorData->getKey() === $key) {
+                return $customTeamVectorData;
+            }
+        }
+
+        throw new \Exception("そのkey({$key})のチームカスタム座標データは存在しません");
+    }
+
+
+    /**
+     * @param CustomTeamVectorData $customTeamVectorData
+     * @throws \Exception
+     */
+    public function addCustomVectorData(CustomTeamVectorData $customTeamVectorData) {
+        foreach ($this->customTeamVectorDataList as $data) {
+            if ($data->getKey() === $customTeamVectorData->getKey()) {
+                throw new \Exception("同じKeyのチーム座標データを追加することはできません");
+            }
+        }
+        $this->customTeamVectorDataList[] = $customTeamVectorData;
+    }
+
+    /**
+     * @param CustomTeamVectorData $customTeamVectorData
+     * @throws \Exception
+     */
+    public function updateCustomVectorData(CustomTeamVectorData $customTeamVectorData) {
+        $isExist = false;
+        foreach ($this->customTeamVectorDataList as $index => $data) {
+            if ($data->getKey() === $customTeamVectorData->getKey()) {
+                $isExist = true;
+                $this->customTeamVectorDataList[$index] = $customTeamVectorData;
+            }
+        }
+
+        if (!$isExist) {
+            throw new \Exception("存在しないカスタムチーム座標データを更新することはできません");
+        }
+    }
+
+    /**
+     * @param CustomTeamVectorData $target
+     * @throws \Exception
+     */
+    public function deleteCustomVectorData(CustomTeamVectorData $target) {
+        $isExist = false;
+        $newList = [];
+        foreach ($this->customTeamVectorDataList as $data) {
+            if ($data->getKey() === $target->getKey()) {
+                $isExist = true;
+            } else {
+                $newList[] = $data;
+            }
+        }
+
+        if (!$isExist) {
+            throw new \Exception("存在しないカスタムチーム座標データを削除することはできません");
+        }
+
+        $this->customTeamVectorDataList = array_values($newList);
+    }
 }

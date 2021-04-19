@@ -4,24 +4,21 @@
 namespace game_chef\store;
 
 
+use game_chef\models\editors\CustomMapArrayVectorDataEditor;
+use game_chef\models\editors\Editor;
 
-use game_chef\models\editors\FFAGameMapSpawnPointEditor;
-
-class FFAGameMapSpawnPointEditorStore
+class EditorsStore
 {
-    /**
-     * @var FFAGameMapSpawnPointEditor[]
-     */
     static private array $editors = [];
 
     /**
      * @param string $playerName
-     * @param FFAGameMapSpawnPointEditor $editor
+     * @param Editor $editor
      * @throws \Exception
      */
-    static function add(string $playerName, FFAGameMapSpawnPointEditor $editor): void {
+    static function add(string $playerName, Editor $editor): void {
         if (array_key_exists($playerName, self::$editors)) {
-            throw new \Exception($playerName . "はすでにスポーン地点エディターを持っています");
+            throw new \Exception($playerName . "はすでに他のエディターを持っています");
         }
 
         self::$editors[$playerName] = $editor;
@@ -33,7 +30,7 @@ class FFAGameMapSpawnPointEditorStore
      */
     static function delete(string $playerName): void {
         if (!array_key_exists($playerName, self::$editors)) {
-            throw new \Exception($playerName . "はスポーン地点エディターを持っていないので、削除することが出来ませんでした");
+            throw new \Exception($playerName . "はエディターを持っていないので、削除することが出来ませんでした");
         }
 
         self::$editors[$playerName]->stop();
@@ -42,12 +39,12 @@ class FFAGameMapSpawnPointEditorStore
 
     /**
      * @param string $playerName
-     * @return FFAGameMapSpawnPointEditor
+     * @return CustomMapArrayVectorDataEditor
      * @throws \Exception
      */
-    static function get(string $playerName): FFAGameMapSpawnPointEditor {
+    static function get(string $playerName): Editor {
         if (!array_key_exists($playerName, self::$editors)) {
-            throw new \Exception($playerName . "はスポーン地点エディターを持っていません");
+            throw new \Exception($playerName . "はエディターを持っていません");
         }
 
         return self::$editors[$playerName];

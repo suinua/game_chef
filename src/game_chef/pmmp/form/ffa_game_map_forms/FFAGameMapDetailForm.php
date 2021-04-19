@@ -11,7 +11,7 @@ use game_chef\models\map_data\FFAGameMapData;
 use game_chef\pmmp\form\CustomMapArrayVectorDataListForm;
 use game_chef\pmmp\form\CustomMapVectorDataListForm;
 use game_chef\pmmp\hotbar_menu\FFAGameSpawnPointsHotbarMenu;
-use game_chef\store\FFAGameMapSpawnPointEditorStore;
+use game_chef\store\EditorsStore;
 use game_chef\TaskSchedulerStorage;
 use pocketmine\Player;
 
@@ -36,7 +36,7 @@ class FFAGameMapDetailForm extends SimpleForm
                 function (Player $player) {
                     $editor = new FFAGameMapSpawnPointEditor($this->ffaGameMapData, $player, TaskSchedulerStorage::get());
                     try {
-                        FFAGameMapSpawnPointEditorStore::add($player->getName(), $editor);
+                        EditorsStore::add($player->getName(), $editor);
                     } catch (\Exception $e) {
                         $player->sendMessage($e);
                         return;

@@ -8,7 +8,7 @@ use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\form\team_game_map_forms\TeamDataDetailForm;
 use game_chef\repository\TeamGameMapDataRepository;
-use game_chef\store\TeamGameMapSpawnPointEditorStore;
+use game_chef\store\EditorsStore;
 use pocketmine\block\Block;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
@@ -29,7 +29,7 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
                     $this->mapData->updateTeamData($this->teamDataOnMap);
                     TeamGameMapDataRepository::update($this->mapData);
 
-                    $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
+                    $editor = EditorsStore::get($player->getName());
                     $editor->reloadMap();
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
@@ -37,7 +37,7 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
             }),
             new HotbarMenuItem(ItemIds::FEATHER, "戻る", function (Player $player) {
                 try {
-                    TeamGameMapSpawnPointEditorStore::delete($player->getName());
+                    EditorsStore::delete($player->getName());
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
                 }

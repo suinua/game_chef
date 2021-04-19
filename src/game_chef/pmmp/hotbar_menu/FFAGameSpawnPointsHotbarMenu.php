@@ -7,7 +7,7 @@ namespace game_chef\pmmp\hotbar_menu;
 use game_chef\models\map_data\FFAGameMapData;
 use game_chef\pmmp\form\ffa_game_map_forms\FFAGameMapDetailForm;
 use game_chef\repository\FFAGameMapDataRepository;
-use game_chef\store\FFAGameMapSpawnPointEditorStore;
+use game_chef\store\EditorsStore;
 use pocketmine\block\Block;
 use pocketmine\item\ItemIds;
 use pocketmine\Player;
@@ -23,7 +23,7 @@ class FFAGameSpawnPointsHotbarMenu extends HotbarMenu
                 try {
                     $this->mapData->addSpawnPoint($block->asVector3());
                     FFAGameMapDataRepository::update($this->mapData);
-                    $editor = FFAGameMapSpawnPointEditorStore::get($player->getName());
+                    $editor = EditorsStore::get($player->getName());
                     $editor->reloadMap();
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
@@ -31,7 +31,7 @@ class FFAGameSpawnPointsHotbarMenu extends HotbarMenu
             }),
             new HotbarMenuItem(ItemIds::FEATHER, "戻る", function (Player $player) {
                 try {
-                    FFAGameMapSpawnPointEditorStore::delete($player->getName());
+                    EditorsStore::delete($player->getName());
                 } catch (\Exception $exception) {
                     $player->sendMessage($exception->getMessage());
                 }

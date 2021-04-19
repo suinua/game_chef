@@ -4,8 +4,10 @@
 namespace game_chef\pmmp\entities;
 
 
+use game_chef\models\map_data\CustomMapArrayVectorData;
 use game_chef\models\map_data\CustomMapVectorData;
 use game_chef\models\map_data\MapData;
+use game_chef\pmmp\hotbar_menu\DeleteCustomMapArrayVectorDataHotbarMenu;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
@@ -26,12 +28,14 @@ class CustomMapArrayVectorDataMarkerEntity extends NPCBase
 
     private string $userName;
     private MapData $belongMapData;
+    private CustomMapArrayVectorData $customMapArrayVectorData;
     private Vector3 $vector3;
 
-    public function __construct(string $userName, MapData $belongMapData, Vector3 $vector3, Level $level, CompoundTag $nbt) {
+    public function __construct(string $userName, MapData $belongMapData, CustomMapArrayVectorData $customMapArrayVectorData, Vector3 $vector3, Level $level, CompoundTag $nbt) {
         parent::__construct($level, $nbt);
         $this->userName = $userName;
         $this->belongMapData = $belongMapData;
+        $this->customMapArrayVectorData = $customMapArrayVectorData;
         $this->vector3 = $vector3;
 
         $this->setNameTag("x:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
@@ -47,7 +51,8 @@ class CustomMapArrayVectorDataMarkerEntity extends NPCBase
     }
 
     public function onTap(Player $player): void {
-
+        $menu = new DeleteCustomMapArrayVectorDataHotbarMenu($player, $this->belongMapData, $this->customMapArrayVectorData);
+        $menu->send();
     }
 
     public function getVector3(): Vector3 {

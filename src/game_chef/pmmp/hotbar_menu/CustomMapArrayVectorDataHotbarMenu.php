@@ -12,7 +12,7 @@ use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\form\CustomMapArrayVectorDataListForm;
 use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
-use game_chef\store\CustomMapArrayVectorDataEditorStore;
+use game_chef\store\EditorsStore;
 use game_chef\TaskSchedulerStorage;
 use pocketmine\block\Block;
 use pocketmine\item\ItemIds;
@@ -40,7 +40,7 @@ class CustomMapArrayVectorDataHotbarMenu extends HotbarMenu
                             FFAGameMapDataRepository::update($this->mapData);
                         }
 
-                        $editor = CustomMapArrayVectorDataEditorStore::get($player->getName());
+                        $editor = EditorsStore::get($player->getName());
                         $editor->reloadMap();
                     } catch (\Exception $exception) {
                         $player->sendMessage($exception->getMessage());
@@ -55,13 +55,14 @@ class CustomMapArrayVectorDataHotbarMenu extends HotbarMenu
                     $player->sendForm(new CustomMapArrayVectorDataListForm($this->mapData));
                 }
             )
+            //todo:ustomMapArrayVectorDataの削除機能
         ]);
     }
 
     public function send(): void {
         $editor = new CustomMapArrayVectorDataEditor($this->mapData, $this->customMapArrayVectorData, $this->player, TaskSchedulerStorage::get());
         try {
-            CustomMapArrayVectorDataEditorStore::add($this->player->getName(), $editor);
+            EditorsStore::add($this->player->getName(), $editor);
             $editor->start();
         } catch (\Exception $e) {
             $this->player->sendMessage($e);
@@ -73,7 +74,7 @@ class CustomMapArrayVectorDataHotbarMenu extends HotbarMenu
 
     public function close(): void {
         try {
-            CustomMapArrayVectorDataEditorStore::delete($this->player->getName());
+            EditorsStore::delete($this->player->getName());
         } catch (\Exception $e) {
             $this->player->sendMessage($e);
         }

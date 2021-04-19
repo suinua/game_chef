@@ -10,7 +10,7 @@ use game_chef\models\editors\TeamGameMapSpawnPointEditor;
 use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\hotbar_menu\TeamGameSpawnPointsHotbarMenu;
-use game_chef\store\TeamGameMapSpawnPointEditorStore;
+use game_chef\store\EditorsStore;
 use game_chef\TaskSchedulerStorage;
 use pocketmine\Player;
 
@@ -39,7 +39,7 @@ class TeamDataDetailForm extends SimpleForm
                     function (Player $player) use ($teamDataOnMap) {
                         $editor = new TeamGameMapSpawnPointEditor($this->teamGameMapData, $teamDataOnMap, $player, TaskSchedulerStorage::get());
                         try {
-                            TeamGameMapSpawnPointEditorStore::add($player->getName(), $editor);
+                            EditorsStore::add($player->getName(), $editor);
                             $editor->start();
 
                             $menu = new TeamGameSpawnPointsHotbarMenu($player, $this->teamGameMapData, $teamDataOnMap);

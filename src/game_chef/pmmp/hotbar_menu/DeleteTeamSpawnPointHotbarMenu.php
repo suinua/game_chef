@@ -7,7 +7,7 @@ namespace game_chef\pmmp\hotbar_menu;
 use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\repository\TeamGameMapDataRepository;
-use game_chef\store\TeamGameMapSpawnPointEditorStore;
+use game_chef\store\EditorsStore;
 use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -31,7 +31,7 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                         $this->mapData->updateTeamData($this->teamData);
                         TeamGameMapDataRepository::update($this->mapData);
 
-                        $editor = TeamGameMapSpawnPointEditorStore::get($player->getName());
+                        $editor = EditorsStore::get($player->getName());
                         $editor->reloadMap();
                     } catch (\Exception $exception) {
                         $player->sendMessage($exception->getMessage());
