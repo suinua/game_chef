@@ -178,7 +178,7 @@ class TeamDataOnMap
             }
         }
 
-        throw new \Exception("そのkey({$key})のチームカスタム座標データは存在しません");
+        throw new \Exception("そのkey({$key})のカスタムチーム座標データは存在しません");
     }
 
 
@@ -189,7 +189,7 @@ class TeamDataOnMap
     public function addCustomVectorData(CustomTeamVectorData $customTeamVectorData) {
         foreach ($this->customTeamVectorDataList as $data) {
             if ($data->getKey() === $customTeamVectorData->getKey()) {
-                throw new \Exception("同じKeyのチーム座標データを追加することはできません");
+                throw new \Exception("同じKeyのカスタムチーム座標データを追加することはできません");
             }
         }
         $this->customTeamVectorDataList[] = $customTeamVectorData;
@@ -233,5 +233,51 @@ class TeamDataOnMap
         }
 
         $this->customTeamVectorDataList = array_values($newList);
+    }
+
+    /**
+     * @param string $key
+     * @return CustomTeamArrayVectorData
+     * @throws \Exception
+     */
+    public function getCustomArrayVectorData(string $key): CustomTeamArrayVectorData {
+        foreach ($this->customTeamArrayVectorDataList as $customTeamArrayVectorData) {
+            if ($customTeamArrayVectorData->getKey() === $key) {
+                return $customTeamArrayVectorData;
+            }
+        }
+
+        throw new \Exception("そのkey({$key})の配列型カスタムチーム座標データは存在しません");
+    }
+
+    /**
+     * @param CustomTeamArrayVectorData $customArrayTeamVectorData
+     * @throws \Exception
+     */
+    public function addCustomArrayVectorData(CustomTeamArrayVectorData $customArrayTeamVectorData) {
+        foreach ($this->customTeamArrayVectorDataList as $data) {
+            if ($data->getKey() === $customArrayTeamVectorData->getKey()) {
+                throw new \Exception("同じKeyの配列型カスタムチーム座標データを追加することはできません");
+            }
+        }
+        $this->customTeamVectorDataList[] = $customArrayTeamVectorData;
+    }
+
+    /**
+     * @param CustomTeamArrayVectorData $target
+     * @throws \Exception
+     */
+    public function updateCustomArrayVectorData(CustomTeamArrayVectorData $target) {
+        $isExist = false;
+        foreach ($this->customTeamArrayVectorDataList as $index => $customTeamArrayVectorData) {
+            if ($customTeamArrayVectorData->getKey() === $target->getKey()) {
+                $isExist = true;
+                $this->customTeamArrayVectorDataList[$index] = $target;
+            }
+        }
+
+        if (!$isExist) {
+            throw new \Exception("存在しない配列型カスタムチーム座標データを更新することはできません");
+        }
     }
 }

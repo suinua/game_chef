@@ -49,7 +49,21 @@ class TeamDataDetailForm extends SimpleForm
                             return;
                         }
                     }
-                )
+                ),
+                new SimpleFormButton(
+                    "チームカスタム座標データの管理",
+                    null,
+                    function (Player $player) use ($teamDataOnMap) {
+                        $player->sendForm(new CustomTeamVectorDataListForm($this->teamGameMapData, $teamDataOnMap));
+                    }
+                ),
+                new SimpleFormButton(
+                    "配列型のチームカスタム座標データの管理",
+                    null,
+                    function (Player $player) use ($teamDataOnMap) {
+                        $player->sendForm(new CustomTeamArrayVectorDataListForm($this->teamGameMapData, $teamDataOnMap));
+                    }
+                ),
             ]);
     }
 
