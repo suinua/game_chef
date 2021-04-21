@@ -267,6 +267,18 @@ class GameChef
         return $game;
     }
 
+    static function getGamesByType(GameType $gameType): array {
+        return GamesStore::getByType($gameType);
+    }
+
+    static function getAllTeamGame(): array {
+        return GamesStore::getAllTeamGame();
+    }
+
+    static function getAllFFAGame(): array {
+        return GamesStore::getAllFFAGame();
+    }
+
     static function findFFAGameById(GameId $gameId): ?FFAGame {
         $game = self::findGameById($gameId);
         if ($game instanceof FFAGame) {

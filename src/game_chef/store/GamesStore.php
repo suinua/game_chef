@@ -4,8 +4,11 @@
 namespace game_chef\store;
 
 
+use game_chef\models\FFAGame;
 use game_chef\models\Game;
 use game_chef\models\GameId;
+use game_chef\models\GameType;
+use game_chef\models\TeamGame;
 
 class GamesStore
 {
@@ -39,6 +42,32 @@ class GamesStore
         unset(self::$games[strval($gameId)]);
     }
 
+    static function getAll(): array {
+        return self::$games;
+    }
+
+    static function getAllTeamGame(): array {
+        $result = [];
+        foreach (self::$games as $game) {
+            if ($game instanceof TeamGame) {
+                $result[] = $game;
+            }
+        }
+
+        return $result;
+    }
+
+    static function getAllFFAGame(): array {
+        $result = [];
+        foreach (self::$games as $game) {
+            if ($game instanceof FFAGame) {
+                $result[] = $game;
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * @param GameId $gameId
      * @return Game
@@ -50,5 +79,20 @@ class GamesStore
         }
 
         return self::$games[strval($gameId)];
+    }
+
+    /**
+     * @param GameType $type
+     * @return Game[]
+     */
+    static function getByType(GameType $type): array {
+        $result = [];
+        foreach (self::$games as $game) {
+            if ($game->getType()->equals($type)) {
+                $result[] = $game;
+            }
+        }
+
+        return $result;
     }
 }
