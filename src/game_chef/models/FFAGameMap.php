@@ -26,10 +26,10 @@ class FFAGameMap extends Map
         return $this->spawnPoints;
     }
 
-    static function fromMapData(FFAGameMapData $ffaGameMapData): FFAGameMap {
+    static function fromMapData(FFAGameMapData $ffaGameMapData, string $uniqueLevelName): FFAGameMap {
         return new FFAGameMap(
             $ffaGameMapData->getName(),
-            $ffaGameMapData->getLevelName(),
+            $uniqueLevelName,
             $ffaGameMapData->getCustomMapVectorDataList(),
             $ffaGameMapData->getCustomMapArrayVectorDataList(),
             $ffaGameMapData->getSpawnPoints()

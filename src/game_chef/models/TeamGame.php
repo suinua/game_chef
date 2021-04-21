@@ -33,10 +33,13 @@ class TeamGame extends Game
     /**
      * @param string $playerName
      * @return bool
-     * @throws \Exception
      */
     public function canJoin(string $playerName): bool {
-        $playerData = PlayerDataStore::getByName($playerName);
+        try {
+            $playerData = PlayerDataStore::getByName($playerName);
+        } catch (\Exception $e) {
+            return false;
+        }
         if ($playerData->getBelongGameId() !== null) return false;
 
         $hasEmpty = false;
@@ -121,5 +124,18 @@ class TeamGame extends Game
      */
     public function getMap(): TeamGameMap {
         return $this->map;
+    }
+
+    public function getMaxPlayers(): ?int {
+        $count = 0;
+        $unlimited = true;
+        foreach ($this->teams as $team) {
+            if ($team->getMaxPlayer() !== null) {
+                $unlimited = false;
+                $count += $team->getMaxPlayer();
+            }
+        }
+
+        return $unlimited ? null : $count;
     }
 }

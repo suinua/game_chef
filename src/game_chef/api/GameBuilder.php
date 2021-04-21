@@ -9,7 +9,7 @@ use game_chef\models\Score;
 
 abstract class GameBuilder
 {
-    protected GameType $gameType;
+    protected ?GameType $gameType = null;
     protected ?int $timeLimit = null;
     protected ?Score $victoryScore = null;
     protected bool $canJumpIn = false;

@@ -62,6 +62,8 @@ class GameService
         foreach (PlayerDataStore::getByGameId($gameId) as $playerData) {
             PlayerDataStore::update(new PlayerData($playerData->getName()));
         }
+
+        MapService::deleteInstantWorld($game->getMap()->getLevelName());
     }
 
     /**

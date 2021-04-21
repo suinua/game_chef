@@ -12,8 +12,10 @@ use game_chef\models\Score;
 use game_chef\models\FFAGame;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamId;
+use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
+use game_chef\services\MapService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
@@ -267,6 +269,10 @@ class GameChef
         return $game;
     }
 
+    /**
+     * @param GameType $gameType
+     * @return Game[]
+     */
     static function getGamesByType(GameType $gameType): array {
         return GamesStore::getByType($gameType);
     }
@@ -294,6 +300,10 @@ class GameChef
         }
         return null;
     }
+
+    static function getTeamGameMapNamesByType(GameType $gameType): array {
+    }
+
 
     static function getAvailableTeamGameMapNames(): array {
         //TODO:実装

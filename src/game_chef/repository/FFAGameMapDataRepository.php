@@ -6,7 +6,7 @@ namespace game_chef\repository;
 
 use game_chef\DataFolderPath;
 use game_chef\models\map_data\FFAGameMapData;
-use game_chef\store\MapsStore;
+use game_chef\services\MapService;
 
 class FFAGameMapDataRepository
 {
@@ -17,6 +17,10 @@ class FFAGameMapDataRepository
     static function add(FFAGameMapData $ffaGameMapData): void {
         if (file_exists(DataFolderPath::$ffaGameMaps . $ffaGameMapData->getName() . ".json")) {
             throw new \Exception("すでにその名前({$ffaGameMapData->getName()})のマップが存在しています");
+        }
+
+        if (MapService::isInstantWorld($ffaGameMapData->getLevelName())) {
+            throw new \Exception("コピーされた試合用のワールドで、マップを作成することはできません");
         }
 
         $json = $ffaGameMapData->toJson();
@@ -32,10 +36,6 @@ class FFAGameMapDataRepository
             throw new \Exception("その名前({$ffaGameMapData->getName()})のマップは存在しません");
         }
 
-        if (in_array($ffaGameMapData->getName(), MapsStore::getLoanOutTeamGameMapName())) {
-            throw new \Exception("使用中のマップは更新できません");
-        }
-
         $json = $ffaGameMapData->toJson();
         file_put_contents(DataFolderPath::$ffaGameMaps . $ffaGameMapData->getName() . ".json", json_encode($json));
     }
@@ -47,10 +47,6 @@ class FFAGameMapDataRepository
     static function delete(string $mapName): void {
         if (!file_exists(DataFolderPath::$ffaGameMaps . $mapName . ".json")) {
             throw new \Exception("その名前({$mapName})のマップは存在しません");
-        }
-
-        if (in_array($mapName, MapsStore::getLoanOutTeamGameMapName())) {
-            throw new \Exception("使用中のマップは削除できません");
         }
 
         unlink(DataFolderPath::$ffaGameMaps . $mapName . ".json");

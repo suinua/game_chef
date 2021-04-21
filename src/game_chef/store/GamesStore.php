@@ -70,7 +70,7 @@ class GamesStore
 
     /**
      * @param GameId $gameId
-     * @return Game
+     * @return TeamGame|FFAGame
      * @throws \Exception
      */
     static function getById(GameId $gameId): Game {

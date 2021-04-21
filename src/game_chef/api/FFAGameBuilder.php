@@ -6,14 +6,14 @@ namespace game_chef\api;
 
 use game_chef\models\FFAGame;
 use game_chef\models\FFAGameMap;
-use game_chef\store\MapsStore;
+use game_chef\services\MapService;
 
 class FFAGameBuilder extends GameBuilder
 {
-    private FFAGameMap $map;
+    private ?FFAGameMap $map = null;
 
     private bool $alreadySetMaxPlayers = false;
-    private ?int $maxPlayers;
+    private ?int $maxPlayers = null;
 
 
     /**
@@ -32,11 +32,12 @@ class FFAGameBuilder extends GameBuilder
      * @throws \Exception
      */
     public function selectMapByName(string $mapName): void {
+        if ($this->map !== null) throw new \Exception("再度セットすることは出来ません");
         if ($this->gameType === null or !$this->alreadySetMaxPlayers) {
             throw new \Exception("GameTypeまたはチーム数より先にセットすることは出来ません");
         }
 
-        $this->map = MapsStore::borrowFFAGameMap($mapName, $this->gameType, $this->maxPlayers);
+        $this->map = MapService::useFFAGameMap($mapName, $this->gameType, $this->maxPlayers);
     }
 
     /**

@@ -12,10 +12,10 @@ class TeamGameMap extends Map
         parent::__construct($name, $levelName, $customMapVectorDataList, $customMapVectorsDataList);
     }
 
-    static function fromMapData(TeamGameMapData $teamGameMapData): TeamGameMap {
+    static function fromMapData(TeamGameMapData $teamGameMapData, string $uniqueLevelName): TeamGameMap {
         return new TeamGameMap(
             $teamGameMapData->getName(),
-            $teamGameMapData->getLevelName(),
+            $uniqueLevelName,
             $teamGameMapData->getCustomMapVectorDataList(),
             $teamGameMapData->getCustomMapArrayVectorDataList(),
         );

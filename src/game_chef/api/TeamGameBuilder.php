@@ -9,15 +9,15 @@ use game_chef\models\Team;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamGameMap;
 use game_chef\repository\TeamGameMapDataRepository;
-use game_chef\store\MapsStore;
+use game_chef\services\MapService;
 
 //GoFのBuilderパターンではない
 class TeamGameBuilder extends GameBuilder
 {
-    private TeamGameMap $map;
-    private TeamGameMapData $mapData;
-    private int $numberOfTeams;
-    private bool $friendlyFire;
+    private ?TeamGameMap $map = null;
+    private ?TeamGameMapData $mapData = null;
+    private ?int $numberOfTeams = null;
+    private bool $friendlyFire = false;
     private ?int $maxPlayersDifference = null;
     private bool $canMoveTeam = false;
 
@@ -43,12 +43,14 @@ class TeamGameBuilder extends GameBuilder
      * @throws \Exception
      */
     public function selectMapByName(string $mapName): void {
+        if ($this->mapData !== null) throw new \Exception("再度セットすることは出来ません");
+
         if ($this->gameType === null or $this->numberOfTeams === null) {
             throw new \Exception("GameTypeまたはチーム数より先にセットすることは出来ません");
         }
 
-        $this->map = MapsStore::borrowTeamGameMap($mapName, $this->gameType, $this->numberOfTeams);
-        $this->mapData = TeamGameMapDataRepository::loadByName($this->map->getName());
+        $this->mapData = TeamGameMapDataRepository::loadByName($mapName);
+        $this->map = MapService::useTeamGameMap($mapName, $this->gameType, $this->numberOfTeams);
     }
 
     /**

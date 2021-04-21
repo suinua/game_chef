@@ -33,7 +33,11 @@ class Main extends PluginBase implements Listener
 {
     public function onEnable() {
         TaskSchedulerStorage::init($this->getScheduler());
-        DataFolderPath::init($this->getDataFolder(), $this->getFile() . "resources/");
+        DataFolderPath::init(
+            $this->getDataFolder(),
+            $this->getFile() . "resources" . DIRECTORY_SEPARATOR,
+            $this->getServer()->getDataPath()
+        );
         GameChef::setLogger($this->getLogger());
         GameChef::setScheduler($this->getScheduler());
 
