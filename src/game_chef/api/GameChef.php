@@ -271,7 +271,7 @@ class GameChef
 
     /**
      * @param GameType $gameType
-     * @return Game[]
+     * @return FFAGame[]|TeamGame[]
      */
     static function getGamesByType(GameType $gameType): array {
         return GamesStore::getByType($gameType);
