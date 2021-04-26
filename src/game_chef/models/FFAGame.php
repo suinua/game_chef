@@ -39,7 +39,7 @@ class FFAGame extends Game
      * @return FFAPlayerTeam[]
      */
     public function getTeams(): array {
-        return $this->teams;
+        return array_values($this->teams);
     }
 
     /**

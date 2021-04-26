@@ -4,12 +4,14 @@
 namespace game_chef\api;
 
 
+use game_chef\models\FFAPlayerTeam;
 use game_chef\models\Game;
 use game_chef\models\GameId;
 use game_chef\models\GameType;
 use game_chef\models\PlayerData;
 use game_chef\models\Score;
 use game_chef\models\FFAGame;
+use game_chef\models\Team;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamId;
 use game_chef\repository\TeamGameMapDataRepository;
@@ -19,6 +21,8 @@ use game_chef\services\MapService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
+use game_chef\utilities\SortFFATeamsByScore;
+use game_chef\utilities\SortTeamsByScore;
 use pocketmine\Player;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
@@ -330,5 +334,21 @@ class GameChef
         }
 
         return $game->getType()->equals($gameType);
+    }
+
+    /**
+     * @param Team[] $teams
+     * @return Team[]
+     */
+    static function sortTeamsByScore(array $teams): array {
+        return SortTeamsByScore::sort($teams);
+    }
+
+    /**
+     * @param FFAPlayerTeam[] $teams
+     * @return FFAPlayerTeam[]
+     */
+    static function sortFFATeamsByScore(array $teams): array {
+        return SortFFATeamsByScore::sort($teams);
     }
 }

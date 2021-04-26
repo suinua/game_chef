@@ -30,6 +30,11 @@ TeamGame似のみ存在します
 これによって、そのチーム特有の座標データを登録できます  
 例えば、CorePvPなどでコアの座標なんかをチーム毎に登録できます  
 
+## FFAPlayerTeamについて
+TeamGameのTeamとは違います  
+プレイヤーとスコアをつなぎ合わせるためだけに存在しています  
+FFAPlayerTeamのチーム名はプレイヤー名です  
+
 
 ### FFA Game 全体図
 #### Game
@@ -75,6 +80,12 @@ TeamGame似のみ存在します
 # チュートリアル
 
 # サンプル
-[チームデスマッチ](https://github.com/suinua/tdm)
+#### Team Game
+[チームデスマッチ](https://github.com/suinua/tdm)  
+[CorePVP]()
+
+#### FFA Game
+[SkyWars]()  
+[WeaponGame]()  
 
 # 依存関係

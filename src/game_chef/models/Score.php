@@ -20,6 +20,10 @@ class Score
         return new Score($this->value + $score->value);
     }
 
+    public function equals(Score $score) {
+        return $this->value === $score->value;
+    }
+
     public function isBiggerThan(Score $score): bool {
         return $this->value >= $score->value;
     }
