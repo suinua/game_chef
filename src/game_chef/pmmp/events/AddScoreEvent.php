@@ -8,9 +8,10 @@ use game_chef\models\GameId;
 use game_chef\models\GameType;
 use game_chef\models\Score;
 use game_chef\models\TeamId;
+use pocketmine\event\Cancellable;
 use pocketmine\event\Event;
 
-class AddedScoreEvent extends Event
+class AddScoreEvent extends Event implements Cancellable
 {
     private GameId $gameId;
     private GameType $gameType;

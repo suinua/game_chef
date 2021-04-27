@@ -7,23 +7,23 @@ namespace game_chef\pmmp\events;
 use game_chef\models\GameId;
 use game_chef\models\GameType;
 use game_chef\models\TeamId;
+use pocketmine\event\Cancellable;
 use pocketmine\event\Event;
 use pocketmine\Player;
 
-class PlayerMovedTeamEvent extends Event
+class PlayerJoinGameEvent extends Event implements Cancellable
 {
     private Player $player;
     private GameId $gameId;
     private GameType $gameType;
-    private TeamId $newTeamId;
-    private TeamId $oldTeamId;
+    private TeamId $teamId;
 
-    public function __construct(Player $player, GameId $gameId, GameType $gameType, TeamId $newTeamId, TeamId $oldTeamId) {
+
+    public function __construct(Player $player, GameId $gameId, GameType $gameType, TeamId $teamId) {
         $this->player = $player;
         $this->gameId = $gameId;
         $this->gameType = $gameType;
-        $this->newTeamId = $newTeamId;
-        $this->oldTeamId = $oldTeamId;
+        $this->teamId = $teamId;
     }
 
     public function getPlayer(): Player {
@@ -38,11 +38,7 @@ class PlayerMovedTeamEvent extends Event
         return $this->gameType;
     }
 
-    public function getNewTeamId(): TeamId {
-        return $this->newTeamId;
-    }
-
-    public function getOldTeamId(): TeamId {
-        return $this->oldTeamId;
+    public function getTeamId(): TeamId {
+        return $this->teamId;
     }
 }

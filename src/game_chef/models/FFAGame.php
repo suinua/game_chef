@@ -4,7 +4,7 @@
 namespace game_chef\models;
 
 //FFAみたいなチームの概念がなくてランダムな場所にスポーンするゲームを指す
-use game_chef\pmmp\events\AddedScoreEvent;
+use game_chef\pmmp\events\AddScoreEvent;
 use game_chef\services\GameService;
 
 class FFAGame extends Game
@@ -99,9 +99,13 @@ class FFAGame extends Game
             throw new \Exception("{$name}はこのゲームに参加していません");
         }
         $team = $this->teams[$name];
-        $team->addScore($score);
 
-        (new AddedScoreEvent($this->id, $this->type, $team->getId(), $team->getScore(), $score))->call();
+        $event = new AddScoreEvent($this->id, $this->type, $team->getId(), $team->getScore(), $score);
+        $event->call();
+
+        if ($event->isCancelled()) return;
+
+        $team->addScore($score);
         if ($this->victoryScore === null) return;
         if ($team->getScore()->isBiggerThan($this->victoryScore)) {
             GameService::finish($this->id);

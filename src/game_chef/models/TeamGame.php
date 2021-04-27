@@ -4,7 +4,7 @@
 namespace game_chef\models;
 
 
-use game_chef\pmmp\events\AddedScoreEvent;
+use game_chef\pmmp\events\AddScoreEvent;
 use game_chef\services\GameService;
 use game_chef\store\PlayerDataStore;
 
@@ -108,7 +108,7 @@ class TeamGame extends Game
         $this->getTeamById($teamId)->addScore($score);
         $team = $this->getTeamById($teamId);
 
-        (new AddedScoreEvent($this->id, $this->type, $teamId, $team->getScore(), $score))->call();
+        (new AddScoreEvent($this->id, $this->type, $teamId, $team->getScore(), $score))->call();
         if ($this->victoryScore === null) return;
         if ($team->getScore()->isBiggerThan($this->victoryScore)) {
             GameService::finish($this->id);

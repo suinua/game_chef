@@ -8,7 +8,7 @@ use game_chef\models\GameId;
 use game_chef\models\PlayerData;
 use game_chef\models\FFAGame;
 use game_chef\models\FFAPlayerTeam;
-use game_chef\pmmp\events\PlayerJoinedGameEvent;
+use game_chef\pmmp\events\PlayerJoinGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use pocketmine\level\Position;
@@ -38,9 +38,12 @@ class FFAGameService
         $ffaTeam = new FFAPlayerTeam($playerData->getName());//TODO:ColorFormat
         $newPlayerData = new PlayerData($playerData->getName(), $game->getId(), $ffaTeam->getId());
 
+        $event = new PlayerJoinGameEvent($player, $game->getId(), $game->getType(), $ffaTeam->getId());
+        $event->call();
+        if ($event->isCancelled()) return;
+
         $game->addFFATeam($ffaTeam);
         PlayerDataStore::update($newPlayerData);
-        (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $ffaTeam->getId()))->call();
     }
 
     /**
