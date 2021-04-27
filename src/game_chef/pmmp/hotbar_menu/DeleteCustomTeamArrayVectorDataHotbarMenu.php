@@ -4,13 +4,9 @@
 namespace game_chef\pmmp\hotbar_menu;
 
 
-use game_chef\models\map_data\CustomMapArrayVectorData;
 use game_chef\models\map_data\CustomTeamArrayVectorData;
-use game_chef\models\map_data\FFAGameMapData;
-use game_chef\models\map_data\MapData;
 use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
-use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\store\EditorsStore;
 use pocketmine\block\Block;

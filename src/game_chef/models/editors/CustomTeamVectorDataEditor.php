@@ -5,7 +5,6 @@ namespace game_chef\models\editors;
 
 
 use game_chef\models\map_data\CustomTeamVectorData;
-use game_chef\models\map_data\MapData;
 use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\entities\CustomTeamVectorDataMarkerEntity;

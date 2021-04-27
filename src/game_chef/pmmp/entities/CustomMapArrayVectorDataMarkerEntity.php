@@ -5,7 +5,6 @@ namespace game_chef\pmmp\entities;
 
 
 use game_chef\models\map_data\CustomMapArrayVectorData;
-use game_chef\models\map_data\CustomMapVectorData;
 use game_chef\models\map_data\MapData;
 use game_chef\pmmp\hotbar_menu\DeleteCustomMapArrayVectorDataHotbarMenu;
 use pocketmine\level\Level;

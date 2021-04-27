@@ -4,9 +4,7 @@
 namespace game_chef\models\editors;
 
 
-use game_chef\models\map_data\CustomMapArrayVectorData;
 use game_chef\models\map_data\MapData;
-use game_chef\pmmp\entities\CustomMapArrayVectorDataMarkerEntity;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\math\Vector3;

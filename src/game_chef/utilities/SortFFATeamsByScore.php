@@ -5,7 +5,6 @@ namespace game_chef\utilities;
 
 
 use game_chef\models\FFAPlayerTeam;
-use game_chef\models\Team;
 
 class SortFFATeamsByScore
 {

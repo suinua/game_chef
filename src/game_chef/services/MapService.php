@@ -10,8 +10,6 @@ use game_chef\models\GameType;
 use game_chef\models\TeamGameMap;
 use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
-use pocketmine\item\GoldenApple;
-use pocketmine\item\ItemFactory;
 use pocketmine\Server;
 
 class MapService
