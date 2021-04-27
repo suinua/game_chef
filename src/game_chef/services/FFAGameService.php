@@ -20,9 +20,10 @@ class FFAGameService
     /**
      * @param Player $player
      * @param GameId $gameId
+     * @return bool
      * @throws \Exception
      */
-    static function join(Player $player, GameId $gameId) {
+    static function join(Player $player, GameId $gameId): bool {
         $name = $player->getName();
         $playerData = PlayerDataStore::getByName($name);
         $game = GamesStore::getById($gameId);
@@ -32,7 +33,7 @@ class FFAGameService
         }
 
         if (!$game->canJoin($playerData->getName())) {
-            throw new \Exception("ゲームに参加するとこができませんでした");
+            return false;
         }
 
         $ffaTeam = new FFAPlayerTeam($playerData->getName());//TODO:ColorFormat
@@ -40,10 +41,11 @@ class FFAGameService
 
         $event = new PlayerJoinGameEvent($player, $game->getId(), $game->getType(), $ffaTeam->getId());
         $event->call();
-        if ($event->isCancelled()) return;
+        if ($event->isCancelled()) return false;
 
         $game->addFFATeam($ffaTeam);
         PlayerDataStore::update($newPlayerData);
+        return true;
     }
 
     /**

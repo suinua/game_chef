@@ -14,10 +14,8 @@ use game_chef\models\FFAGame;
 use game_chef\models\Team;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamId;
-use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
-use game_chef\services\MapService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
@@ -75,33 +73,29 @@ class GameChef
 
     static function joinFFAGame(Player $player, GameId $gameId): bool {
         try {
-            FFAGameService::join($player, $gameId);
+            return FFAGameService::join($player, $gameId);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
         }
-        return true;
     }
 
     static function joinTeamGame(Player $player, GameId $gameId, ?TeamId $teamId = null, bool $force = false): bool {
         try {
-            TeamGameService::join($player, $gameId, $teamId, $force);
+            return TeamGameService::join($player, $gameId, $teamId, $force);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
         }
-        return true;
     }
 
     static function moveTeam(Player $player, TeamId $teamId, bool $force = false): bool {
         try {
-            TeamGameService::moveTeam($player, $teamId, $force);
+            return TeamGameService::moveTeam($player, $teamId, $force);
         } catch (\Exception $e) {
             self::$logger->error($e->getMessage());
             return false;
         }
-
-        return true;
     }
 
     static function quitGame(Player $player): bool {
