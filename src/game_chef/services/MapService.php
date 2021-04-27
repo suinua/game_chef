@@ -108,6 +108,12 @@ class MapService
      * @throws \Exception
      */
     static function deleteInstantWorld(string $levelName): void {
+        $server = Server::getInstance();
+        $level = $server->getLevel($levelName);
+        if ($level !== null) {
+            $server->unloadLevel($level);
+        }
+
         if (strpos($levelName, self::GameChefWoldKey) === false) {
             throw new \Exception("GameChefで生成されたワールド以外を削除することはできません");
         }
