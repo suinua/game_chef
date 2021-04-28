@@ -75,6 +75,14 @@ class FFAGame extends Game
         return true;
     }
 
+    public function deleteTeam(string $name) {
+        if (!array_key_exists($name, $this->teams)) {
+            throw new \LogicException("参加していないプレイヤーのチーム($name)を削除することはできません");
+        }
+
+        unset($this->teams[$name]);
+    }
+
 
     public function addScore(string $name, Score $score): void {
         if (!array_key_exists($name, $this->teams)) {

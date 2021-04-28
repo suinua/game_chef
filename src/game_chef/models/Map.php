@@ -15,19 +15,36 @@ class Map
 
     /**
      * @var CustomMapVectorData[]
+     * CustomMapVectorData::$key => CustomMapVectorData
      */
     private array $customMapVectorDataList;
 
     /**
      * @var CustomMapArrayVectorData[]
+     * CustomMapArrayVectorData::$key => CustomMapArrayVectorData
      */
     private array $customMapArrayVectorDataList;
 
-    public function __construct(string $name, string $levelName,  array $customMapVectorDataList, array $customMapArrayVectorDataList) {
+    /**
+     * Map constructor.
+     * @param string $name
+     * @param string $levelName
+     * @param CustomMapVectorData[] $customMapVectorDataList
+     * @param CustomMapArrayVectorData[] $customMapArrayVectorDataList
+     */
+    public function __construct(string $name, string $levelName, array $customMapVectorDataList, array $customMapArrayVectorDataList) {
         $this->name = $name;
         $this->levelName = $levelName;
-        $this->customMapVectorDataList = $customMapVectorDataList;
-        $this->customMapArrayVectorDataList = $customMapArrayVectorDataList;
+
+        $this->customMapVectorDataList = [];
+        foreach ($customMapVectorDataList as $data) {
+            $this->customMapVectorDataList[$data->getKey()] = $data;
+        }
+
+        $this->customMapArrayVectorDataList = [];
+        foreach ($customMapArrayVectorDataList as $data) {
+            $this->customMapArrayVectorDataList[$data->getKey()] = $data;
+        }
     }
 
     public function getName(): string {

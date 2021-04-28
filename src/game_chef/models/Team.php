@@ -23,10 +23,12 @@ class Team
     private array $spawnPoints;
     /**
      * @var CustomTeamVectorData[]
+     * CustomTeamVectorData::$key => CustomTeamVectorData
      */
     private array $customTeamVectorDataList;
     /**
      * @var CustomTeamArrayVectorData[]
+     * CustomTeamArrayVectorData::$key => CustomTeamArrayVectorData
      */
     private array $customTeamArrayVectorDataList;
 
@@ -64,8 +66,16 @@ class Team
         $this->maxPlayer = $maxPlayer;
         $this->minPlayer = $minPlayer;
         $this->spawnPoints = $spawnPoints;
-        $this->customTeamVectorDataList = $customTeamVectorDataList;
-        $this->customTeamArrayVectorDataList = $customTeamArrayVectorDataList;
+
+        $this->customTeamVectorDataList = [];
+        foreach ($customTeamVectorDataList as $data) {
+            $this->customTeamVectorDataList[$data->getKey()] = $data;
+        }
+
+        $this->customTeamArrayVectorDataList = [];
+        foreach ($customTeamArrayVectorDataList as $data) {
+            $this->customTeamArrayVectorDataList[$data->getKey()] = $data;
+        }
     }
 
     static function fromTeamDataOnMap(TeamDataOnMap $teamDataOnMap): Team {
