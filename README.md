@@ -1,5 +1,12 @@
 # Game Chef
-PvPゲーム作成を補助するプラグインです
+PvPゲーム作成を補助するプラグインです  
+
+サブ
+ - スコアボード
+ - ボスバー
+ - 特定のプレイヤーにしか見えないネームタグ
+ - ホットバーメニュー(アイテム移動非対応)
+
 
 ## GameTypeについて
 `GameType`とはユーザーが指定するもので、ゲームの種類を表しています  
@@ -84,10 +91,11 @@ FFAPlayerTeamのチーム名はプレイヤー名です
 
 # サンプル
 #### Team Game
-[チームデスマッチ](https://github.com/suinua/tdm)  
+[チームデスマッチ(動きません)](https://github.com/suinua/tdm)  
 [CorePVP]()
 
 #### FFA Game
+[ワンパン弓PVP](https://github.com/cafett/Arch)  
 [SkyWars]()  
 [WeaponGame]()  
 
