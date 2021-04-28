@@ -4,6 +4,7 @@
 namespace game_chef\services;
 
 
+use game_chef\models\FFAGame;
 use game_chef\models\Game;
 use game_chef\models\GameId;
 use game_chef\models\GameTimer;
@@ -60,6 +61,12 @@ class GameService
         }
 
         $game = GamesStore::getById($playerData->getBelongGameId());
+
+        if ($game instanceof FFAGame) {
+            //todo　ここにあるべきじゃない
+            $game->deleteTeam($player->getName());
+        }
+
         PlayerDataStore::update(new PlayerData($player->getName()));
         (new PlayerQuitGameEvent($player, $game->getId(), $game->getType(), $playerData->getBelongTeamId()))->call();
     }
