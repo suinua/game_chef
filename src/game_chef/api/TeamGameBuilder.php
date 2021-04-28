@@ -34,7 +34,7 @@ class TeamGameBuilder extends GameBuilder
      * @throws \Exception
      */
     public function setNumberOfTeams(int $numberOfTeams): void {
-        if ($this->numberOfTeams !== null) throw new \Exception("再度セットすることは出来ません");
+        if ($this->numberOfTeams !== null) throw new \Exception("NumberOfTeamsを再度セットすることは出来ません");
         $this->numberOfTeams = $numberOfTeams;
     }
 
@@ -43,10 +43,10 @@ class TeamGameBuilder extends GameBuilder
      * @throws \Exception
      */
     public function selectMapByName(string $mapName): void {
-        if ($this->mapData !== null) throw new \Exception("再度セットすることは出来ません");
+        if ($this->mapData !== null) throw new \Exception("Mapを再度セットすることは出来ません");
 
         if ($this->gameType === null or $this->numberOfTeams === null) {
-            throw new \Exception("GameTypeまたはチーム数より先にセットすることは出来ません");
+            throw new \Exception("GameTypeまたはチーム数より先にMapをセットすることは出来ません");
         }
 
         $this->mapData = TeamGameMapDataRepository::loadByName($mapName);
@@ -106,10 +106,10 @@ class TeamGameBuilder extends GameBuilder
      */
     public function build(): TeamGame {
         //TODO:FFAGameBuilderと共通
-        if ($this->map === null) throw new \Exception("mapをセットしていない状態でゲームを作ることはできません");
-        if ($this->gameType === null) throw new \Exception("gameTypeをセットしていない状態でゲームを作ることはできません");
+        if ($this->map === null) throw new \Exception("Mapをセットしていない状態でゲームを作ることはできません");
+        if ($this->gameType === null) throw new \Exception("GameTypeをセットしていない状態でゲームを作ることはできません");
 
-        if ($this->numberOfTeams === null) throw new \Exception("numberOfTeamsをセットしていない状態でゲームを作ることはできません");
+        if ($this->numberOfTeams === null) throw new \Exception("NumberOfTeamsをセットしていない状態でゲームを作ることはできません");
 
         if ($this->useTeams === null) {
             $teams = [];

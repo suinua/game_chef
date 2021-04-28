@@ -22,9 +22,10 @@ class FFAGameBuilder extends GameBuilder
      */
     public function setMaxPlayers(?int $maxPlayers): void {
         if ($this->alreadySetMaxPlayers) {
-            throw new \Exception("再度セットすることは出来ません");
+            throw new \Exception("MaxPlayersを再度セットすることは出来ません");
         }
         $this->maxPlayers = $maxPlayers;
+        $this->alreadySetMaxPlayers = true;
     }
 
     /**
@@ -32,9 +33,9 @@ class FFAGameBuilder extends GameBuilder
      * @throws \Exception
      */
     public function selectMapByName(string $mapName): void {
-        if ($this->map !== null) throw new \Exception("再度セットすることは出来ません");
+        if ($this->map !== null) throw new \Exception("Mapを再度セットすることは出来ません");
         if ($this->gameType === null or !$this->alreadySetMaxPlayers) {
-            throw new \Exception("GameTypeまたはチーム数より先にセットすることは出来ません");
+            throw new \Exception("GameTypeまたはチーム数より先にMapをセットすることは出来ません");
         }
 
         $this->map = MapService::useFFAGameMap($mapName, $this->gameType, $this->maxPlayers);
@@ -46,10 +47,10 @@ class FFAGameBuilder extends GameBuilder
      */
     public function build(): FFAGame {
         //TODO:TeamGameBuilderと共通
-        if ($this->map === null) throw new \Exception("mapをセットしていない状態でゲームを作ることはできません");
-        if ($this->gameType === null) throw new \Exception("gameTypeをセットしていない状態でゲームを作ることはできません");
+        if ($this->map === null) throw new \Exception("Mapをセットしていない状態でゲームを作ることはできません");
+        if ($this->gameType === null) throw new \Exception("GameTypeをセットしていない状態でゲームを作ることはできません");
 
-        if ($this->maxPlayers === null) throw new \Exception("maxPlayersをセットしていない状態でゲームを作ることはできません");
+        if (!$this->alreadySetMaxPlayers) throw new \Exception("MaxPlayersをセットしていない状態でゲームを作ることはできません");
 
         return new FFAGame(
             $this->map,
