@@ -15,6 +15,7 @@ use game_chef\pmmp\events\PlayerKilledPlayerEvent;
 use game_chef\pmmp\form\MainMapForm;
 use game_chef\pmmp\hotbar_menu\HotbarMenuItem;
 use game_chef\services\GameService;
+use game_chef\services\MapService;
 use game_chef\store\EditorsStore;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
@@ -47,6 +48,14 @@ class Main extends PluginBase implements Listener
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new BossbarListener(), $this);
+    }
+
+    public function onDisable() {
+        foreach ($this->getServer()->getLevels() as $level) {
+            if (MapService::isInstantWorld($level->getName())) {
+                MapService::deleteInstantWorld($level->getName());
+            }
+        }
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
