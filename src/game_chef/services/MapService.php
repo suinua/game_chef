@@ -110,24 +110,41 @@ class MapService
         }
 
         if (strpos($levelName, self::GameChefWoldKey) === false) {
-            throw new \LogicException("GameChefで生成されたワールド以外を削除することはできません");
+            throw new \LogicException("GameChefで生成されたワールド以外($levelName)を削除することはできません");
         }
 
-        $path = DataFolderPath::$worlds . $levelName;
+        $path = DataFolderPath::$worlds . $levelName . DIRECTORY_SEPARATOR;
 
-        if (is_writable($path)) {
-            $files = scandir($path);
-            foreach ($files as $file_name) {
-                if (!preg_match('/^\.(.*)/', $file_name)) {
-                    unlink($path . $file_name);
-                }
+        self::deleteDir($path);
+    }
+
+    static private function deleteDir(string $path): void {
+        $dh = opendir($path);
+        while (($fileName = readdir($dh)) !== false) {
+            if (filetype($path . $fileName) === "file") {
+                unlink($path . $fileName);
+            } else if (!preg_match('/^\.(.*)/', $fileName)) {
+                self::deleteDir($path . $fileName . DIRECTORY_SEPARATOR);
             }
-
-            rmdir($path);
         }
+
+        closedir($dh);
+        rmdir($path);
     }
 
     static function isInstantWorld(string $levelName): bool {
         return strpos($levelName, self::GameChefWoldKey) !== false;
+    }
+
+    static function deleteAllInstantWorlds(): void {
+        $path = DataFolderPath::$worlds;
+        $files = scandir($path);
+        foreach ($files as $file_name) {
+            if (!preg_match('/^\.(.*)/', $file_name)) {
+                if (self::isInstantWorld($file_name)) {
+                    self::deleteInstantWorld($file_name);
+                }
+            }
+        }
     }
 }

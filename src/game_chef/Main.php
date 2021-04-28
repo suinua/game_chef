@@ -51,11 +51,7 @@ class Main extends PluginBase implements Listener
     }
 
     public function onDisable() {
-        foreach ($this->getServer()->getLevels() as $level) {
-            if (MapService::isInstantWorld($level->getName())) {
-                MapService::deleteInstantWorld($level->getName());
-            }
-        }
+        MapService::deleteAllInstantWorlds();
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
@@ -79,13 +75,10 @@ class Main extends PluginBase implements Listener
     public function onQuit(PlayerQuitEvent $event) {
         $player = $event->getPlayer();
 
-        try {
-            if (PlayerDataStore::getByName($player->getName())->getBelongGameId() !== null) GameService::quit($player);
-            PlayerDataStore::delete($player->getName());
-        } catch (\Exception $e) {
-            $this->getLogger()->error($e->getMessage());
-            return;
+        if (PlayerDataStore::getByName($player->getName())->getBelongGameId() !== null) {
+            GameService::quit($player);
         }
+        PlayerDataStore::delete($player->getName());
 
         if (EditorsStore::isExist($player->getName())) {
             try {
