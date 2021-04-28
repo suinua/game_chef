@@ -92,7 +92,7 @@ class GameChef
         $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
         $indexList = array_rand($game->getMap()->getSpawnPoints(), count($game->getTeams()));
         foreach ($indexList as $key => $index) {
-            $vector3 = $game->getMap()->getSpawnPoints()[$index];
+            $vector3 = $game->getMap()->getSpawnPoints()[$index]->add(0, 1, 0);
             $player = Server::getInstance()->getPlayer($game->getTeams()[$key]->getName());
             if (!$player->isOnline()) {
                 throw new \LogicException("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");

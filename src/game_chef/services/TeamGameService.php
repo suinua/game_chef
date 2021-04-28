@@ -151,7 +151,7 @@ class TeamGameService
 
                 if ($game->getMaxPlayersDifference() === null) {
                     //人数差制限なし
-                   return $onSuccess($player, $game, $teamId, $oldTeamId);
+                    return $onSuccess($player, $game, $teamId, $oldTeamId);
                 } else if (count($teamPlayers) - count($desertedTeamPlayers) < $game->getMaxPlayersDifference()) {
                     //人数差制限クリア
                     return $onSuccess($player, $game, $teamId, $oldTeamId);
@@ -184,7 +184,7 @@ class TeamGameService
 
         if (is_numeric($key)) {
             $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
-            return Position::fromObject($team->getSpawnPoints()[$key], $level);
+            return Position::fromObject($team->getSpawnPoints()[$key]->add(0, 1, 0), $level);
         } else {
             throw new \LogicException("spawnPointsのkeyに不正な値が入っています");
         }

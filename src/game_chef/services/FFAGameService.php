@@ -66,7 +66,7 @@ class FFAGameService
 
         if (is_numeric($key)) {
             $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
-            return Position::fromObject($points[$key], $level);
+            return Position::fromObject($points[$key]->add(0, 1, 0), $level);
         } else {
             throw new \LogicException("spawnPointsのkeyに不正な値が入っています");
         }
