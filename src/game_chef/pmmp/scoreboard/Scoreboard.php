@@ -22,7 +22,7 @@ class Scoreboard
         self::$autoIndex = $autoIndex;
     }
 
-    static function init(ScoreboardSlot $slot): void {
+    static function __setup(ScoreboardSlot $slot): void {
         self::$slot = $slot;
     }
 
