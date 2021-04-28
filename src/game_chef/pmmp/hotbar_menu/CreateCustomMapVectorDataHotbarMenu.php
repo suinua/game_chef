@@ -21,7 +21,9 @@ class CreateCustomMapVectorDataHotbarMenu extends HotbarMenu
         parent::__construct($player, [
             new HotbarMenuItem(
                 ItemIds::BOOK,
+                0,
                 $key,
+                null,
                 function (Player $player, Block $block) use ($mapData, $key) {
                     try {
                         $mapData->addCustomMapVectorData(new CustomMapVectorData($key, $block->asVector3()));

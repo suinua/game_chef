@@ -20,23 +20,31 @@ class DeleteFFASpawnPointHotbarMenu extends HotbarMenu
 
         parent::__construct($player,
             [
-                new HotbarMenuItem(ItemIds::FEATHER, "戻る", function () {
-                    $this->close();
-                }),
-                new HotbarMenuItem(ItemIds::TNT, "削除", function (Player $player) use ($mapData, $spawnPoint) {
-                    try {
-                        $this->mapData->deleteSpawnPoint($spawnPoint);
-                        FFAGameMapDataRepository::update($this->mapData);
-                        $this->mapData = FFAGameMapDataRepository::loadByName($mapData->getName());
+                new HotbarMenuItem(
+                    ItemIds::FEATHER,
+                    0,
+                    "戻る",
+                    function () {
+                        $this->close();
+                    }),
+                new HotbarMenuItem(
+                    ItemIds::TNT,
+                    0,
+                    "削除",
+                    function (Player $player) use ($mapData, $spawnPoint) {
+                        try {
+                            $this->mapData->deleteSpawnPoint($spawnPoint);
+                            FFAGameMapDataRepository::update($this->mapData);
+                            $this->mapData = FFAGameMapDataRepository::loadByName($mapData->getName());
 
-                        $editor = EditorsStore::get($player->getName());
-                        $editor->reloadMap();
-                    } catch (\Exception $exception) {
-                        $player->sendMessage($exception->getMessage());
-                    }
+                            $editor = EditorsStore::get($player->getName());
+                            $editor->reloadMap();
+                        } catch (\Exception $exception) {
+                            $player->sendMessage($exception->getMessage());
+                        }
 
-                    $this->close();
-                })
+                        $this->close();
+                    })
             ]
         );
     }

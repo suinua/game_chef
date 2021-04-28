@@ -4,6 +4,8 @@
 namespace game_chef;
 
 
+use arch\Arch;
+use arch\pmmp\items\Smoke;
 use game_chef\api\GameChef;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
@@ -26,6 +28,8 @@ use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 
@@ -166,6 +170,21 @@ class Main extends PluginBase implements Listener
         if ($item instanceof HotbarMenuItem) {
             if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
                 $item->onTapBlock($player, $event->getBlock());
+            } else {
+                $item->onTap($player);
+            }
+        }
+    }
+
+    public function onTapAir(DataPacketReceiveEvent $event) {
+        $packet = $event->getPacket();
+        if ($packet instanceof LevelSoundEventPacket) {
+            if ($packet->sound === LevelSoundEventPacket::SOUND_ATTACK_NODAMAGE) {
+                $player = $event->getPlayer();
+                $item = $event->getPlayer()->getInventory()->getItemInHand();
+                if ($item instanceof HotbarMenuItem) {
+                    $item->onTap($player);
+                }
             }
         }
     }

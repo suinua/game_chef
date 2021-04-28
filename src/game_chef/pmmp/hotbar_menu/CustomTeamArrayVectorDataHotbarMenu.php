@@ -29,7 +29,9 @@ class CustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
         parent::__construct($player, [
             new HotbarMenuItem(
                 ItemIds::BOOK,
+                0,
                 "追加",
+                null,
                 function (Player $player, Block $block) {
                     try {
                         $this->customTeamArrayVectorData->addVector3($block->asVector3());
@@ -46,6 +48,7 @@ class CustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
             ),
             new HotbarMenuItem(
                 ItemIds::FEATHER,
+                0,
                 "戻る",
                 function (Player $player, Block $block) {
                     $this->close();

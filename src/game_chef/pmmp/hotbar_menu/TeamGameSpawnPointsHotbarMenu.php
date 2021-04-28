@@ -23,27 +23,36 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
         $this->teamDataOnMap = $teamDataOnMap;
 
         parent::__construct($player, [
-            new HotbarMenuItem(ItemIds::BOOK, "スポーン地点を追加", function (Player $player, Block $block) {
-                try {
-                    $this->teamDataOnMap->addSpawnPoint($block->asVector3());
-                    $this->mapData->updateTeamData($this->teamDataOnMap);
-                    TeamGameMapDataRepository::update($this->mapData);
+            new HotbarMenuItem(
+                ItemIds::BOOK,
+                0,
+                "スポーン地点を追加",
+                null,
+                function (Player $player, Block $block) {
+                    try {
+                        $this->teamDataOnMap->addSpawnPoint($block->asVector3());
+                        $this->mapData->updateTeamData($this->teamDataOnMap);
+                        TeamGameMapDataRepository::update($this->mapData);
 
-                    $editor = EditorsStore::get($player->getName());
-                    $editor->reloadMap();
-                } catch (\Exception $exception) {
-                    $player->sendMessage($exception->getMessage());
-                }
-            }),
-            new HotbarMenuItem(ItemIds::FEATHER, "戻る", function (Player $player) {
-                try {
-                    EditorsStore::delete($player->getName());
-                } catch (\Exception $exception) {
-                    $player->sendMessage($exception->getMessage());
-                }
-                $player->sendForm(new TeamDataDetailForm($this->mapData, $this->teamDataOnMap));
-                $this->close();
-            })
+                        $editor = EditorsStore::get($player->getName());
+                        $editor->reloadMap();
+                    } catch (\Exception $exception) {
+                        $player->sendMessage($exception->getMessage());
+                    }
+                }),
+            new HotbarMenuItem(
+                ItemIds::FEATHER,
+                0,
+                "戻る",
+                function (Player $player) {
+                    try {
+                        EditorsStore::delete($player->getName());
+                    } catch (\Exception $exception) {
+                        $player->sendMessage($exception->getMessage());
+                    }
+                    $player->sendForm(new TeamDataDetailForm($this->mapData, $this->teamDataOnMap));
+                    $this->close();
+                })
         ]);
     }
 

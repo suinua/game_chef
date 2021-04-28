@@ -22,23 +22,31 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
         $this->teamData = $teamDataOnMap;
         parent::__construct($player,
             [
-                new HotbarMenuItem(ItemIds::FEATHER, "戻る", function () {
-                    $this->close();
-                }),
-                new HotbarMenuItem(ItemIds::TNT, "削除", function (Player $player) use ($targetSpawnPoint) {
-                    try {
-                        $this->teamData->deleteSpawnPoint($targetSpawnPoint);
-                        $this->mapData->updateTeamData($this->teamData);
-                        TeamGameMapDataRepository::update($this->mapData);
+                new HotbarMenuItem(
+                    ItemIds::FEATHER,
+                    0,
+                    "戻る",
+                    function () {
+                        $this->close();
+                    }),
+                new HotbarMenuItem(
+                    ItemIds::TNT,
+                    0,
+                    "削除",
+                    function (Player $player) use ($targetSpawnPoint) {
+                        try {
+                            $this->teamData->deleteSpawnPoint($targetSpawnPoint);
+                            $this->mapData->updateTeamData($this->teamData);
+                            TeamGameMapDataRepository::update($this->mapData);
 
-                        $editor = EditorsStore::get($player->getName());
-                        $editor->reloadMap();
-                    } catch (\Exception $exception) {
-                        $player->sendMessage($exception->getMessage());
-                    }
+                            $editor = EditorsStore::get($player->getName());
+                            $editor->reloadMap();
+                        } catch (\Exception $exception) {
+                            $player->sendMessage($exception->getMessage());
+                        }
 
-                    $this->close();
-                })
+                        $this->close();
+                    })
             ]
         );
     }

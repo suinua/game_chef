@@ -19,25 +19,34 @@ class FFAGameSpawnPointsHotbarMenu extends HotbarMenu
     public function __construct(Player $player, FFAGameMapData $mapData) {
         $this->mapData = $mapData;
         parent::__construct($player, [
-            new HotbarMenuItem(ItemIds::BOOK, "スポーン地点を追加", function (Player $player, Block $block) {
-                try {
-                    $this->mapData->addSpawnPoint($block->asVector3());
-                    FFAGameMapDataRepository::update($this->mapData);
-                    $editor = EditorsStore::get($player->getName());
-                    $editor->reloadMap();
-                } catch (\Exception $exception) {
-                    $player->sendMessage($exception->getMessage());
-                }
-            }),
-            new HotbarMenuItem(ItemIds::FEATHER, "戻る", function (Player $player) {
-                try {
-                    EditorsStore::delete($player->getName());
-                } catch (\Exception $exception) {
-                    $player->sendMessage($exception->getMessage());
-                }
-                $player->sendForm(new FFAGameMapDetailForm($this->mapData));
-                $this->close();
-            })
+            new HotbarMenuItem(
+                ItemIds::BOOK,
+                0,
+                "スポーン地点を追加",
+                null,
+                function (Player $player, Block $block) {
+                    try {
+                        $this->mapData->addSpawnPoint($block->asVector3());
+                        FFAGameMapDataRepository::update($this->mapData);
+                        $editor = EditorsStore::get($player->getName());
+                        $editor->reloadMap();
+                    } catch (\Exception $exception) {
+                        $player->sendMessage($exception->getMessage());
+                    }
+                }),
+            new HotbarMenuItem(
+                ItemIds::FEATHER,
+                0,
+                "戻る",
+                function (Player $player) {
+                    try {
+                        EditorsStore::delete($player->getName());
+                    } catch (\Exception $exception) {
+                        $player->sendMessage($exception->getMessage());
+                    }
+                    $player->sendForm(new FFAGameMapDetailForm($this->mapData));
+                    $this->close();
+                })
         ]);
     }
 }

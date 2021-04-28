@@ -28,6 +28,7 @@ class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
             [
                 new HotbarMenuItem(
                     ItemIds::TNT,
+                    0,
                     "削除",
                     function (Player $player, Block $block) {
                         $this->customTeamArrayVectorData->deleteVector3($block->asVector3());
@@ -44,6 +45,7 @@ class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
                 ),
                 new HotbarMenuItem(
                     ItemIds::FEATHER,
+                    0,
                     "戻る",
                     function (Player $player, Block $block) {
                         $this->close();

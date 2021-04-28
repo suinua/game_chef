@@ -29,7 +29,9 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
         parent::__construct($player, [
             new HotbarMenuItem(
                 ItemIds::BOOK,
+                0,
                 "移動",
+                null,
                 function (Player $player, Block $block) {
                     try {
                         $this->customMapVectorData = new CustomMapVectorData($this->customMapVectorData->getKey(), $block->asVector3());
@@ -51,6 +53,7 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
             ),
             new HotbarMenuItem(
                 ItemIds::TNT,
+                0,
                 "削除",
                 function (Player $player, Block $block) {
                     $this->mapData->deleteCustomMapVectorData($this->customMapVectorData);
@@ -67,6 +70,7 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
             ),
             new HotbarMenuItem(
                 ItemIds::FEATHER,
+                0,
                 "戻る",
                 function (Player $player, Block $block) {
                     $this->close();
