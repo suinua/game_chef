@@ -64,11 +64,15 @@ class Scoreboard
     }
 
     protected static function __update(Player $player, Scoreboard $scoreboard): void {
-        self::__delete($player);
+        self::delete($player);
         self::__send($player, $scoreboard);
     }
 
-    static function __delete(Player $player): void {
+    static function delete(Player $player): void {
+        if (self::$slot === null) {
+            throw new \LogicException("Scoreboard::deleteの前に、Scoreboard::initでslotを設定してください");
+        }
+
         ScoreboardPMMPService::delete($player, self::$slot);
     }
 
