@@ -81,7 +81,7 @@ class FFAGame extends Game
      * @throws \Exception
      */
     public function addFFATeam(FFAPlayerTeam $team): void {
-        if ($this->canJoin($team->getName())) {
+        if (!$this->canJoin($team->getName())) {
             throw new \Exception("ソロチームを追加できませんでした");
         }
 
