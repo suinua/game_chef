@@ -54,7 +54,7 @@ class CustomTeamArrayVectorDataMarkerEntity extends NPCBase
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteCustomTeamArrayVectorDataHotbarMenu($player, $this->belongMapData, $this->teamData, $this->customTeamArrayVectorData);
+        $menu = new DeleteCustomTeamArrayVectorDataHotbarMenu($player, $this->belongMapData, $this->teamData, $this->customTeamArrayVectorData, $this->vector3);
         $menu->send();
     }
 

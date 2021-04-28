@@ -11,6 +11,7 @@ use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\store\EditorsStore;
 use pocketmine\block\Block;
 use pocketmine\item\ItemIds;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 
 class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
@@ -19,7 +20,7 @@ class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
     private TeamDataOnMap $teamData;
     private CustomTeamArrayVectorData $customTeamArrayVectorData;
 
-    public function __construct(Player $player, TeamGameMapData $mapData, TeamDataOnMap $teamData, CustomTeamArrayVectorData $customTeamArrayVectorData) {
+    public function __construct(Player $player, TeamGameMapData $mapData, TeamDataOnMap $teamData, CustomTeamArrayVectorData $customTeamArrayVectorData, Vector3 $target) {
         $this->mapData = $mapData;
         $this->teamData = $teamData;
         $this->customTeamArrayVectorData = $customTeamArrayVectorData;
@@ -30,8 +31,8 @@ class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
                     ItemIds::TNT,
                     0,
                     "削除",
-                    function (Player $player, Block $block) {
-                        $this->customTeamArrayVectorData->deleteVector3($block->asVector3());
+                    function (Player $player) use ($target) {
+                        $this->customTeamArrayVectorData->deleteVector3($target);
                         $this->teamData->updateCustomArrayVectorData($this->customTeamArrayVectorData);
                         $this->mapData->updateTeamData($this->teamData);
 
@@ -47,7 +48,7 @@ class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
                     ItemIds::FEATHER,
                     0,
                     "戻る",
-                    function (Player $player, Block $block) {
+                    function (Player $player) {
                         $this->close();
                     }
                 )

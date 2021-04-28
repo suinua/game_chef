@@ -50,7 +50,7 @@ class CustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
                 ItemIds::FEATHER,
                 0,
                 "戻る",
-                function (Player $player, Block $block) {
+                function (Player $player) {
                     $this->close();
                     $player->sendForm(new CustomMapArrayVectorDataListForm($this->mapData));
                 }

@@ -50,7 +50,7 @@ class CustomTeamVectorDataHotbarMenu extends HotbarMenu
                 ItemIds::TNT,
                 0,
                 "削除",
-                function (Player $player, Block $block) {
+                function (Player $player) {
                     $this->teamData->deleteCustomVectorData($this->customTeamVectorData);
                     $this->teamGameMapData->updateTeamData($this->teamData);
                     TeamGameMapDataRepository::update($this->teamGameMapData);
@@ -63,7 +63,7 @@ class CustomTeamVectorDataHotbarMenu extends HotbarMenu
                 ItemIds::FEATHER,
                 0,
                 "戻る",
-                function (Player $player, Block $block) {
+                function (Player $player) {
                     $this->close();
                     $player->sendForm(new CustomTeamVectorDataListForm($this->teamGameMapData, $this->teamData));
                 }

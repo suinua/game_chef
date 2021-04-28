@@ -55,7 +55,7 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
                 ItemIds::TNT,
                 0,
                 "削除",
-                function (Player $player, Block $block) {
+                function (Player $player) {
                     $this->mapData->deleteCustomMapVectorData($this->customMapVectorData);
                     if ($this->mapData instanceof TeamGameMapData) {
                         TeamGameMapDataRepository::update($this->mapData);
@@ -72,7 +72,7 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
                 ItemIds::FEATHER,
                 0,
                 "戻る",
-                function (Player $player, Block $block) {
+                function (Player $player) {
                     $this->close();
                     $player->sendForm(new CustomMapVectorDataListForm($this->mapData));
                 }
