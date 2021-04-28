@@ -10,43 +10,31 @@ use game_chef\services\MapService;
 
 class TeamGameMapDataRepository
 {
-    /**
-     * @param TeamGameMapData $teamGameMapData
-     * @throws \Exception
-     */
     static function add(TeamGameMapData $teamGameMapData):void{
         if (file_exists(DataFolderPath::$teamGameMaps . $teamGameMapData->getName() . ".json")) {
-            throw new \Exception("すでにその名前({$teamGameMapData->getName()})のマップが存在しています");
+            throw new \LogicException("すでにその名前({$teamGameMapData->getName()})のマップが存在しています");
         }
 
         if (MapService::isInstantWorld($teamGameMapData->getLevelName())) {
-            throw new \Exception("コピーされた試合用のワールドで、マップを作成することはできません");
+            throw new \LogicException("コピーされた試合用のワールドで、マップを作成することはできません");
         }
 
         $json = $teamGameMapData->toJson();
         file_put_contents(DataFolderPath::$teamGameMaps . $teamGameMapData->getName() . ".json", json_encode($json));
     }
 
-    /**
-     * @param TeamGameMapData $teamGameMapData
-     * @throws \Exception
-     */
     static function update(TeamGameMapData $teamGameMapData): void {
         if (!file_exists(DataFolderPath::$teamGameMaps . $teamGameMapData->getName() . ".json")) {
-            throw new \Exception("その名前({$teamGameMapData->getName()})のマップは存在しません");
+            throw new \LogicException("存在しないマップ({$teamGameMapData->getName()})を更新することはできません");
         }
 
         $json = $teamGameMapData->toJson();
         file_put_contents(DataFolderPath::$teamGameMaps . $teamGameMapData->getName() . ".json", json_encode($json));
     }
 
-    /**
-     * @param string $mapName
-     * @throws \Exception
-     */
     static function delete(string $mapName): void {
         if (!file_exists(DataFolderPath::$teamGameMaps . $mapName . ".json")) {
-            throw new \Exception("その名前({$mapName})のマップは存在しません");
+            throw new \LogicException("存在しないマップ({$mapName})を削除することはできません");
         }
 
         unlink(DataFolderPath::$teamGameMaps . $mapName . ".json");
@@ -69,14 +57,9 @@ class TeamGameMapDataRepository
         return $maps;
     }
 
-    /**
-     * @param string $mapName
-     * @return TeamGameMapData
-     * @throws \Exception
-     */
     static function loadByName(string $mapName): TeamGameMapData {
         if (!file_exists(DataFolderPath::$teamGameMaps . $mapName . ".json")) {
-            throw new \Exception("その名前({$mapName})のマップは存在しません");
+            throw new \LogicException("存在しないマップを({$mapName})取得することはできません");
         }
 
         $json = json_decode(file_get_contents(DataFolderPath::$teamGameMaps . $mapName . ".json"), true);

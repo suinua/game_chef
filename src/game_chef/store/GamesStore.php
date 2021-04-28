@@ -18,25 +18,17 @@ class GamesStore
      */
     static private array $games = [];
 
-    /**
-     * @param Game $game
-     * @throws \Exception
-     */
     static function add(Game $game): void {
         if (array_key_exists(strval($game->getId()), self::$games)) {
-            throw new \Exception("すでに同じIDの試合が追加されています");
+            throw new \LogicException("すでに同じID({$game->getId()})の試合が追加されています");
         }
 
         self::$games[strval($game->getId())] = $game;
     }
 
-    /**
-     * @param GameId $gameId
-     * @throws \Exception
-     */
     static function delete(GameId $gameId): void {
         if (!array_key_exists(strval($gameId), self::$games)) {
-            throw new \Exception("そのIDの試合は存在しません");
+            throw new \LogicException("存在しないID($gameId)の試合を削除することはできません");
         }
 
         unset(self::$games[strval($gameId)]);
@@ -71,11 +63,22 @@ class GamesStore
     /**
      * @param GameId $gameId
      * @return TeamGame|FFAGame
-     * @throws \Exception
      */
     static function getById(GameId $gameId): Game {
         if (!array_key_exists(strval($gameId), self::$games)) {
-            throw new \Exception("そのIDの試合は存在しません");
+            throw new \LogicException("そのID($gameId)の試合は存在しません");
+        }
+
+        return self::$games[strval($gameId)];
+    }
+
+    /**
+     * @param GameId $gameId
+     * @return TeamGame|FFAGame|null
+     */
+    static function findById(GameId $gameId): ?Game {
+        if (!array_key_exists(strval($gameId), self::$games)) {
+            return null;
         }
 
         return self::$games[strval($gameId)];

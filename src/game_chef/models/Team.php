@@ -39,7 +39,6 @@ class Team
      * @param int|null $minPlayer
      * @param CustomTeamVectorData[] $customTeamVectorDataList
      * @param CustomTeamArrayVectorData[] $customTeamArrayVectorDataList
-     * @throws \Exception
      */
     public function __construct(
         string $name,
@@ -52,11 +51,11 @@ class Team
 
         if ($maxPlayer !== null and $minPlayer !== null) {
             if ($maxPlayer <= $minPlayer) {
-                throw new \Exception("最大人数は最少人数より小さくすることはできません");
+                throw new \UnexpectedValueException("最大人数は最少人数より小さくすることはできません");
             }
         }
 
-        if ($name === "") throw new \Exception("チーム名を空白にすることはできません");
+        if ($name === "") throw new \UnexpectedValueException("チーム名を空白にすることはできません");
 
         $this->id = TeamId::asNew();
         $this->name = $name;
@@ -69,11 +68,6 @@ class Team
         $this->customTeamArrayVectorDataList = $customTeamArrayVectorDataList;
     }
 
-    /**
-     * @param TeamDataOnMap $teamDataOnMap
-     * @return Team
-     * @throws \Exception
-     */
     static function fromTeamDataOnMap(TeamDataOnMap $teamDataOnMap): Team {
         return new Team(
             $teamDataOnMap->getName(),

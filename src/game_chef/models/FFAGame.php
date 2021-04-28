@@ -42,29 +42,19 @@ class FFAGame extends Game
         return array_values($this->teams);
     }
 
-    /**
-     * @param TeamId $teamId
-     * @return Team
-     * @throws \Exception
-     */
     public function getTeamById(TeamId $teamId): Team {
         foreach ($this->teams as $team) {
             if ($team->getId()->equals($teamId)) return $team;
         }
 
-        throw new \Exception("そのID({$teamId})のチームは存在しません");
+        throw new \LogicException("存在しないチーム({$teamId})を取得することはできません");
     }
 
-    /**
-     * @param string $playerName
-     * @return FFAPlayerTeam
-     * @throws \Exception
-     */
     public function getTeamByPlayerName(string $playerName): FFAPlayerTeam {
         if (array_key_exists($playerName, $this->teams)) {
             return $this->teams[$playerName];
         } else {
-            throw new \Exception("そのプレイヤー({$playerName})のチームは存在しません");
+            throw new \LogicException("そのプレイヤー({$playerName})のチームは存在しません");
         }
     }
 
@@ -76,27 +66,19 @@ class FFAGame extends Game
         return $this->maxPlayers;
     }
 
-    /**
-     * @param FFAPlayerTeam $team
-     * @throws \Exception
-     */
-    public function addFFATeam(FFAPlayerTeam $team): void {
+    public function addFFATeam(FFAPlayerTeam $team): bool {
         if (!$this->canJoin($team->getName())) {
-            throw new \Exception("ソロチームを追加できませんでした");
+            return false;
         }
 
         $this->teams[$team->getName()] = $team;
+        return true;
     }
 
 
-    /**
-     * @param string $name
-     * @param Score $score
-     * @throws \Exception
-     */
     public function addScore(string $name, Score $score): void {
         if (!array_key_exists($name, $this->teams)) {
-            throw new \Exception("{$name}はこのゲームに参加していません");
+            throw new \LogicException("{$name}はこのゲームに参加していません");
         }
         $team = $this->teams[$name];
 

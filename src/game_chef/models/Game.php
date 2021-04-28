@@ -34,23 +34,17 @@ class Game
         return $this->timeLimit;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function start(): void {
         if (!$this->status->equals(GameStatus::Standby())) {
-            throw new \Exception("待機状態の試合しか開始できません");
+            throw new \LogicException("待機状態(Standby)の試合しか開始できません。この試合は{$this->status}状態です");
         }
 
         $this->status = GameStatus::Started();
     }
 
-    /**
-     * @throws \Exception
-     */
     public function finished(): void {
         if ($this->status->equals(GameStatus::Started())) {
-            throw new \Exception("始まっている試合しか終了できません");
+            throw new \LogicException("始まっている試合しか終了できません");
         }
 
         $this->status = GameStatus::Finished();

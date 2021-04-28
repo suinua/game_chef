@@ -20,20 +20,12 @@ use pocketmine\Server;
 
 class TeamGameService
 {
-    /**
-     * @param Player $player
-     * @param GameId $gameId
-     * @param TeamId|null $teamId
-     * @param bool $force
-     * @return bool
-     * @throws \Exception
-     */
     static function join(Player $player, GameId $gameId, ?TeamId $teamId = null, bool $force = false): bool {
         $playerData = PlayerDataStore::getByName($player->getName());
         $game = GamesStore::getById($gameId);
 
         if (!($game instanceof TeamGame)) {
-            throw new \Exception("そのゲームIDはTeamGameのものではありません");
+            throw new \UnexpectedValueException("そのゲームIDはTeamGameのものではありません");
         }
 
         if (!$game->canJoin($playerData->getName())) {
@@ -98,13 +90,6 @@ class TeamGameService
         }
     }
 
-    /**
-     * @param Player $player
-     * @param TeamId $teamId
-     * @param bool $force
-     * @return bool
-     * @throws \Exception
-     */
     static function moveTeam(Player $player, TeamId $teamId, bool $force = false): bool {
         $playerData = PlayerDataStore::getByName($player->getName());
         $oldTeamId = $playerData->getBelongTeamId();
@@ -112,23 +97,23 @@ class TeamGameService
 
         //参加していなかったらダメ
         if ($gameId === null) {
-            throw new \Exception("試合に参加していないプレイヤーを、チーム移動させることはできません");
+            throw new \LogicException("試合に参加していないプレイヤーを、チーム移動させることはできません");
         }
 
         //TeamGameじゃなかったらダメ
         $game = GamesStore::getById($gameId);
         if (!($game instanceof TeamGame)) {
-            throw new \Exception("そのゲームIDはTeamGameのものではありません");
+            throw new \UnexpectedValueException("そのゲームIDはTeamGameのものではありません");
         }
 
         //ゲームがチーム移動を許可してなかったらダメ
         if (!$game->isCanMoveTeam()) {
-            throw new \Exception("そのゲームはチーム移動が許可されていません");
+            throw new \LogicException("そのゲームはチーム移動が許可されていません");
         }
 
         //すでに参加しているチームだったらダメ
         if ($playerData->getBelongTeamId()->equals($teamId)) {
-            throw new \Exception("すでに参加しているチームに移動することはできません");
+            throw new \LogicException("すでに参加しているチームに移動することはできません");
         }
 
         $onSuccess = function (Player $player, Game $game, TeamId $teamId, TeamId $oldTeamId): bool {
@@ -151,8 +136,7 @@ class TeamGameService
             //人数制限
             $team = $game->getTeamById($teamId);
             if (count(PlayerDataStore::getByTeamId($teamId)) >= $team->getMaxPlayer()) {
-                //TODO:これは別に例外ではない。ここで使うのは間違い
-                throw new \Exception("人数制限の関係でチームに移動できません");
+                return false;
             }
 
             $desertedTeam = $sortedTeams[0];
@@ -179,20 +163,15 @@ class TeamGameService
         }
     }
 
-    /**
-     * @param string $playerName
-     * @return Position
-     * @throws \Exception
-     */
     static function getRandomSpawnPoint(string $playerName): Position {
         $playerData = PlayerDataStore::getByName($playerName);
         if ($playerData->getBelongGameId() === null) {
-            throw new \Exception("ゲームに参加していないプレイヤーのスポーン地点を取得することはできません");
+            throw new \LogicException("ゲームに参加していないプレイヤーのスポーン地点を取得することはできません");
         }
 
         $game = GamesStore::getById($playerData->getBelongGameId());
         if (!($game instanceof TeamGame)) {
-            throw new \Exception("TeamGameに参加していないプレイヤーのスポーン地点を取得することはできません");
+            throw new \LogicException("TeamGameに参加していないプレイヤーのスポーン地点を取得することはできません");
         }
 
         $team = $game->getTeamById($playerData->getBelongTeamId());
@@ -200,14 +179,14 @@ class TeamGameService
         $key = array_rand($team->getSpawnPoints());
 
         if ($key === null) {
-            throw new \Exception("Map({$game->getMap()->getName()})のspawnPointsが設定されておらず空です");
+            throw new \LogicException("Map({$game->getMap()->getName()})のspawnPointsが設定されておらず空です");
         }
 
         if (is_numeric($key)) {
             $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
             return Position::fromObject($team->getSpawnPoints()[$key], $level);
         } else {
-            throw new \Exception("spawnPointsのkeyに不正な値が入っています");
+            throw new \LogicException("spawnPointsのkeyに不正な値が入っています");
         }
     }
 }

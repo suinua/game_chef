@@ -17,50 +17,41 @@ class PlayerDataStore
      */
     static private array $playerDataList = [];
 
-    /**
-     * @param PlayerData $playerData
-     * @throws \Exception
-     */
     static function add(PlayerData $playerData): void {
         if (array_key_exists($playerData->getName(), self::$playerDataList)) {
-            throw new \Exception("すでにその名前({$playerData->getName()})のプレイヤーデータが存在します");
+            throw new \LogicException("すでにその名前({$playerData->getName()})のプレイヤーデータが存在します");
         }
 
         self::$playerDataList[$playerData->getName()] = $playerData;
     }
 
-    /**
-     * @param string $name
-     * @throws \Exception
-     */
     static function delete(string $name): void {
         if (!array_key_exists($name, self::$playerDataList)) {
-            throw new \Exception("その名前({$name})のプレイヤーデータは存在しません");
+            throw new \LogicException("存在しないプレイヤーデータ({$name})を削除することはできません");
         }
 
         unset(self::$playerDataList[$name]);
     }
 
-    /**
-     * @param string $name
-     * @return PlayerData
-     * @throws \Exception
-     */
     static function getByName(string $name): PlayerData {
         if (!array_key_exists($name, self::$playerDataList)) {
-            throw new \Exception("その名前({$name})のプレイヤーデータは存在しません");
+            throw new \LogicException("その名前({$name})のプレイヤーデータは存在しません");
         }
 
         return self::$playerDataList[$name];
     }
 
-    /**
-     * @param PlayerData $playerData
-     * @throws \Exception
-     */
+    static function findByName(string $name): ?PlayerData {
+        if (!array_key_exists($name, self::$playerDataList)) {
+            return null;
+        }
+
+        return self::$playerDataList[$name];
+    }
+
     static function update(PlayerData $playerData): void {
         if (!array_key_exists($playerData->getName(), self::$playerDataList)) {
-            throw new \Exception("その名前({$playerData->getName()})のプレイヤーデータは存在しません");
+            throw new \LogicException("存在しないプレイヤーデータ({$playerData->getName()})を更新することはできません");
         }
 
         self::$playerDataList[$playerData->getName()] = $playerData;

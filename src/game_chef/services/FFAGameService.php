@@ -17,19 +17,14 @@ use pocketmine\Server;
 
 class FFAGameService
 {
-    /**
-     * @param Player $player
-     * @param GameId $gameId
-     * @return bool
-     * @throws \Exception
-     */
+
     static function join(Player $player, GameId $gameId): bool {
         $name = $player->getName();
         $playerData = PlayerDataStore::getByName($name);
         $game = GamesStore::getById($gameId);
 
         if (!($game instanceof FFAGame)) {
-            throw new \Exception("そのゲームIDはFFAGameのものではありません");
+            throw new \UnexpectedValueException("そのゲームIDはFFAGameのものではありません");
         }
 
         if (!$game->canJoin($playerData->getName())) {
@@ -43,39 +38,37 @@ class FFAGameService
         $event->call();
         if ($event->isCancelled()) return false;
 
-        $game->addFFATeam($ffaTeam);
-        PlayerDataStore::update($newPlayerData);
-        return true;
+        $result = $game->addFFATeam($ffaTeam);
+        if ($result) {
+            PlayerDataStore::update($newPlayerData);
+        }
+
+        return $result;
     }
 
-    /**
-     * @param $playerName
-     * @return Position
-     * @throws \Exception
-     */
     static function getRandomSpawnPoint($playerName): Position {
         $playerData = PlayerDataStore::getByName($playerName);
         if ($playerData->getBelongGameId() === null) {
-            throw new \Exception("ゲームに参加していないプレイヤーのスポーン地点を取得することはできません");
+            throw new \LogicException("ゲームに参加していないプレイヤーのスポーン地点を取得することはできません");
         }
 
         $game = GamesStore::getById($playerData->getBelongGameId());
         if (!($game instanceof FFAGame)) {
-            throw new \Exception("FFAGameに参加していないプレイヤーのスポーン地点を取得することはできません");
+            throw new \LogicException("FFAGameに参加していないプレイヤーのスポーン地点を取得することはできません");
         }
 
         $points = $game->getMap()->getSpawnPoints();
         $key = array_rand($points);
 
         if ($key === null) {
-            throw new \Exception("Map({$game->getMap()->getName()})のspawnPointsが設定されておらず空です");
+            throw new \LogicException("Map({$game->getMap()->getName()})のspawnPointsが設定されておらず空です");
         }
 
         if (is_numeric($key)) {
             $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
             return Position::fromObject($points[$key], $level);
         } else {
-            throw new \Exception("spawnPointsのkeyに不正な値が入っています");
+            throw new \LogicException("spawnPointsのkeyに不正な値が入っています");
         }
     }
 }

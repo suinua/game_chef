@@ -19,21 +19,12 @@ use pocketmine\scheduler\TaskScheduler;
 
 class GameService
 {
-    /**
-     * @param Game $game
-     * @throws \Exception
-     */
     static function register(Game $game) {
         GamesStore::add($game);
         $timer = new GameTimer($game->getId(), $game->getType(), $game->getTimeLimit());
         GameTimersStore::add($timer);
     }
 
-    /**
-     * @param GameId $gameId
-     * @param TaskScheduler $scheduler
-     * @throws \Exception
-     */
     static function start(GameId $gameId, TaskScheduler $scheduler): void {
         $game = GamesStore::getById($gameId);
         $timer = GameTimersStore::getById($gameId);
@@ -43,10 +34,6 @@ class GameService
         (new StartedGameEvent($gameId, $game->getType()))->call();
     }
 
-    /**
-     * @param GameId $gameId
-     * @throws \Exception
-     */
     static function finish(GameId $gameId) {
         $timer = GameTimersStore::getById($gameId);
         $game = GamesStore::getById($gameId);
@@ -66,14 +53,10 @@ class GameService
         MapService::deleteInstantWorld($game->getMap()->getLevelName());
     }
 
-    /**
-     * @param Player $player
-     * @throws \Exception
-     */
-    static function quit(Player $player) {
+    static function quit(Player $player): void {
         $playerData = PlayerDataStore::getByName($player->getName());
         if ($playerData->getBelongTeamId() === null) {
-            throw new \Exception("そのプレイヤー({$player->getName()})は試合に参加していません");
+            throw new \LogicException("試合に参加していないプレイヤー({$player->getName()})を抜けさせることはできません");
         }
 
         $game = GamesStore::getById($playerData->getBelongGameId());

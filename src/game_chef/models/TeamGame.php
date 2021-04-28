@@ -70,17 +70,12 @@ class TeamGame extends Game
         return $this->teams;
     }
 
-    /**
-     * @param TeamId $teamId
-     * @return Team
-     * @throws \Exception
-     */
     public function getTeamById(TeamId $teamId): Team {
         foreach ($this->teams as $team) {
             if ($team->getId()->equals($teamId)) return $team;
         }
 
-        throw new \Exception("そのIDのチームは存在しません");
+        throw new \LogicException("存在しないチーム({$teamId})を取得することはできません");
     }
 
     public function findTeamById(TeamId $teamId): ?Team {
@@ -99,11 +94,6 @@ class TeamGame extends Game
         return $this->canMoveTeam;
     }
 
-    /**
-     * @param TeamId $teamId
-     * @param Score $score
-     * @throws \Exception
-     */
     public function addScore(TeamId $teamId, Score $score): void {
         $this->getTeamById($teamId)->addScore($score);
         $team = $this->getTeamById($teamId);

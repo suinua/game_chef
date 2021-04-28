@@ -30,4 +30,8 @@ class GameStatus
 
         return $this->value === $status->value;
     }
+
+    public function __toString() {
+        return $this->value;
+    }
 }

@@ -21,6 +21,7 @@ use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use game_chef\utilities\SortFFATeamsByScore;
 use game_chef\utilities\SortTeamsByScore;
+use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
@@ -39,201 +40,101 @@ class GameChef
         self::$scheduler = $scheduler;
     }
 
-    static function registerGame(Game $game): bool {
-        try {
-            GameService::register($game);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
-
-        return true;
+    static function registerGame(Game $game): void {
+        GameService::register($game);
     }
 
-    static function startGame(GameId $gameId): bool {
-        try {
-            GameService::start($gameId, self::$scheduler);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
-
-        return true;
+    static function startGame(GameId $gameId): void {
+        GameService::start($gameId, self::$scheduler);
     }
 
-    static function finishGame(GameId $gameId): bool {
-        try {
-            GameService::finish($gameId);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
-        return true;
+    static function finishGame(GameId $gameId): void {
+        GameService::finish($gameId);
     }
 
     static function joinFFAGame(Player $player, GameId $gameId): bool {
-        try {
-            return FFAGameService::join($player, $gameId);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
+        return FFAGameService::join($player, $gameId);
     }
 
     static function joinTeamGame(Player $player, GameId $gameId, ?TeamId $teamId = null, bool $force = false): bool {
-        try {
-            return TeamGameService::join($player, $gameId, $teamId, $force);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
+        return TeamGameService::join($player, $gameId, $teamId, $force);
     }
 
     static function moveTeam(Player $player, TeamId $teamId, bool $force = false): bool {
-        try {
-            return TeamGameService::moveTeam($player, $teamId, $force);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
+        return TeamGameService::moveTeam($player, $teamId, $force);
     }
 
-    static function quitGame(Player $player): bool {
-        try {
-            GameService::quit($player);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
-
-        return true;
+    static function quitGame(Player $player): void {
+        GameService::quit($player);
     }
 
-    static function setTeamGamePlayerSpawnPoint(Player $player): bool {
+    static function setTeamGamePlayerSpawnPoint(Player $player): void {
         if (!$player->isOnline()) {
-            self::$logger->error("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");
-            return false;
+            throw new \LogicException("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");
         }
 
-        try {
-            $position = TeamGameService::getRandomSpawnPoint($player->getName());
-            $player->setSpawn($position);
-        } catch (\Exception $e) {
-            self::$logger->error($e);
-            return false;
-        }
-
-        return true;
+        $position = TeamGameService::getRandomSpawnPoint($player->getName());
+        $player->setSpawn($position);
     }
 
-    static function setFFAPlayerSpawnPoint(Player $player): bool {
-        try {
-            $position = FFAGameService::getRandomSpawnPoint($player->getName());
-            $player->setSpawn($position);
-        } catch (\Exception $e) {
-            self::$logger->error($e);
-            return false;
-        }
-
-        return true;
+    static function setFFAPlayerSpawnPoint(Player $player): void {
+        $position = FFAGameService::getRandomSpawnPoint($player->getName());
+        $player->setSpawn($position);
     }
 
-    static function setFFAGamePlayersSpawnPoint(GameId $gameId): bool {
-        try {
-            $game = GamesStore::getById($gameId);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
+    static function setFFAPlayersSpawnPoint(GameId $gameId): void {
+        $game = GamesStore::getById($gameId);
 
         if (!($game instanceof FFAGame)) {
-            self::$logger->error("FFAGame以外のスポーン地点を取得することはできません");
-            return false;
+            throw new \LogicException("FFAGame以外のスポーン地点を取得することはできません");
         }
 
-        $indexList = array_rand($game->getMap()->getSpawnPoints(), $game->getTeams());
-
+        $level = Server::getInstance()->getLevelByName($game->getMap()->getLevelName());
+        $indexList = array_rand($game->getMap()->getSpawnPoints(), count($game->getTeams()));
         foreach ($indexList as $key => $index) {
-            $positions = $game->getMap()->getSpawnPoints()[$index];
+            $vector3 = $game->getMap()->getSpawnPoints()[$index];
             $player = Server::getInstance()->getPlayer($game->getTeams()[$key]->getName());
             if (!$player->isOnline()) {
-                self::$logger->error("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");
-                return false;
+                throw new \LogicException("オフラインのプレイヤー({$player->getName()})のスポーン地点を設定することはできません");
             }
 
-            $player->setSpawn($positions[$index]);
+            $player->setSpawn(Position::fromObject($vector3, $level));
         }
-
-        return true;
     }
 
-    static function setTeamGamePlayersSpawnPoint(GameId $gameId): bool {
-        try {
-            $game = GamesStore::getById($gameId);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
-        }
+    static function setTeamGamePlayersSpawnPoint(GameId $gameId): void {
+        $game = GamesStore::getById($gameId);
 
         if (!($game instanceof TeamGame)) {
-            self::$logger->error("TeamGame以外のスポーン地点を取得することはできません");
-            return false;
+            throw new \LogicException("TeamGame以外のスポーン地点を取得することはできません");
         }
 
         foreach (PlayerDataStore::getByGameId($gameId) as $playerData) {
             $player = Server::getInstance()->getPlayer($playerData->getName());
-            $r = self::setTeamGamePlayerSpawnPoint($player);
-            if ($r === false) {
-                return false;
-            }
+            self::setTeamGamePlayerSpawnPoint($player);
         }
-
-        return true;
     }
 
-    static function addTeamGameScore(GameId $gameId, TeamId $teamId, Score $score): bool {
-        try {
-            $game = GamesStore::getById($gameId);
-            if ($game instanceof TeamGame) {
-                $game->addScore($teamId, $score);
-            } else {
-                self::$logger->error("そのゲームIDはTeamGameのものではありません");
-                return false;
-            }
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
+    static function addTeamGameScore(GameId $gameId, TeamId $teamId, Score $score): void {
+        $game = GamesStore::getById($gameId);
+        if ($game instanceof TeamGame) {
+            $game->addScore($teamId, $score);
+        } else {
+            throw new \UnexpectedValueException("そのゲームIDはTeamGameのものではありません");
         }
-
-        return true;
     }
 
-    static function addFFAGameScore(GameId $gameId, string $playerName, Score $score): bool {
-        try {
-            $game = GamesStore::getById($gameId);
-            if ($game instanceof FFAGame) {
-                $game->addScore($playerName, $score);
-            } else {
-                self::$logger->error("そのゲームIDはFFAGameのものではありません");
-                return false;
-            }
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return false;
+    static function addFFAGameScore(GameId $gameId, string $playerName, Score $score): void {
+        $game = GamesStore::getById($gameId);
+        if ($game instanceof FFAGame) {
+            $game->addScore($playerName, $score);
+        } else {
+            throw new \UnexpectedValueException("そのゲームIDはFFAGameのものではありません");
         }
-
-        return true;
     }
 
-    static function getPlayerData(string $name): ?PlayerData {
-        try {
-            $playerData = PlayerDataStore::getByName($name);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return null;
-        }
-
-        return $playerData;
+    static function findPlayerData(string $name): ?PlayerData {
+        return PlayerDataStore::findByName($name);
     }
 
     /**
@@ -257,14 +158,7 @@ class GameChef
      * @return FFAGame|TeamGame|null
      */
     static function findGameById(GameId $gameId): ?Game {
-        try {
-            $game = GamesStore::getById($gameId);
-        } catch (\Exception $e) {
-            self::$logger->error($e->getMessage());
-            return null;
-        }
-
-        return $game;
+        return GamesStore::findById($gameId);
     }
 
     /**
@@ -284,7 +178,7 @@ class GameChef
     }
 
     static function findFFAGameById(GameId $gameId): ?FFAGame {
-        $game = self::findGameById($gameId);
+        $game = GamesStore::findById($gameId);
         if ($game instanceof FFAGame) {
             return $game;
         }
@@ -292,7 +186,7 @@ class GameChef
     }
 
     static function findTeamGameById(GameId $gameId): ?TeamGame {
-        $game = self::findGameById($gameId);
+        $game = GamesStore::findById($gameId);
         if ($game instanceof TeamGame) {
             return $game;
         }
@@ -312,21 +206,11 @@ class GameChef
     }
 
     static function isRelatedWith(Player $player, GameType $gameType): bool {
-        try {
-            $playerData = PlayerDataStore::getByName($player->getName());
-        } catch (\Exception $e) {
-            self::$logger->error($e);
-            return false;
-        }
-
+        $playerData = PlayerDataStore::getByName($player->getName());
         $gameId = $playerData->getBelongGameId();
-        try {
-            $game = GamesStore::getById($gameId);
-        } catch (\Exception $e) {
-            self::$logger->error($e);
-            return false;
-        }
+        if ($gameId === null) return false;
 
+        $game = GamesStore::getById($gameId);
         return $game->getType()->equals($gameType);
     }
 

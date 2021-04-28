@@ -10,43 +10,31 @@ use game_chef\services\MapService;
 
 class FFAGameMapDataRepository
 {
-    /**
-     * @param FFAGameMapData $ffaGameMapData
-     * @throws \Exception
-     */
     static function add(FFAGameMapData $ffaGameMapData): void {
         if (file_exists(DataFolderPath::$ffaGameMaps . $ffaGameMapData->getName() . ".json")) {
-            throw new \Exception("すでにその名前({$ffaGameMapData->getName()})のマップが存在しています");
+            throw new \LogicException("すでにその名前({$ffaGameMapData->getName()})のマップが存在しています");
         }
 
         if (MapService::isInstantWorld($ffaGameMapData->getLevelName())) {
-            throw new \Exception("コピーされた試合用のワールドで、マップを作成することはできません");
+            throw new \LogicException("コピーされた試合用のワールドで、マップを作成することはできません");
         }
 
         $json = $ffaGameMapData->toJson();
         file_put_contents(DataFolderPath::$ffaGameMaps . $ffaGameMapData->getName() . ".json", json_encode($json));
     }
 
-    /**
-     * @param FFAGameMapData $ffaGameMapData
-     * @throws \Exception
-     */
     static function update(FFAGameMapData $ffaGameMapData): void {
         if (!file_exists(DataFolderPath::$ffaGameMaps . $ffaGameMapData->getName() . ".json")) {
-            throw new \Exception("その名前({$ffaGameMapData->getName()})のマップは存在しません");
+            throw new \LogicException("存在しないマップ({$ffaGameMapData->getName()})を更新することはできません");
         }
 
         $json = $ffaGameMapData->toJson();
         file_put_contents(DataFolderPath::$ffaGameMaps . $ffaGameMapData->getName() . ".json", json_encode($json));
     }
 
-    /**
-     * @param string $mapName
-     * @throws \Exception
-     */
     static function delete(string $mapName): void {
         if (!file_exists(DataFolderPath::$ffaGameMaps . $mapName . ".json")) {
-            throw new \Exception("その名前({$mapName})のマップは存在しません");
+            throw new \LogicException("存在しないマップ({$mapName})を削除することはできません");
         }
 
         unlink(DataFolderPath::$ffaGameMaps . $mapName . ".json");
@@ -69,14 +57,9 @@ class FFAGameMapDataRepository
         return $maps;
     }
 
-    /**
-     * @param string $mapName
-     * @return FFAGameMapData
-     * @throws \Exception
-     */
     static function loadByName(string $mapName): FFAGameMapData {
         if (!file_exists(DataFolderPath::$ffaGameMaps . $mapName . ".json")) {
-            throw new \Exception("その名前({$mapName})のマップは存在しません");
+            throw new \LogicException("存在しないマップ({$mapName})を取得することはできません");
         }
 
         $json = json_decode(file_get_contents(DataFolderPath::$ffaGameMaps . $mapName . ".json"), true);

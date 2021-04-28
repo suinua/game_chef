@@ -40,14 +40,11 @@ class GameTimer
         }), 20);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function stop(): void {
         if ($this->handler === null) {
-            throw new \Exception("スタートしていないタイマーを止めることはできません");
+            throw new \LogicException("スタートしていないタイマーを止めることはできません");
         } else if ($this->handler->isCancelled()) {
-            throw new \Exception("すでにキャンセルされているタイマーを止めることは出来ません");
+            throw new \LogicException("すでにキャンセルされているタイマーを止めることは出来ません");
         } else {
             $this->handler->cancel();
         }

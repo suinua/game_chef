@@ -31,4 +31,8 @@ class Score
     public function isSmallerThan(Score $score): bool {
         return $this->value <= $score->value;
     }
+
+    public function __toString() {
+        return strval($this->value);
+    }
 }

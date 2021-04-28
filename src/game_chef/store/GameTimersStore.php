@@ -15,38 +15,25 @@ class GameTimersStore
      */
     static private array $gameTimers = [];
 
-    /**
-     * @param GameTimer $timer
-     * @throws \Exception
-     */
     static function add(GameTimer $timer): void {
         if (array_key_exists(strval($timer->getGameId()), self::$gameTimers)) {
-            throw new \Exception("すでに同じIDの試合のタイマー追加されています");
+            throw new \LogicException("すでに同じID({$timer->getGameId()})の試合のタイマー追加されています");
         }
 
         self::$gameTimers[strval($timer->getGameId())] = $timer;
     }
 
-    /**
-     * @param GameId $gameId
-     * @throws \Exception
-     */
     static function delete(GameId $gameId): void {
         if (!array_key_exists(strval($gameId), self::$gameTimers)) {
-            throw new \Exception("そのIDの試合のタイマーは存在しません");
+            throw new \LogicException("存在しないID($gameId)のタイマーを削除することはできません");
         }
 
         unset(self::$gameTimers[strval($gameId)]);
     }
 
-    /**
-     * @param GameId $gameId
-     * @return GameTimer|null
-     * @throws \Exception
-     */
     static function getById(GameId $gameId): ?GameTimer {
         if (!array_key_exists(strval($gameId), self::$gameTimers)) {
-            throw new \Exception("そのIDの試合のタイマーは存在しません");
+            throw new \LogicException("そのタイマー($gameId)の試合は存在しません");
         }
 
         return self::$gameTimers[strval($gameId)];

@@ -11,40 +11,26 @@ class EditorsStore
 {
     static private array $editors = [];
 
-    /**
-     * @param string $playerName
-     * @param Editor $editor
-     * @throws \Exception
-     */
     static function add(string $playerName, Editor $editor): void {
         if (array_key_exists($playerName, self::$editors)) {
-            throw new \Exception($playerName . "はすでに他のエディターを持っています");
+            throw new \LogicException($playerName . "はすでに他のエディターを持っています");
         }
 
         self::$editors[$playerName] = $editor;
     }
 
-    /**
-     * @param string $playerName
-     * @throws \Exception
-     */
     static function delete(string $playerName): void {
         if (!array_key_exists($playerName, self::$editors)) {
-            throw new \Exception($playerName . "はエディターを持っていないので、削除することが出来ませんでした");
+            throw new \LogicException($playerName . "はエディターを持っていないので、削除することが出来ません");
         }
 
         self::$editors[$playerName]->stop();
         unset(self::$editors[$playerName]);
     }
 
-    /**
-     * @param string $playerName
-     * @return CustomMapArrayVectorDataEditor
-     * @throws \Exception
-     */
     static function get(string $playerName): Editor {
         if (!array_key_exists($playerName, self::$editors)) {
-            throw new \Exception($playerName . "はエディターを持っていません");
+            throw new \LogicException($playerName . "はエディターを持っていないので、取得できません");
         }
 
         return self::$editors[$playerName];

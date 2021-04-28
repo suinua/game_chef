@@ -21,7 +21,7 @@ class MapService
      * @param GameType $gameType
      * @param int|null $numberOfPlayers
      * @return FFAGameMap
-     * @throws \Exception numberOfPlayersを設定すると、スポーン地点よりプレイヤーが多い場合エラーを吐きます
+     * numberOfPlayersを設定すると、スポーン地点よりプレイヤーが多い場合エラーを吐きます
      * 同じところにスポーンしていい場合を除き、設定することを推奨します
      */
     static function useFFAGameMap(string $name, GameType $gameType, ?int $numberOfPlayers = null): FFAGameMap {
@@ -29,14 +29,14 @@ class MapService
         if ($mapData->isAdaptedGameType($gameType)) {
             if ($numberOfPlayers !== null) {
                 if ($mapData->getSpawnPoints() <= $numberOfPlayers) {
-                    throw new \Exception("そのマップ({$name})はその人数({$numberOfPlayers})に対応していません");
+                    throw new \UnexpectedValueException("そのマップ({$name})はその人数({$numberOfPlayers})に対応していません");
                 }
             }
 
             $uniqueLevelName = self::createInstantWorld($mapData->getLevelName());
             return FFAGameMap::fromMapData($mapData, $uniqueLevelName);
         } else {
-            throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
+            throw new \UnexpectedValueException("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
         }
     }
 
@@ -45,7 +45,6 @@ class MapService
      * @param GameType $gameType
      * @param int $numberOfTeams
      * @return TeamGameMap
-     * @throws \Exception
      */
     static function useTeamGameMap(string $name, GameType $gameType, int $numberOfTeams): TeamGameMap {
         $mapData = TeamGameMapDataRepository::loadByName($name);
@@ -53,14 +52,14 @@ class MapService
             if ($numberOfTeams !== null) {
                 //登録してあるチームデータより、多いチームすうはムリ
                 if ($mapData->getTeamDataList() <= $numberOfTeams) {
-                    throw new \Exception("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
+                    throw new \UnexpectedValueException("そのマップ({$name})はそのチーム数({$numberOfTeams})に対応していません");
                 }
             }
 
             $uniqueLevelName = self::createInstantWorld($mapData->getLevelName());
             return TeamGameMap::fromMapData($mapData, $uniqueLevelName);
         } else {
-            throw new \Exception("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
+            throw new \UnexpectedValueException("そのマップ({$name})はそのゲームタイプ({$gameType})に対応していません");
         }
     }
 
@@ -103,19 +102,15 @@ class MapService
         }
     }
 
-    /**
-     * @param string $levelName
-     * @throws \Exception
-     */
     static function deleteInstantWorld(string $levelName): void {
         $server = Server::getInstance();
-        $level = $server->getLevel($levelName);
+        $level = $server->getLevelByName($levelName);
         if ($level !== null) {
             $server->unloadLevel($level);
         }
 
         if (strpos($levelName, self::GameChefWoldKey) === false) {
-            throw new \Exception("GameChefで生成されたワールド以外を削除することはできません");
+            throw new \LogicException("GameChefで生成されたワールド以外を削除することはできません");
         }
 
         $path = DataFolderPath::$worlds . $levelName;
