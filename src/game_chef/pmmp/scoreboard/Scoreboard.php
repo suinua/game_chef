@@ -15,16 +15,22 @@ class Scoreboard
     static protected array $scores;
     static private bool $autoIndex;
 
-    private function __construct(ScoreboardSlot $slot, string $title, array $scores, ScoreSortType $sortType, bool $autoIndex = true) {
-        self::$slot = $slot;
+    private function __construct( string $title, array $scores, ScoreSortType $sortType, bool $autoIndex = true) {
         self::$title = $title;
         self::$sortType = $sortType;
         self::$scores = $scores;
         self::$autoIndex = $autoIndex;
     }
 
-    protected static function __create(ScoreboardSlot $slot, string $title, array $scores, ScoreSortType $sortType, bool $autoIndex = true): Scoreboard {
-        return new Scoreboard($slot, $title, $scores, $sortType, $autoIndex);
+    static function init(ScoreboardSlot $slot): void {
+        self::$slot = $slot;
+    }
+
+    protected static function __create(string $title, array $scores, ScoreSortType $sortType, bool $autoIndex = true): Scoreboard {
+        if (self::$slot === null) {
+            throw new \LogicException("Scoreboard::__createの前に、Scoreboard::initでslotを設定してください");
+        }
+        return new Scoreboard($title, $scores, $sortType, $autoIndex);
     }
 
     protected static function __send(Player $player, Scoreboard $scoreboard): void {
@@ -58,11 +64,11 @@ class Scoreboard
     }
 
     protected static function __update(Player $player, Scoreboard $scoreboard): void {
-        self::delete($player);
+        self::__delete($player);
         self::__send($player, $scoreboard);
     }
 
-    static function delete(Player $player): void {
+    static function __delete(Player $player): void {
         ScoreboardPMMPService::delete($player, self::$slot);
     }
 
