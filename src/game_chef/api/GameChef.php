@@ -14,8 +14,11 @@ use game_chef\models\FFAGame;
 use game_chef\models\Team;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamId;
+use game_chef\repository\FFAGameMapDataRepository;
+use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
+use game_chef\services\MapService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
@@ -197,12 +200,22 @@ class GameChef
     }
 
 
-    static function getAvailableTeamGameMapNames(): array {
-        //TODO:実装
+    static function getAvailableTeamGameMapNames(GameType $gameType): array {
+        $names = [];
+        foreach (TeamGameMapDataRepository::loadAll() as $mapData) {
+            $names[] = $mapData->getName();
+        }
+
+        return $names;
     }
 
     static function getAvailableFFAGameMapNames(): array {
-        //TODO:実装
+        $names = [];
+        foreach (FFAGameMapDataRepository::loadAll() as $mapData) {
+            $names[] = $mapData->getName();
+        }
+
+        return $names;
     }
 
     static function isRelatedWith(Player $player, GameType $gameType): bool {
