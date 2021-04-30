@@ -18,6 +18,7 @@ class HotbarMenuItem extends Item
         $this->onTapBlock = $onTapBlock;
         $this->onTap = $onTap;
         parent::__construct($itemId, $meta, $name);
+        $this->setCustomName($name);
     }
 
     public function onTapBlock(Player $player, Block $block) {
