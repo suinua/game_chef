@@ -34,6 +34,18 @@ class Game
         return $this->timeLimit;
     }
 
+    public function getStatus(): GameStatus {
+        return $this->status;
+    }
+
+    public function canJumpIn(): bool {
+        return $this->canJumpIn();
+    }
+
+    public function getVictoryScore(): Score {
+        return $this->victoryScore;
+    }
+
     public function start(): void {
         if (!$this->status->equals(GameStatus::Standby())) {
             throw new \LogicException("待機状態(Standby)の試合しか開始できません。この試合は{$this->status}状態です");
@@ -48,9 +60,5 @@ class Game
         }
 
         $this->status = GameStatus::Finished();
-    }
-
-    public function getStatus(): GameStatus {
-        return $this->status;
     }
 }
