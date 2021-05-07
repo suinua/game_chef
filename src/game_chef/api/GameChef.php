@@ -197,10 +197,30 @@ class GameChef
     }
 
     static function getTeamGameMapNamesByType(GameType $gameType): array {
+        $names = [];
+        foreach (TeamGameMapDataRepository::loadAll() as $mapData) {
+            if (in_array($gameType, $mapData->getAdaptedGameTypes())) {
+                $names[] = $mapData->getName();
+            }
+        }
+
+        return $names;
+
+    }
+
+    static function getFFAGameMapNamesByType(GameType $gameType): array {
+        $names = [];
+        foreach (FFAGameMapDataRepository::loadAll() as $mapData) {
+            if (in_array($gameType, $mapData->getAdaptedGameTypes())) {
+                $names[] = $mapData->getName();
+            }
+        }
+
+        return $names;
     }
 
 
-    static function getAvailableTeamGameMapNames(GameType $gameType): array {
+    static function getTeamGameMapNames(GameType $gameType): array {
         $names = [];
         foreach (TeamGameMapDataRepository::loadAll() as $mapData) {
             $names[] = $mapData->getName();
@@ -209,7 +229,7 @@ class GameChef
         return $names;
     }
 
-    static function getAvailableFFAGameMapNames(): array {
+    static function getFFAGameMapNames(): array {
         $names = [];
         foreach (FFAGameMapDataRepository::loadAll() as $mapData) {
             $names[] = $mapData->getName();

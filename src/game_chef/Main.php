@@ -4,8 +4,6 @@
 namespace game_chef;
 
 
-use arch\Arch;
-use arch\pmmp\items\Smoke;
 use game_chef\api\GameChef;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;

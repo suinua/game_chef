@@ -58,7 +58,7 @@ class Map
     /**
      * @return CustomMapVectorData[]
      */
-    public function getCustomMapVectorDataList(): array {
+    public function getCustomVectorDataList(): array {
         return $this->customMapVectorDataList;
     }
 
@@ -73,7 +73,7 @@ class Map
     /**
      * @return CustomMapArrayVectorData[]
      */
-    public function getCustomMapArrayVectorDataList(): array {
+    public function getCustomArrayVectorDataList(): array {
         return $this->customMapArrayVectorDataList;
     }
 
