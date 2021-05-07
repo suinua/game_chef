@@ -16,7 +16,7 @@ use pocketmine\Player;
 
 class BossbarPMMPService
 {
-    static function send(Player $player, BossBar $bossBar): void {
+    static function send(Player $player, Bossbar $bossBar): void {
 
         $addActorPacket = new AddActorPacket();
         $addActorPacket->entityRuntimeId = $bossBar->getId()->getValue();
@@ -64,7 +64,7 @@ class BossbarPMMPService
         $player->dataPacket($moveActorPacket);
     }
 
-    static function updatePercentage(Player $player, BossBar $bossBar, float $percentage): void {
+    static function updatePercentage(Player $player, Bossbar $bossBar, float $percentage): void {
         $percentage = $percentage <= 0 ? 0.001 : $percentage;
 
         $attribute = Attribute::getAttribute(Attribute::HEALTH);
@@ -86,7 +86,7 @@ class BossbarPMMPService
         $player->dataPacket($bossEventPacket);
     }
 
-    static function updateTitle(Player $player, BossBar $bossBar, string $title): void {
+    static function updateTitle(Player $player, Bossbar $bossBar, string $title): void {
 
         $setActorPacket = new SetActorDataPacket();
         $setActorPacket->metadata = [Entity::DATA_NAMETAG => [Entity::DATA_TYPE_STRING, $title]];

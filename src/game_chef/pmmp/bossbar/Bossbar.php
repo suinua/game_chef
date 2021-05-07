@@ -48,19 +48,19 @@ class Bossbar
         BossbarPMMPService::updateLocation($player, $this->id);
     }
 
-    static function findById(BossbarId $bossBarId): ?BossBar {
+    static function findById(BossbarId $bossBarId): ?Bossbar {
         return BossbarsStore::findById($bossBarId);
     }
 
     /**
      * @param Player $player
-     * @return BossBar[]
+     * @return Bossbar[]
      */
     static function getBossbars(Player $player): array {
         return BossbarsStore::searchAll($player);
     }
 
-    static function findByType(Player $player, BossbarType $type): ?BossBar {
+    static function findByType(Player $player, BossbarType $type): ?Bossbar {
         return BossbarsStore::findByType($player, $type);
     }
 

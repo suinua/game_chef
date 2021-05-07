@@ -19,7 +19,7 @@ class BossbarsStore
 
     /**
      * @param Player $player
-     * @return BossBar[]
+     * @return Bossbar[]
      */
     static function searchAll(Player $player): array {
         $result = [];
@@ -32,7 +32,7 @@ class BossbarsStore
         return $result;
     }
 
-    static function findById(BossBarId $id): ?BossBar {
+    static function findById(BossbarId $id): ?Bossbar {
         foreach (self::$bossbars as $bossBar) {
             if ($bossBar->getId()->equals($id)) return $bossBar;
         }
@@ -40,7 +40,7 @@ class BossbarsStore
         return null;
     }
 
-    static function findByType(Player $player, BossBarType $type): ?BossBar {
+    static function findByType(Player $player, BossbarType $type): ?Bossbar {
 
         foreach (self::$bossbars as $bossBar) {
             if ($bossBar->getType()->equals($type) && $bossBar->getOwner()->getName() === $player->getName()) {
@@ -51,7 +51,7 @@ class BossbarsStore
         return null;
     }
 
-    static function add(BossBar $bossBar): void {
+    static function add(Bossbar $bossBar): void {
         if (self::findById($bossBar->getId()) !== null) {
             throw new \LogicException("{$bossBar->getId()->getValue()}はすでに存在します");
         }
@@ -63,7 +63,7 @@ class BossbarsStore
         self::$bossbars[] = $bossBar;
     }
 
-    static function remove(BossBarId $id): void {
+    static function remove(BossbarId $id): void {
         foreach (self::$bossbars as $index => $bossBar) {
             if ($bossBar->getId()->equals($id)) unset(self::$bossbars[$index]);
         }
@@ -71,7 +71,7 @@ class BossbarsStore
         self::$bossbars = array_values(self::$bossbars);
     }
 
-    static function update(BossBar $bossBar): void {
+    static function update(Bossbar $bossBar): void {
         self::remove($bossBar->getId());
         self::add($bossBar);
     }

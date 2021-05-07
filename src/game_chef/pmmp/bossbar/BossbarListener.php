@@ -22,7 +22,7 @@ class BossbarListener implements Listener
     public function onTeleport(EntityTeleportEvent $event) {
         $player = $event->getEntity();
         if ($player instanceof Player) {
-            $bossBars = BossBar::getBossbars($player);
+            $bossBars = Bossbar::getBossbars($player);
             foreach ($bossBars as $bossBar) {
                 $bossBar->updateLocationInformation($player);
             }
