@@ -15,7 +15,9 @@ use game_chef\pmmp\events\StartedGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\GameTimersStore;
 use game_chef\store\PlayerDataStore;
+use game_chef\TaskSchedulerStorage;
 use pocketmine\Player;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\TaskScheduler;
 
 class GameService
@@ -43,8 +45,11 @@ class GameService
         $game->finished();
 
         (new FinishedGameEvent($gameId, $game->getType()))->call();
+    }
 
-        //最後に実行
+    static function discard(GameId $gameId): void {
+        $game = GamesStore::getById($gameId);
+
         GameTimersStore::delete($gameId);
         GamesStore::delete($gameId);
         foreach (PlayerDataStore::getByGameId($gameId) as $playerData) {
