@@ -5,8 +5,12 @@ namespace game_chef\pmmp\entities;
 
 
 use game_chef\models\map_data\CustomMapArrayVectorData;
+use game_chef\models\map_data\CustomTeamArrayVectorData;
 use game_chef\models\map_data\MapData;
+use game_chef\models\map_data\TeamDataOnMap;
+use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\hotbar_menu\DeleteCustomMapArrayVectorDataHotbarMenu;
+use game_chef\repository\FFAGameMapDataRepository;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
@@ -24,37 +28,26 @@ class CustomMapArrayVectorDataMarkerEntity extends NPCBase
     public $eyeHeight = 1.0;
     protected $gravity = 0;
 
+    static function create(Player $player, MapData $belongMapData, CustomMapArrayVectorData $customMapArrayVectorData, Vector3 $vector3) : self {
+        $nbt = self::createBaseNBT($vector3->add(0.5, 1.3, 0.5));
+        $nbt->setString("map_name", $belongMapData->getName());
+        $nbt->setString("key", $customMapArrayVectorData->getKey());
 
-    private string $userName;
-    private MapData $belongMapData;
-    private CustomMapArrayVectorData $customMapArrayVectorData;
-    private Vector3 $vector3;
-
-    public function __construct(string $userName, MapData $belongMapData, CustomMapArrayVectorData $customMapArrayVectorData, Vector3 $vector3, Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->userName = $userName;
-        $this->belongMapData = $belongMapData;
-        $this->customMapArrayVectorData = $customMapArrayVectorData;
-        $this->vector3 = $vector3;
-
-        $this->setNameTag("x:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
-        $this->setNameTagAlwaysVisible(true);
+        $entity = new self($player->getLevel(), $nbt);
+        $entity->setNameTagAlwaysVisible(true);
+        $entity->setNameTag("x:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
+        return $entity;
     }
 
-    public function getBelongMapData(): MapData {
-        return $this->belongMapData;
-    }
-
-    public function getUserName(): string {
-        return $this->userName;
+    public function getBelongMapName(): string {
+        return $this->namedtag->getString("map_name");
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteCustomMapArrayVectorDataHotbarMenu($player, $this->belongMapData, $this->customMapArrayVectorData);
-        $menu->send();
-    }
+        $belongMapData = FFAGameMapDataRepository::loadByName($this->namedtag->getString("map_name"));
+        $customMapArrayVectorData = $belongMapData->getCustomMapArrayVectorData($this->namedtag->getString("key"));
 
-    public function getVector3(): Vector3 {
-        return $this->vector3;
+        $menu = new DeleteCustomMapArrayVectorDataHotbarMenu($player, $belongMapData, $customMapArrayVectorData);
+        $menu->send();
     }
 }

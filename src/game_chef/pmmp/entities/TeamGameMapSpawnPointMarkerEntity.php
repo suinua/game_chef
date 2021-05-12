@@ -7,9 +7,8 @@ namespace game_chef\pmmp\entities;
 use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\hotbar_menu\DeleteTeamSpawnPointHotbarMenu;
-use pocketmine\level\Level;
+use game_chef\repository\TeamGameMapDataRepository;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 
 class TeamGameMapSpawnPointMarkerEntity extends NPCBase
@@ -24,36 +23,29 @@ class TeamGameMapSpawnPointMarkerEntity extends NPCBase
     public $eyeHeight = 1.0;
     protected $gravity = 0;
 
+    static function create(Player $player, TeamGameMapData $belongMapData, TeamDataOnMap $teamDataOnMap, Vector3 $mapSpawnPoint) : self {
+        $nbt = self::createBaseNBT($mapSpawnPoint->add(0.5, 1.3, 0.5));
+        $nbt->setString("team_name", strval($teamDataOnMap->getName()));
+        $nbt->setString("map_name", $belongMapData->getName());
+        $nbt->setIntArray("spawn_point", [$mapSpawnPoint->getX(), $mapSpawnPoint->getY(), $mapSpawnPoint->getZ()]);
 
-    private string $userName;
-    private TeamGameMapData $belongMapData;
-    private TeamDataOnMap $teamData;
-    private Vector3 $mapSpawnPoint;
-
-    public function __construct(string $userName, TeamGameMapData $belongMapData, TeamDataOnMap $teamDataOnMap, Vector3 $mapSpawnPoint, Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->userName = $userName;
-        $this->belongMapData = $belongMapData;
-        $this->teamData = $teamDataOnMap;
-        $this->mapSpawnPoint = $mapSpawnPoint;
-        $this->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
-        $this->setNameTagAlwaysVisible(true);
+        $entity = new self($player->getLevel(), $nbt);
+        $entity->setNameTagAlwaysVisible(true);
+        $entity->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
+        return $entity;
     }
 
-    public function getBelongMapData(): TeamGameMapData {
-        return $this->belongMapData;
-    }
-
-    public function getUserName(): string {
-        return $this->userName;
+    public function getBelongMapName(): string {
+        return $this->namedtag->getString("map_name");
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteTeamSpawnPointHotbarMenu($player, $this->belongMapData, $this->teamData, $this->mapSpawnPoint);
-        $menu->send();
-    }
+        $belongMapData = TeamGameMapDataRepository::loadByName($this->namedtag->getString("map_name"));
+        $teamData = $belongMapData->getTeamData($this->namedtag->getString("team_name"));
+        $array = $this->namedtag->getIntArray("spawn_point");
+        $mapSpawnPoint = new Vector3($array[0], $array[1], $array[2]);
 
-    public function getMapSpawnPoint(): Vector3 {
-        return $this->mapSpawnPoint;
+        $menu = new DeleteTeamSpawnPointHotbarMenu($player, $belongMapData, $teamData, $mapSpawnPoint);
+        $menu->send();
     }
 }

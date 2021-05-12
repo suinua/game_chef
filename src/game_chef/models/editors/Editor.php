@@ -8,10 +8,6 @@ use game_chef\models\map_data\MapData;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use pocketmine\scheduler\TaskHandler;
 use pocketmine\scheduler\TaskScheduler;
@@ -65,25 +61,6 @@ abstract class Editor
     abstract protected function summonMarkerEntity(Level $level, Vector3 $vector3): void;
 
     abstract protected function deleteAllMarkerEntity(Level $level): void;
-
-    protected function generateMarkerEntityNBT(Vector3 $vector3): CompoundTag {
-        return new CompoundTag('', [
-            'Pos' => new ListTag('Pos', [
-                new DoubleTag('', $vector3->getX() + 0.5),
-                new DoubleTag('', $vector3->getY() + 1.3),
-                new DoubleTag('', $vector3->getZ() + 0.5)
-            ]),
-            'Motion' => new ListTag('Motion', [
-                new DoubleTag('', 0),
-                new DoubleTag('', 0),
-                new DoubleTag('', 0)
-            ]),
-            'Rotation' => new ListTag('Rotation', [
-                new FloatTag("", 0),
-                new FloatTag("", 0)
-            ]),
-        ]);
-    }
 
     protected function summonParticle(Level $level, Vector3 $vector3): void {
         $center = $vector3->add(0.5, 1.3, 0.5);

@@ -5,9 +5,6 @@ namespace game_chef\pmmp\entities;
 
 
 use game_chef\models\map_data\CustomMapVectorData;
-use game_chef\models\map_data\MapData;
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 
 class CustomMapVectorDataMarkerEntity extends NPCBase
@@ -22,36 +19,19 @@ class CustomMapVectorDataMarkerEntity extends NPCBase
     public $eyeHeight = 1.0;
     protected $gravity = 0;
 
+    static function create(Player $player, CustomMapVectorData $customMapVectorData) : self {
+        $nbt = self::createBaseNBT($customMapVectorData->getVector3()->add(0.5, 1.3, 0.5));
+        $vector3 = $customMapVectorData->getVector3();
 
-    private string $userName;
-    private MapData $belongMapData;
-    private CustomMapVectorData $customMapVectorData;
-
-    public function __construct(string $userName, MapData $belongMapData, CustomMapVectorData $customMapVectorData, Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->userName = $userName;
-        $this->belongMapData = $belongMapData;
-        $this->customMapVectorData = $customMapVectorData;
-
-        $vector = $customMapVectorData->getVector3();
-        $this->setNameTag("{$customMapVectorData->getKey()} \n x:{$vector->getX()},y:{$vector->getY()},z:{$vector->getZ()}");
-        $this->setNameTagAlwaysVisible(true);
+        $entity = new self($player->getLevel(), $nbt);
+        $entity->setNameTagAlwaysVisible(true);
+        $entity->setNameTag("{$customMapVectorData->getKey()}\nx:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
+        return $entity;
     }
 
-    public function getBelongMapData(): MapData {
-        return $this->belongMapData;
-    }
-
-    public function getUserName(): string {
-        return $this->userName;
+    public function getBelongMapName(): string {
+        return $this->namedtag->getString("map_name");
     }
 
     public function onTap(Player $player): void {}
-
-    /**
-     * @return CustomMapVectorData
-     */
-    public function getCustomMapVectorData(): CustomMapVectorData {
-        return $this->customMapVectorData;
-    }
 }

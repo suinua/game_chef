@@ -51,9 +51,8 @@ class FFAGameMapSpawnPointEditor extends Editor
         }), 10);
     }
     protected function summonMarkerEntity(Level $level, Vector3 $vector3): void {
-        $nbt = $this->generateMarkerEntityNBT($vector3);
         if ($this->mapData instanceof FFAGameMapData) {
-            $marker = new FFAGameMapSpawnPointMarkerEntity($this->user, $this->mapData, $vector3, $level, $nbt);
+            $marker = FFAGameMapSpawnPointMarkerEntity::create($this->user, $this->mapData, $vector3);
             $marker->spawnTo($this->user);
         }
     }
@@ -61,7 +60,7 @@ class FFAGameMapSpawnPointEditor extends Editor
     protected function deleteAllMarkerEntity(Level $level): void {
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof FFAGameMapSpawnPointMarkerEntity) {
-                if ($entity->getBelongMapData()->getName() === $this->mapData->getName()) $entity->kill();
+                if ($entity->getBelongMapName() === $this->mapData->getName()) $entity->kill();
             }
         }
     }

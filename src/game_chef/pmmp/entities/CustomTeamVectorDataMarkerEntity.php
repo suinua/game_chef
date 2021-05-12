@@ -6,10 +6,6 @@ namespace game_chef\pmmp\entities;
 
 
 use game_chef\models\map_data\CustomTeamVectorData;
-use game_chef\models\map_data\MapData;
-use game_chef\models\map_data\TeamGameMapData;
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 
 class CustomTeamVectorDataMarkerEntity extends NPCBase
@@ -24,28 +20,19 @@ class CustomTeamVectorDataMarkerEntity extends NPCBase
     public $eyeHeight = 1.0;
     protected $gravity = 0;
 
+    static function create(Player $player, CustomTeamVectorData $customTeamVectorData) : self {
+        $nbt = self::createBaseNBT($customTeamVectorData->getVector3()->add(0.5, 1.3, 0.5));
+        $vector3 = $customTeamVectorData->getVector3();
+        $nbt->setIntArray("vector", [$vector3->getX(), $vector3->getY(), $vector3->getZ()]);
 
-    private string $userName;
-    private TeamGameMapData $belongMapData;
-    private CustomTeamVectorData $customTeamVectorData;
-
-    public function __construct(string $userName, TeamGameMapData $belongMapData, CustomTeamVectorData $customTeamVectorData, Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->userName = $userName;
-        $this->belongMapData = $belongMapData;
-        $this->customTeamVectorData = $customTeamVectorData;
-
-        $vector = $customTeamVectorData->getVector3();
-        $this->setNameTag("{$customTeamVectorData->getKey()} \n x:{$vector->getX()},y:{$vector->getY()},z:{$vector->getZ()}");
-        $this->setNameTagAlwaysVisible(true);
+        $entity = new self($player->getLevel(), $nbt);
+        $entity->setNameTagAlwaysVisible(true);
+        $entity->setNameTag("{$customTeamVectorData->getKey()} \nx:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
+        return $entity;
     }
 
-    public function getBelongMapData(): MapData {
-        return $this->belongMapData;
-    }
-
-    public function getUserName(): string {
-        return $this->userName;
+    public function getBelongMapName(): string {
+        return $this->namedtag->getString("map_name");
     }
 
     public function onTap(Player $player): void {}

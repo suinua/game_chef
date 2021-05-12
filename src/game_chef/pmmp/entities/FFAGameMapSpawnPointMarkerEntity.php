@@ -6,9 +6,9 @@ namespace game_chef\pmmp\entities;
 
 use game_chef\models\map_data\FFAGameMapData;
 use game_chef\pmmp\hotbar_menu\DeleteFFASpawnPointHotbarMenu;
-use pocketmine\level\Level;
+use game_chef\repository\FFAGameMapDataRepository;
+use pocketmine\entity\Entity;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 
 //TODO: テレポートできないように(座標を変えさせない)
@@ -24,34 +24,27 @@ class FFAGameMapSpawnPointMarkerEntity extends NPCBase
     public $eyeHeight = 1.0;
     protected $gravity = 0;
 
+    static function create(Player $player, FFAGameMapData $belongMapData, Vector3 $mapSpawnPoint) : self {
+        $nbt = Entity::createBaseNBT($mapSpawnPoint->add(0.5, 1.3, 0.5));
+        $nbt->setString("map_name", $belongMapData->getName());
+        $nbt->setIntArray("spawn_point", [$mapSpawnPoint->getX(), $mapSpawnPoint->getY(), $mapSpawnPoint->getZ()]);
 
-    private string $userName;
-    private FFAGameMapData $belongMapData;
-    private Vector3 $mapSpawnPoint;
-
-    public function __construct(string $userName, FFAGameMapData $belongMapData, Vector3 $mapSpawnPoint, Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->userName = $userName;
-        $this->belongMapData = $belongMapData;
-        $this->mapSpawnPoint = $mapSpawnPoint;
-        $this->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
-        $this->setNameTagAlwaysVisible(true);
+        $entity = new self($player->getLevel(), $nbt);
+        $entity->setNameTagAlwaysVisible(true);
+        $entity->setNameTag("x:{$mapSpawnPoint->getX()},y:{$mapSpawnPoint->getY()},z:{$mapSpawnPoint->getZ()}");
+        return $entity;
     }
 
-    public function getBelongMapData(): FFAGameMapData {
-        return $this->belongMapData;
-    }
-
-    public function getUserName(): string {
-        return $this->userName;
+    public function getBelongMapName(): string {
+        return $this->namedtag->getString("map_name");
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteFFASpawnPointHotbarMenu($player, $this->belongMapData, $this->mapSpawnPoint);
-        $menu->send();
-    }
+        $belongMapData = FFAGameMapDataRepository::loadByName($this->namedtag->getString("map_name"));
+        $array = $this->namedtag->getIntArray("spawn_point");
+        $mapSpawnPoint = new Vector3($array[0], $array[1], $array[2]);
 
-    public function getMapSpawnPoint(): Vector3 {
-        return $this->mapSpawnPoint;
+        $menu = new DeleteFFASpawnPointHotbarMenu($player, $belongMapData, $mapSpawnPoint);
+        $menu->send();
     }
 }

@@ -5,13 +5,11 @@ namespace game_chef\pmmp\entities;
 
 
 use game_chef\models\map_data\CustomTeamArrayVectorData;
-use game_chef\models\map_data\MapData;
 use game_chef\models\map_data\TeamDataOnMap;
 use game_chef\models\map_data\TeamGameMapData;
 use game_chef\pmmp\hotbar_menu\DeleteCustomTeamArrayVectorDataHotbarMenu;
-use pocketmine\level\Level;
+use game_chef\repository\TeamGameMapDataRepository;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 
 class CustomTeamArrayVectorDataMarkerEntity extends NPCBase
@@ -26,39 +24,32 @@ class CustomTeamArrayVectorDataMarkerEntity extends NPCBase
     public $eyeHeight = 1.0;
     protected $gravity = 0;
 
+    static function create(Player $player, TeamGameMapData $belongMapData, TeamDataOnMap $teamDataOnMap, CustomTeamArrayVectorData $customTeamArrayVectorData, Vector3 $vector3) : self {
+        $nbt = self::createBaseNBT($vector3->add(0.5, 1.3, 0.5));
+        $nbt->setString("team_name", $teamDataOnMap->getName());
+        $nbt->setString("map_name", $belongMapData->getName());
+        $nbt->setString("key", $customTeamArrayVectorData->getKey());
+        $nbt->setIntArray("vector", [$vector3->getX(), $vector3->getY(), $vector3->getZ()]);
 
-    private string $userName;
-    private TeamGameMapData $belongMapData;
-    private TeamDataOnMap  $teamData;
-    private CustomTeamArrayVectorData $customTeamArrayVectorData;
-    private Vector3 $vector3;
-
-    public function __construct(string $userName, TeamGameMapData $belongMapData, TeamDataOnMap $teamData, CustomTeamArrayVectorData $customTeamArrayVectorData, Vector3 $vector3, Level $level, CompoundTag $nbt) {
-        parent::__construct($level, $nbt);
-        $this->userName = $userName;
-        $this->belongMapData = $belongMapData;
-        $this->teamData = $teamData;
-        $this->customTeamArrayVectorData = $customTeamArrayVectorData;
-        $this->vector3 = $vector3;
-
-        $this->setNameTag("x:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
-        $this->setNameTagAlwaysVisible(true);
+        $entity = new self($player->getLevel(), $nbt);
+        $entity->setNameTagAlwaysVisible(true);
+        $entity->setNameTag("x:{$vector3->getX()},y:{$vector3->getY()},z:{$vector3->getZ()}");
+        return $entity;
     }
 
-    public function getBelongMapData(): MapData {
-        return $this->belongMapData;
-    }
-
-    public function getUserName(): string {
-        return $this->userName;
+    public function getBelongMapName(): string {
+        return $this->namedtag->getString("map_name");
     }
 
     public function onTap(Player $player): void {
-        $menu = new DeleteCustomTeamArrayVectorDataHotbarMenu($player, $this->belongMapData, $this->teamData, $this->customTeamArrayVectorData, $this->vector3);
-        $menu->send();
-    }
+        $belongMapData = TeamGameMapDataRepository::loadByName($this->namedtag->getString("map_name"));
+        $teamData = $belongMapData->getTeamData($this->namedtag->getString("team_name"));
+        $array = $this->namedtag->getIntArray("vector");
+        $customTeamArrayVectorData = $teamData->getCustomArrayVectorData($this->namedtag->getString("key"));
+        $vector3 = new Vector3($array[0], $array[1], $array[2]);
 
-    public function getVector3(): Vector3 {
-        return $this->vector3;
+
+        $menu = new DeleteCustomTeamArrayVectorDataHotbarMenu($player, $belongMapData, $teamData, $customTeamArrayVectorData, $vector3);
+        $menu->send();
     }
 }

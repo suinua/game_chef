@@ -53,9 +53,8 @@ class CustomTeamVectorDataEditor extends Editor
     }
 
     protected function summonMarkerEntity(Level $level, Vector3 $vector3): void {
-        $nbt = $this->generateMarkerEntityNBT($vector3);
         if ($this->mapData instanceof TeamGameMapData) {
-            $marker = new CustomTeamVectorDataMarkerEntity($this->user, $this->mapData, $this->customTeamVectorData, $level, $nbt);
+            $marker = CustomTeamVectorDataMarkerEntity::create($this->user, $this->customTeamVectorData,);
             $marker->spawnTo($this->user);
         }
     }
@@ -63,7 +62,7 @@ class CustomTeamVectorDataEditor extends Editor
     protected function deleteAllMarkerEntity(Level $level): void {
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof CustomTeamVectorDataMarkerEntity) {
-                if ($entity->getBelongMapData()->getName() === $this->mapData->getName()) $entity->kill();
+                if ($entity->getBelongMapName() === $this->mapData->getName()) $entity->kill();
             }
         }
     }

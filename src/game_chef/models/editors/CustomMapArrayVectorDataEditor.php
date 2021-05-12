@@ -60,15 +60,14 @@ class CustomMapArrayVectorDataEditor extends Editor
     }
 
     protected function summonMarkerEntity(Level $level, Vector3 $vector3): void {
-        $nbt = $this->generateMarkerEntityNBT($vector3);
-        $marker = new CustomMapArrayVectorDataMarkerEntity($this->user->getName(), $this->mapData, $this->arrayVectorData, $vector3, $level, $nbt);
+        $marker = CustomMapArrayVectorDataMarkerEntity::create($this->user, $this->mapData, $this->arrayVectorData, $vector3);
         $marker->spawnTo($this->user);
     }
 
     protected function deleteAllMarkerEntity(Level $level): void {
         foreach ($level->getEntities() as $entity) {
             if ($entity instanceof CustomMapArrayVectorDataMarkerEntity) {
-                if ($entity->getBelongMapData()->getName() === $this->mapData->getName()) $entity->kill();
+                if ($entity->getBelongMapName() === $this->mapData->getName()) $entity->kill();
             }
         }
     }
