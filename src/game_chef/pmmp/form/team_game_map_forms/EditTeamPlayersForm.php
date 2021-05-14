@@ -58,7 +58,6 @@ class EditTeamPlayersForm extends CustomForm
         $this->teamData->setMinPlayers($min);
 
         try {
-            $this->map->updateTeamData($this->teamData);
             TeamGameMapDataRepository::update($this->map);
             $this->map = TeamGameMapDataRepository::loadByName($this->map->getName());
         } catch (\Exception $e) {

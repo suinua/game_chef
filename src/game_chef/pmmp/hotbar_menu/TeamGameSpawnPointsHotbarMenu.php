@@ -31,7 +31,6 @@ class TeamGameSpawnPointsHotbarMenu extends HotbarMenu
                 function (Player $player, Block $block) {
                     try {
                         $this->teamDataOnMap->addSpawnPoint($block->asVector3());
-                        $this->mapData->updateTeamData($this->teamDataOnMap);
                         TeamGameMapDataRepository::update($this->mapData);
 
                         $editor = EditorsStore::get($player->getName());

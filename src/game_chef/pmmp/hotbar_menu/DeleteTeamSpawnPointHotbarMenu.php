@@ -36,7 +36,6 @@ class DeleteTeamSpawnPointHotbarMenu extends HotbarMenu
                     function (Player $player) use ($targetSpawnPoint) {
                         try {
                             $this->teamData->deleteSpawnPoint($targetSpawnPoint);
-                            $this->mapData->updateTeamData($this->teamData);
                             TeamGameMapDataRepository::update($this->mapData);
 
                             $editor = EditorsStore::get($player->getName());

@@ -36,7 +36,6 @@ class CustomTeamVectorDataHotbarMenu extends HotbarMenu
                     try {
                         $this->customTeamVectorData = new CustomTeamVectorData($this->customTeamVectorData->getKey(), $this->teamData->getName(), $block->asVector3());
                         $this->teamData->updateCustomVectorData($this->customTeamVectorData);
-                        $this->teamGameMapData->updateTeamData($this->teamData);
                         TeamGameMapDataRepository::update($this->teamGameMapData);
 
                         $editor = EditorsStore::get($player->getName());
@@ -52,7 +51,6 @@ class CustomTeamVectorDataHotbarMenu extends HotbarMenu
                 "削除",
                 function (Player $player) {
                     $this->teamData->deleteCustomVectorData($this->customTeamVectorData);
-                    $this->teamGameMapData->updateTeamData($this->teamData);
                     TeamGameMapDataRepository::update($this->teamGameMapData);
 
                     $this->close();

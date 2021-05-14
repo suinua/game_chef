@@ -110,20 +110,4 @@ class TeamGameMapData extends MapData
 
         $this->teamDataList[] = $teamDataOnMap;
     }
-
-    /**
-     * @param TeamDataOnMap $target
-     * @throws \Exception
-     */
-    public function updateTeamData(TeamDataOnMap $target) {
-        $isExist = false;
-        foreach ($this->teamDataList as $key => $teamData) {
-            if ($teamData->getName() === $target->getName()) {
-                $isExist = true;
-                $this->teamDataList[$key] = $target;
-            }
-        }
-
-        if (!$isExist) throw  new \Exception("存在しないチーム({$target->getName()})を更新することはできません");
-    }
 }

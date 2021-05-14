@@ -34,7 +34,6 @@ class DeleteCustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
                     function (Player $player) use ($target) {
                         $this->customTeamArrayVectorData->deleteVector3($target);
                         $this->teamData->updateCustomArrayVectorData($this->customTeamArrayVectorData);
-                        $this->mapData->updateTeamData($this->teamData);
 
                         TeamGameMapDataRepository::update($this->mapData);
                         $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());

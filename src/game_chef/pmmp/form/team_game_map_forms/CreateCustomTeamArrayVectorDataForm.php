@@ -32,7 +32,6 @@ class CreateCustomTeamArrayVectorDataForm extends CustomForm
         $key = $this->keyElement->getResult();
         try {
             $this->teamData->addCustomArrayVectorData(new CustomTeamArrayVectorData($key, $this->teamData->getName(), []));
-            $this->mapData->updateTeamData($this->teamData);
             TeamGameMapDataRepository::update($this->mapData);
             $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
         } catch (\Exception $e) {

@@ -36,7 +36,6 @@ class CustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
                     try {
                         $this->customTeamArrayVectorData->addVector3($block->asVector3());
                         $this->teamData->updateCustomArrayVectorData($this->customTeamArrayVectorData);
-                        $this->mapData->updateTeamData($this->teamData);
 
                         TeamGameMapDataRepository::update($this->mapData);
                         $editor = EditorsStore::get($player->getName());
