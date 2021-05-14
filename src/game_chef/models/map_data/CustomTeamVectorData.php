@@ -21,6 +21,8 @@ class CustomTeamVectorData extends CustomTeamData
 
     public function toJson(): array {
         return [
+            "key" => $this->key,
+            "team_name" => $this->teamName,
             "x" => $this->vector3->getX(),
             "y" => $this->vector3->getY(),
             "z" => $this->vector3->getZ(),
