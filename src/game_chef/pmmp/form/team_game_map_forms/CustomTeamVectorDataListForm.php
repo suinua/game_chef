@@ -13,8 +13,13 @@ use pocketmine\Player;
 
 class CustomTeamVectorDataListForm extends SimpleForm
 {
+    private TeamGameMapData $teamGameMapData;
+    private TeamDataOnMap $teamData;
 
     public function __construct(TeamGameMapData $teamGameMapData, TeamDataOnMap $teamDataOnMap) {
+        $this->teamGameMapData = $teamGameMapData;
+        $this->teamData = $teamDataOnMap;
+
         $buttons = [
             new SimpleFormButton(
                 "追加",
@@ -39,5 +44,6 @@ class CustomTeamVectorDataListForm extends SimpleForm
     }
 
     function onClickCloseButton(Player $player): void {
+        $player->sendForm(new TeamDataDetailForm($this->teamGameMapData, $this->teamData));
     }
 }
