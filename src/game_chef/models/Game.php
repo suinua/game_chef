@@ -55,8 +55,8 @@ class Game
     }
 
     public function finished(): void {
-        if ($this->status->equals(GameStatus::Started())) {
-            throw new \LogicException("始まっている試合しか終了できません");
+        if (!$this->status->equals(GameStatus::Started())) {
+            throw new \LogicException("開始状態(Started)の試合しか終了できません。この試合は{$this->status}状態です");
         }
 
         $this->status = GameStatus::Finished();
