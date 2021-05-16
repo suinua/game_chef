@@ -10,6 +10,8 @@ use game_chef\models\GameType;
 use game_chef\models\TeamGameMap;
 use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
+use pocketmine\nbt\BigEndianNBTStream;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Server;
 
 class MapService
@@ -66,6 +68,7 @@ class MapService
     static private function createInstantWorld(string $levelName): string {
         $uniqueLevelName = $levelName . uniqid() . self::GameChefWoldKey;
         self::copyFolder(DataFolderPath::$worlds . $levelName, DataFolderPath::$worlds . $uniqueLevelName);
+        self::fixLevelName($uniqueLevelName);
         Server::getInstance()->loadLevel($uniqueLevelName);
 
         return $uniqueLevelName;
@@ -100,6 +103,15 @@ class MapService
                 closedir($handle);
             }
         }
+    }
+
+    static private function fixLevelName(string $levelName): void {
+        $nbt = new BigEndianNBTStream();
+        $levelData = $nbt->readCompressed(file_get_contents(DataFolderPath::$worlds . $levelName . DIRECTORY_SEPARATOR . "level.dat"));
+        $levelData = $levelData->getCompoundTag("Data");
+        $levelData->setString("LevelName", $levelName);
+        $nbt = new BigEndianNBTStream();
+        file_put_contents(DataFolderPath::$worlds . $levelName . DIRECTORY_SEPARATOR . "level.dat", $nbt->writeCompressed(new CompoundTag("", [$levelData])));
     }
 
     static function deleteInstantWorld(string $levelName): void {
