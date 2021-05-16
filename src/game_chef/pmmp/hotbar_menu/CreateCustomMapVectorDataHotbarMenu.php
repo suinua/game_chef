@@ -29,10 +29,8 @@ class CreateCustomMapVectorDataHotbarMenu extends HotbarMenu
                         $mapData->addCustomMapVectorData(new CustomMapVectorData($key, $block->asVector3()));
                         if ($mapData instanceof TeamGameMapData) {
                             TeamGameMapDataRepository::update($mapData);
-                            $mapData = TeamGameMapDataRepository::loadByName($mapData->getName());
                         } else if ($mapData instanceof FFAGameMapData) {
                             FFAGameMapDataRepository::update($mapData);
-                            $mapData = FFAGameMapDataRepository::loadByName($mapData->getName());
                         }
                     } catch (\Exception $exception) {
                         $player->sendMessage($exception->getMessage());

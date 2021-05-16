@@ -35,10 +35,8 @@ class DeleteCustomMapArrayVectorDataHotbarMenu extends HotbarMenu
 
                         if ($this->mapData instanceof TeamGameMapData) {
                             TeamGameMapDataRepository::update($this->mapData);
-                            $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
                         } else if ($this->mapData instanceof FFAGameMapData) {
                             FFAGameMapDataRepository::update($this->mapData);
-                            $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
                         }
 
                         $editor = EditorsStore::get($player->getName());

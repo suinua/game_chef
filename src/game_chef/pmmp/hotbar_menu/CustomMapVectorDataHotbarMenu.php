@@ -38,10 +38,8 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
                         $this->mapData->updateCustomMapVectorData($this->customMapVectorData);
                         if ($this->mapData instanceof TeamGameMapData) {
                             TeamGameMapDataRepository::update($this->mapData);
-                            $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
                         } else if ($this->mapData instanceof FFAGameMapData) {
                             FFAGameMapDataRepository::update($this->mapData);
-                            $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
                         }
 
                         $editor = EditorsStore::get($player->getName());
@@ -59,10 +57,8 @@ class CustomMapVectorDataHotbarMenu extends HotbarMenu
                     $this->mapData->deleteCustomMapVectorData($this->customMapVectorData);
                     if ($this->mapData instanceof TeamGameMapData) {
                         TeamGameMapDataRepository::update($this->mapData);
-                        $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
                     } else if ($this->mapData instanceof FFAGameMapData) {
                         FFAGameMapDataRepository::update($this->mapData);
-                        $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
                     }
                     $this->close();
                     $player->sendForm(new CustomMapVectorDataListForm($this->mapData));

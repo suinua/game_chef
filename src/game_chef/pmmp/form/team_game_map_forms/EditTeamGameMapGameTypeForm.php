@@ -37,8 +37,6 @@ class EditTeamGameMapGameTypeForm extends CustomForm
             $gameTypeList = GameTypeListFromString::execute($this->gameTypeListElement->getResult());
             $this->teamGameMapData->setAdaptedGameTypes($gameTypeList);
             TeamGameMapDataRepository::update($this->teamGameMapData);
-
-            $this->teamGameMapData = TeamGameMapDataRepository::loadByName($this->teamGameMapData->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;

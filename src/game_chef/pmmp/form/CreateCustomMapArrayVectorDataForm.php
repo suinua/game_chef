@@ -33,10 +33,8 @@ class CreateCustomMapArrayVectorDataForm extends CustomForm
             $this->mapData->addCustomMapArrayVectorData(new CustomMapArrayVectorData($key, []));
             if ($this->mapData instanceof TeamGameMapData) {
                 TeamGameMapDataRepository::update($this->mapData);
-                $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
             } else if ($this->mapData instanceof FFAGameMapData) {
                 FFAGameMapDataRepository::update($this->mapData);
-                $this->mapData = FFAGameMapDataRepository::loadByName($this->mapData->getName());
             }
 
         } catch (\Exception $e) {

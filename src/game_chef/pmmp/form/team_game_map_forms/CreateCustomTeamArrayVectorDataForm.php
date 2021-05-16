@@ -33,7 +33,6 @@ class CreateCustomTeamArrayVectorDataForm extends CustomForm
         try {
             $this->teamData->addCustomArrayVectorData(new CustomTeamArrayVectorData($key, $this->teamData->getName(), []));
             TeamGameMapDataRepository::update($this->mapData);
-            $this->mapData = TeamGameMapDataRepository::loadByName($this->mapData->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
         }

@@ -35,7 +35,6 @@ class DeleteFFASpawnPointHotbarMenu extends HotbarMenu
                         try {
                             $this->mapData->deleteSpawnPoint($spawnPoint);
                             FFAGameMapDataRepository::update($this->mapData);
-                            $this->mapData = FFAGameMapDataRepository::loadByName($mapData->getName());
 
                             $editor = EditorsStore::get($player->getName());
                             $editor->reloadMap();

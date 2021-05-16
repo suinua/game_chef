@@ -59,7 +59,6 @@ class EditTeamPlayersForm extends CustomForm
 
         try {
             TeamGameMapDataRepository::update($this->map);
-            $this->map = TeamGameMapDataRepository::loadByName($this->map->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;

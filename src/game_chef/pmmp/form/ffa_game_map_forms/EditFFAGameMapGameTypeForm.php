@@ -38,7 +38,6 @@ class EditFFAGameMapGameTypeForm extends CustomForm
             $this->ffaGameMapData->setAdaptedGameTypes($gameTypeList);
 
             FFAGameMapDataRepository::update($this->ffaGameMapData);
-            $this->ffaGameMapData = FFAGameMapDataRepository::loadByName($this->ffaGameMapData->getName());
         } catch (\Exception $e) {
             $player->sendMessage($e->getMessage());
             return;
