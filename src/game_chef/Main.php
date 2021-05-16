@@ -13,6 +13,8 @@ use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
 use game_chef\pmmp\form\MainMapForm;
 use game_chef\pmmp\hotbar_menu\HotbarMenuItem;
+use game_chef\pmmp\private_name_tag\PrivateNameTag;
+use game_chef\pmmp\private_name_tag\PrivateNameTagListener;
 use game_chef\services\GameService;
 use game_chef\services\MapService;
 use game_chef\store\EditorsStore;
@@ -20,6 +22,7 @@ use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -47,6 +50,8 @@ class Main extends PluginBase implements Listener
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getPluginManager()->registerEvents(new BossbarListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new PrivateNameTagListener(), $this);
+        Entity::registerEntity(PrivateNameTag::class, true, ['PrivateNameTag']);
     }
 
     public function onDisable() {
