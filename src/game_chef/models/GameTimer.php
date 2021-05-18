@@ -28,7 +28,7 @@ class GameTimer
     }
 
     public function start(TaskScheduler $scheduler): void {
-        $this->handler = $scheduler->scheduleDelayedRepeatingTask(new ClosureTask(function (int $currentTick): void {
+        $this->handler = $scheduler->scheduleRepeatingTask(new ClosureTask(function (int $currentTick): void {
             $this->elapsedTime++;
             (new UpdatedGameTimerEvent($this->gameId, $this->gameType, $this->timeLimit, $this->elapsedTime))->call();
 
@@ -37,7 +37,7 @@ class GameTimer
                     GameService::finish($this->gameId);
                 }
             }
-        }), 20, 20);
+        }), 20);
     }
 
     public function stop(): void {
