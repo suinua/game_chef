@@ -4,6 +4,8 @@
 namespace game_chef\pmmp\bossbar;
 
 
+use game_chef\models\GameType;
+
 class BossbarType
 {
     private string $value;
@@ -24,5 +26,9 @@ class BossbarType
      */
     public function __toString(): string {
         return $this->value;
+    }
+
+    public function toGameType(): GameType {
+        return new GameType($this->value);
     }
 }
