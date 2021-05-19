@@ -10,6 +10,7 @@ use game_chef\models\TeamGame;
 use game_chef\pmmp\bossbar\BossbarListener;
 use game_chef\pmmp\entities\CustomMapArrayVectorDataMarkerEntity;
 use game_chef\pmmp\entities\NPCBase;
+use game_chef\pmmp\events\PlayerAttackPlayerEvent;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
 use game_chef\pmmp\form\MainMapForm;
 use game_chef\pmmp\hotbar_menu\HotbarMenuItem;
@@ -107,9 +108,23 @@ class Main extends PluginBase implements Listener
 
                 $game = GamesStore::getById($damagedPlayerData->getBelongGameId());
                 if ($game instanceof TeamGame) {
-                    if (!$game->getFriendlyFire()) {
-                        $event->setCancelled();
-                        return;
+                    //同士討ちかどうか
+                    $isFriendlyFire = $damagedPlayerData->getBelongTeamId()->equals($attackingPlayerData->getBelongTeamId());
+                    if ($isFriendlyFire) {
+                        //フレンドリーファイアーOFFならキャンセル
+                        if (!$game->getFriendlyFire()) {
+                            $event->setCancelled();
+                            return;
+                        }
+
+                        $ev = new PlayerAttackPlayerEvent($game->getId(), $game->getType(), $attackingPlayer, $damagedPlayer, $isFriendlyFire, $event->getCause(), $event->getBaseDamage(), $event->getKnockBack());
+                        $ev->call();
+
+                        if ($ev->isCancelled()) {
+                            $event->setCancelled();
+                        } else if (!$damagedPlayer->isAlive()) {
+                            $event->setCancelled();
+                        }
                     }
                 }
             } catch (\Exception $exception) {
