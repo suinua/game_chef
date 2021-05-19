@@ -12,10 +12,12 @@ PvPゲーム作成を補助するプラグインです
 `GameType`とはユーザーが指定するもので、ゲームの種類を表しています  
 例:GameType("TeamDeathMatch"),GameType("CorePvP")  
 これのおかげで複数種類のゲームを同時に進行することを可能にしています  
-GameTypeはユニークなものでないので、TDMを４つ、CorePvPを5つ同時進行することが可能です  
+GameTypeはユニークなものでないので、複数の試合タイプを複数個同時進行することが可能です  
+例:TeamDeathMatchを4つ CorePvPを3つ　同時進行   
 
 ## ワールドの仕様について
 ゲームで仕様するワールドはオリジナルをコピーしたものになります  
+例:BattleMap(オリジナル) → BattleMap+848d24d53c4d(uuid)+forGameChef    
 試合が終了するか、鯖を閉じた際にコピーされたワールドはすべて削除されます  
 
 ## マップについて
@@ -99,3 +101,4 @@ FFAPlayerTeamのチーム名はプレイヤー名です
 [ブロックが撃てる弓PVP(FFA,CorePVP)](https://github.com/suinua/BlockShooter)  
 
 # 依存関係
+[FormBuilder](https://github.com/suinua/form_builder)  
