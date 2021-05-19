@@ -92,11 +92,10 @@ FFAPlayerTeamのチーム名はプレイヤー名です
 # サンプル
 #### Team Game
 [チームデスマッチ(動きません)](https://github.com/suinua/tdm)  
-[CorePVP]()
+[CorePVPのベース](https://github.com/suinua/core_game)
 
 #### FFA Game
-[ワンパン弓PVP](https://github.com/cafett/Arch)  
-[SkyWars]()  
-[WeaponGame]()  
+[ワンパン弓PVP](https://github.com/suinua/Arch)  
+[ブロックが撃てる弓PVP(FFA,CorePVP)](https://github.com/suinua/BlockShooter)  
 
 # 依存関係
