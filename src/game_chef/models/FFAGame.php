@@ -95,7 +95,7 @@ class FFAGame extends Game
 
         if ($event->isCancelled()) return;
 
-        $team->addScore($score);
+        $team->addScore($event->getScore());
         if ($this->victoryScore === null) return;
         if ($team->getScore()->isBiggerThan($this->victoryScore)) {
             GameService::finish($this->id);

@@ -95,10 +95,13 @@ class TeamGame extends Game
     }
 
     public function addScore(TeamId $teamId, Score $score): void {
-        $this->getTeamById($teamId)->addScore($score);
         $team = $this->getTeamById($teamId);
+        $event = new AddScoreEvent($this->id, $this->type, $teamId, $team->getScore(), $score);
+        $event->call();
+        if ($event->isCancelled()) return;
 
-        (new AddScoreEvent($this->id, $this->type, $teamId, $team->getScore(), $score))->call();
+        $this->getTeamById($teamId)->addScore($event->getScore());
+
         if ($this->victoryScore === null) return;
         if ($team->getScore()->isBiggerThan($this->victoryScore)) {
             GameService::finish($this->id);
