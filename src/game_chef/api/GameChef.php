@@ -8,6 +8,7 @@ use game_chef\models\FFAPlayerTeam;
 use game_chef\models\Game;
 use game_chef\models\GameId;
 use game_chef\models\GameStatus;
+use game_chef\models\GameTimer;
 use game_chef\models\GameType;
 use game_chef\models\PlayerData;
 use game_chef\models\Score;
@@ -21,6 +22,7 @@ use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
+use game_chef\store\GameTimersStore;
 use game_chef\store\PlayerDataStore;
 use game_chef\utilities\SortFFATeamsByScore;
 use game_chef\utilities\SortTeamsByScore;
@@ -270,5 +272,9 @@ class GameChef
      */
     static function sortFFATeamsByScore(array $teams): array {
         return SortFFATeamsByScore::sort($teams);
+    }
+
+    static function findGameTimer(GameId $gameId): ?GameTimer {
+        return GameTimersStore::getById($gameId);
     }
 }

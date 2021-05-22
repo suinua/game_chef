@@ -53,4 +53,12 @@ class GameTimer
     public function getGameId(): GameId {
         return $this->gameId;
     }
+
+    public function getTimeLimit(): ?int {
+        return $this->timeLimit;
+    }
+
+    public function getElapsedTime(): int {
+        return $this->elapsedTime;
+    }
 }

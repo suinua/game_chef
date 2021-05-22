@@ -31,7 +31,7 @@ class GameTimersStore
         unset(self::$gameTimers[strval($gameId)]);
     }
 
-    static function getById(GameId $gameId): ?GameTimer {
+    static function getById(GameId $gameId): GameTimer {
         if (!array_key_exists(strval($gameId), self::$gameTimers)) {
             throw new \LogicException("そのタイマー($gameId)の試合は存在しません");
         }
