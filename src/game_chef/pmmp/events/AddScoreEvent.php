@@ -16,15 +16,15 @@ class AddScoreEvent extends Event implements Cancellable
     private GameId $gameId;
     private GameType $gameType;
     private TeamId $teamId;
-    private Score $totalScore;
-    private Score $score;
+    private Score $currentScore;
+    private Score $addScore;
 
     public function __construct(GameId $gameId, GameType $gameType, TeamId $teamId, Score $totalScore, Score $score) {
         $this->gameId = $gameId;
         $this->gameType = $gameType;
         $this->teamId = $teamId;
-        $this->totalScore = $totalScore;
-        $this->score = $score;
+        $this->currentScore = $totalScore;
+        $this->addScore = $score;
     }
 
     public function getGameId(): GameId {
@@ -39,15 +39,15 @@ class AddScoreEvent extends Event implements Cancellable
         return $this->teamId;
     }
 
-    public function getTotalScore(): Score {
-        return $this->totalScore;
+    public function getCurrentScore(): Score {
+        return $this->currentScore;
     }
 
-    public function getScore(): Score {
-        return $this->score;
+    public function getAddScore(): Score {
+        return $this->addScore;
     }
 
-    public function setScore(Score $score): void {
-        $this->score = $score;
+    public function setAddScore(Score $addScore): void {
+        $this->addScore = $addScore;
     }
 }
