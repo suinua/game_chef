@@ -26,7 +26,9 @@ use game_chef\store\GameTimersStore;
 use game_chef\store\PlayerDataStore;
 use game_chef\utilities\SortFFATeamsByScore;
 use game_chef\utilities\SortTeamsByScore;
+use pocketmine\level\Level;
 use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\plugin\PluginLogger;
 use pocketmine\scheduler\TaskScheduler;
@@ -57,7 +59,7 @@ class GameChef
         GameService::finish($gameId);
     }
 
-    static function discardGame(GameId $gameId) : void {
+    static function discardGame(GameId $gameId): void {
         GameService::discard($gameId);
     }
 
@@ -276,5 +278,65 @@ class GameChef
 
     static function findGameTimer(GameId $gameId): ?GameTimer {
         return GameTimersStore::getById($gameId);
+    }
+
+    /**
+     * @param GameId $gameId
+     * @param TeamId[] $allyTeamIds
+     * @param Vector3 $center
+     * @param float $distance
+     * @return Player[]
+     */
+    static function getAroundTeamPlayers(GameId $gameId, array $allyTeamIds, Vector3 $center, float $distance): array {
+        $teamIds = array_map(fn(TeamId $teamId) => strval($teamId), $allyTeamIds);
+
+        $players = [];
+        $map = GamesStore::getById($gameId)->getMap();
+        $level = Server::getInstance()->getLevelByName($map->getLevelName());
+        foreach ($level->getPlayers() as $player) {
+            if ($center->distance($player->asVector3()) > $distance) continue;
+            $playerData = PlayerDataStore::getByName($player->getName());
+
+            //試合に参加しているか
+            if ($playerData->getBelongGameId() === null) continue;
+            if (!$playerData->getBelongGameId()->equals($gameId)) continue;
+
+            $teamId = $playerData->getBelongTeamId();
+            if (in_array($teamId, $teamIds)) {
+                $players[] = $player;
+            }
+        }
+
+        return $players;
+    }
+
+    /**
+     * @param GameId $gameId
+     * @param TeamId[] $allyTeamIds
+     * @param Vector3 $center
+     * @param float $distance
+     * @return Player[]
+     */
+    static function getAroundEnemies(GameId $gameId, array $allyTeamIds, Vector3 $center, float $distance): array {
+        $teamIds = array_map(fn(TeamId $teamId) => strval($teamId), $allyTeamIds);
+
+        $players = [];
+        $map = GamesStore::getById($gameId)->getMap();
+        $level = Server::getInstance()->getLevelByName($map->getLevelName());
+        foreach ($level->getPlayers() as $player) {
+            if ($center->distance($player->asVector3()) > $distance) continue;
+            $playerData = PlayerDataStore::getByName($player->getName());
+
+            //試合に参加しているか
+            if ($playerData->getBelongGameId() === null) continue;
+            if (!$playerData->getBelongGameId()->equals($gameId)) continue;
+
+            $teamId = $playerData->getBelongTeamId();
+            if (!in_array($teamId, $teamIds)) {
+                $players[] = $player;
+            }
+        }
+
+        return $players;
     }
 }
