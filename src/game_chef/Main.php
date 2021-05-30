@@ -189,12 +189,9 @@ class Main extends PluginBase implements Listener
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
         if ($item instanceof HotbarMenuItem) {
-            if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-                $item->onTapBlock($player, $event->getBlock());
-            } else {
+            if (in_array($event->getAction(), [PlayerInteractEvent::RIGHT_CLICK_AIR, PlayerInteractEvent::LEFT_CLICK_AIR])) {
                 $item->onTap($player);
             }
-            $event->setCancelled();
         }
     }
 

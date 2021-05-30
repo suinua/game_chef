@@ -38,7 +38,7 @@ class FFAGameMapDetailForm extends SimpleForm
                     try {
                         EditorsStore::add($player->getName(), $editor);
                     } catch (\Exception $e) {
-                        $player->sendMessage($e);
+                        $player->sendMessage($e->getMessage());
                         return;
                     }
 

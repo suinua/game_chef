@@ -64,7 +64,7 @@ class CustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
             EditorsStore::add($this->player->getName(), $editor);
             $editor->start();
         } catch (\Exception $e) {
-            $this->player->sendMessage($e);
+            $this->player->sendMessage($e->getMessage());
             return;
         }
 
@@ -75,7 +75,7 @@ class CustomTeamArrayVectorDataHotbarMenu extends HotbarMenu
         try {
             EditorsStore::delete($this->player->getName());
         } catch (\Exception $e) {
-            $this->player->sendMessage($e);
+            $this->player->sendMessage($e->getMessage());
         }
 
         parent::close();

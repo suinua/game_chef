@@ -31,7 +31,7 @@ class CustomTeamVectorDataListForm extends SimpleForm
         ];
         foreach ($teamDataOnMap->getCustomTeamVectorDataList() as $customTeamVectorData) {
             $buttons[] = new SimpleFormButton(
-                strval($customTeamVectorData->getVector3()),
+                $customTeamVectorData->getKey() . ":" . strval($customTeamVectorData->getVector3()),
                 null,
                 function (Player $player) use ($customTeamVectorData, $teamGameMapData, $teamDataOnMap) {
                     $menu = new CustomTeamVectorDataHotbarMenu($player, $teamGameMapData, $teamDataOnMap, $customTeamVectorData);
