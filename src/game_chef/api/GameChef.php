@@ -20,6 +20,7 @@ use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
 use game_chef\services\GameService;
 use game_chef\services\FFAGameService;
+use game_chef\services\MapService;
 use game_chef\services\TeamGameService;
 use game_chef\store\GamesStore;
 use game_chef\store\GameTimersStore;
@@ -338,5 +339,13 @@ class GameChef
         }
 
         return $players;
+    }
+
+    static function copyWorld(string $levelName, string $newLevelName): void {
+        MapService::copyWorld($levelName, $newLevelName);
+    }
+
+    static function deleteWorld(string $levelName): void {
+        MapService::deleteWorld($levelName);
     }
 }

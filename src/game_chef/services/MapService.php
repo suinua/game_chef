@@ -67,11 +67,15 @@ class MapService
 
     static private function createInstantWorld(string $levelName): string {
         $uniqueLevelName = $levelName . uniqid() . self::GameChefWoldKey;
-        self::copyFolder(DataFolderPath::$worlds . $levelName, DataFolderPath::$worlds . $uniqueLevelName);
-        self::fixLevelName($uniqueLevelName);
-        Server::getInstance()->loadLevel($uniqueLevelName);
+        self::copyWorld($levelName, $uniqueLevelName);
 
         return $uniqueLevelName;
+    }
+
+    static function copyWorld(string $folderName, string $newLevelName): void {
+        self::copyFolder(DataFolderPath::$worlds . $folderName, DataFolderPath::$worlds . $newLevelName);
+        self::fixLevelName($newLevelName);
+        Server::getInstance()->loadLevel($newLevelName);
     }
 
     static private function copyFolder(string $dir, string $new_dir) {
@@ -115,18 +119,18 @@ class MapService
     }
 
     static function deleteInstantWorld(string $levelName): void {
-        $server = Server::getInstance();
-        $level = $server->getLevelByName($levelName);
-        if ($level !== null) {
-            $server->unloadLevel($level);
-        }
-
         if (strpos($levelName, self::GameChefWoldKey) === false) {
             throw new \LogicException("GameChefで生成されたワールド以外($levelName)を削除することはできません");
         }
 
-        $path = DataFolderPath::$worlds . $levelName . DIRECTORY_SEPARATOR;
+        self::deleteWorld($levelName);
+    }
 
+    static function deleteWorld(string $levelName): void {
+        $server = Server::getInstance();
+        $level = $server->getLevelByName($levelName);
+        if ($level !== null) $server->unloadLevel($level);
+        $path = DataFolderPath::$worlds . $levelName . DIRECTORY_SEPARATOR;
         self::deleteDir($path);
     }
 
