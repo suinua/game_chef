@@ -10,13 +10,15 @@ use game_chef\models\GameType;
 use game_chef\models\TeamGameMap;
 use game_chef\repository\FFAGameMapDataRepository;
 use game_chef\repository\TeamGameMapDataRepository;
+use pocketmine\level\Level;
 use pocketmine\nbt\BigEndianNBTStream;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Server;
 
 class MapService
 {
-    const GameChefWoldKey = "forGameChef";
+    const GameChefWoldKey = "forGameChef";//GameChefで生成された印
+    const TemporaryWorldKey = "TemporaryWorld";//一時的なマップ
 
     /**
      * @param string $name
@@ -42,12 +44,6 @@ class MapService
         }
     }
 
-    /**
-     * @param string $name
-     * @param GameType $gameType
-     * @param int $numberOfTeams
-     * @return TeamGameMap
-     */
     static function useTeamGameMap(string $name, GameType $gameType, int $numberOfTeams): TeamGameMap {
         $mapData = TeamGameMapDataRepository::loadByName($name);
         if ($mapData->isAdaptedGameType($gameType)) {
@@ -66,13 +62,16 @@ class MapService
     }
 
     static private function createInstantWorld(string $levelName): string {
-        $uniqueLevelName = $levelName . uniqid() . self::GameChefWoldKey;
-        self::copyWorld($levelName, $uniqueLevelName);
+        $uniqueLevelName = $levelName . uniqid();
+        self::copyWorld($levelName, $uniqueLevelName, true);
 
         return $uniqueLevelName;
     }
 
-    static function copyWorld(string $folderName, string $newLevelName): void {
+    static function copyWorld(string $folderName, string $newLevelName, $isTemporary): void {
+        $newLevelName .= self::GameChefWoldKey;
+        if ($isTemporary) $newLevelName .= self::TemporaryWorldKey;
+
         self::copyFolder(DataFolderPath::$worlds . $folderName, DataFolderPath::$worlds . $newLevelName);
         self::fixLevelName($newLevelName);
         Server::getInstance()->loadLevel($newLevelName);
@@ -82,22 +81,17 @@ class MapService
         $dir = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $new_dir = rtrim($new_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-        // コピー元ディレクトリが存在すればコピーを行う
         if (is_dir($dir)) {
-            // コピー先ディレクトリが存在しなければ作成する
             if (!is_dir($new_dir)) {
                 mkdir($new_dir, 0777);
                 chmod($new_dir, 0777);
             }
 
-            // ディレクトリを開く
             if ($handle = opendir($dir)) {
-                // ディレクトリ内のファイルを取得する
                 while (false !== ($file = readdir($handle))) {
                     if ($file === '.' || $file === '..') {
                         continue;
                     }
-                    // 下の階層にディレクトリが存在する場合は再帰処理を行う
                     if (is_dir($dir . $file)) {
                         self::copyFolder($dir . $file, $new_dir . $file);
                     } else {
@@ -118,15 +112,11 @@ class MapService
         file_put_contents(DataFolderPath::$worlds . $levelName . DIRECTORY_SEPARATOR . "level.dat", $nbt->writeCompressed(new CompoundTag("", [$levelData])));
     }
 
-    static function deleteInstantWorld(string $levelName): void {
+    static function deleteWorld(string $levelName): void {
         if (strpos($levelName, self::GameChefWoldKey) === false) {
             throw new \LogicException("GameChefで生成されたワールド以外($levelName)を削除することはできません");
         }
 
-        self::deleteWorld($levelName);
-    }
-
-    static function deleteWorld(string $levelName): void {
         $server = Server::getInstance();
         $level = $server->getLevelByName($levelName);
         if ($level !== null) $server->unloadLevel($level);
@@ -148,19 +138,27 @@ class MapService
         rmdir($path);
     }
 
-    static function isInstantWorld(string $levelName): bool {
-        return strpos($levelName, self::GameChefWoldKey) !== false;
+    static function isTemporaryWorld(string $levelName): bool {
+        return strpos($levelName, self::TemporaryWorldKey) !== false;
     }
 
-    static function deleteAllInstantWorlds(): void {
+    static function deleteAllTemporaryWorlds(): void {
         $path = DataFolderPath::$worlds;
         $files = scandir($path);
         foreach ($files as $file_name) {
             if (!preg_match('/^\.(.*)/', $file_name)) {
-                if (self::isInstantWorld($file_name)) {
-                    self::deleteInstantWorld($file_name);
+                if (self::isTemporaryWorld($file_name)) {
+                    self::deleteWorld($file_name);
                 }
             }
         }
+    }
+
+    static function getWorldWorld(string $name, bool $isTemporary): Level {
+        $name .= MapService::GameChefWoldKey;
+        if ($isTemporary) {
+            $name .= MapService::TemporaryWorldKey;
+        }
+        return Server::getInstance()->getLevelByName($name);
     }
 }

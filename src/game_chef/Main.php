@@ -56,7 +56,7 @@ class Main extends PluginBase implements Listener
     }
 
     public function onDisable() {
-        MapService::deleteAllInstantWorlds();
+        MapService::deleteAllTemporaryWorlds();
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {

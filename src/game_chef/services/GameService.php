@@ -56,7 +56,7 @@ class GameService
             PlayerDataStore::update(new PlayerData($playerData->getName()));
         }
 
-        MapService::deleteInstantWorld($game->getMap()->getLevelName());
+        MapService::deleteWorld($game->getMap()->getLevelName());
     }
 
     static function quit(Player $player): void {

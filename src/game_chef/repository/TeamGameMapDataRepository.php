@@ -15,7 +15,7 @@ class TeamGameMapDataRepository
             throw new \LogicException("すでにその名前({$teamGameMapData->getName()})のマップが存在しています");
         }
 
-        if (MapService::isInstantWorld($teamGameMapData->getLevelName())) {
+        if (MapService::isTemporaryWorld($teamGameMapData->getLevelName())) {
             throw new \LogicException("コピーされた試合用のワールドで、マップを作成することはできません");
         }
 

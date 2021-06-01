@@ -15,7 +15,7 @@ class FFAGameMapDataRepository
             throw new \LogicException("すでにその名前({$ffaGameMapData->getName()})のマップが存在しています");
         }
 
-        if (MapService::isInstantWorld($ffaGameMapData->getLevelName())) {
+        if (MapService::isTemporaryWorld($ffaGameMapData->getLevelName())) {
             throw new \LogicException("コピーされた試合用のワールドで、マップを作成することはできません");
         }
 

@@ -341,11 +341,17 @@ class GameChef
         return $players;
     }
 
-    static function copyWorld(string $levelName, string $newLevelName): void {
-        MapService::copyWorld($levelName, $newLevelName);
+    static function copyWorld(string $levelName, string $newLevelName, bool $isTemporary = true): void {
+        MapService::copyWorld($levelName, $newLevelName, $isTemporary);
     }
 
     static function deleteWorld(string $levelName): void {
         MapService::deleteWorld($levelName);
+    }
+
+    //$nameは 試合用のマップなら「元のLevel名+生成されたuniqId」
+    //独自に生成したマップなら、生成した際のLevel名です
+    static function getWorld(string $name, bool $isTemporary): Level {
+        return MapService::getWorldWorld($name, $isTemporary);
     }
 }
