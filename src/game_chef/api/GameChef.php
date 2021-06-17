@@ -234,7 +234,7 @@ class GameChef
     }
 
 
-    static function getTeamGameMapNames(GameType $gameType): array {
+    static function getTeamGameMapNames(): array {
         $names = [];
         foreach (TeamGameMapDataRepository::loadAll() as $mapData) {
             $names[] = $mapData->getName();
