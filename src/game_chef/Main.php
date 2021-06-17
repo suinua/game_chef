@@ -12,6 +12,7 @@ use game_chef\pmmp\entities\CustomMapArrayVectorDataMarkerEntity;
 use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerAttackPlayerEvent;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
+use game_chef\pmmp\events\PlayerTapPlayerEvent;
 use game_chef\pmmp\form\MainMapForm;
 use game_chef\pmmp\hotbar_menu\HotbarMenuItem;
 use game_chef\pmmp\private_name_tag\PrivateNameTag;
@@ -110,6 +111,8 @@ class Main extends PluginBase implements Listener
                 if ($game instanceof TeamGame) {
                     //同士討ちかどうか
                     $isFriendlyFire = $damagedPlayerData->getBelongTeamId()->equals($attackingPlayerData->getBelongTeamId());
+                    (new PlayerTapPlayerEvent($game->getId(), $game->getType(), $attackingPlayer, $damagedPlayer, $isFriendlyFire))->call();
+
                     if ($isFriendlyFire) {
                         //フレンドリーファイアーOFFならキャンセル
                         if (!$game->getFriendlyFire()) {
