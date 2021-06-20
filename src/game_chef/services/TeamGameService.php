@@ -62,10 +62,11 @@ class TeamGameService
             //指定のチームに参加できるかどうか
             //人数制限
             $team = $game->getTeamById($teamId);
-            if (count(PlayerDataStore::getByTeamId($teamId)) >= $team->getMaxPlayer()) {
-                return false;
+            if ($team->getMaxPlayer() !== null) {
+                if (count(PlayerDataStore::getByTeamId($teamId)) >= $team->getMaxPlayer()) {
+                    return false;
+                }
             }
-
             $desertedTeam = $sortedTeams[0];
 
             //人数差

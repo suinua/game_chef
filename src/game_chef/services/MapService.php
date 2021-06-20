@@ -61,20 +61,28 @@ class MapService
         }
     }
 
-    static private function createInstantWorld(string $levelName): string {
-        $uniqueLevelName = $levelName . uniqid();
-        self::copyWorld($levelName, $uniqueLevelName, true);
 
-        return $uniqueLevelName;
+    //試合で使うワールドを作成 LevelName + UUID
+    static private function createInstantWorld(string $levelName): string {
+        return self::copyWorld($levelName, $levelName . uniqid(), true);
     }
 
-    static function copyWorld(string $folderName, string $newLevelName, $isTemporary): void {
+    //一時的なワールドを作成 LevelName + GameChefWorldKey + TemporaryWorldKey
+    static function copyWorld(string $folderName, string $newLevelName, bool $isTemporary): string {
         $newLevelName .= self::GameChefWoldKey;
         if ($isTemporary) $newLevelName .= self::TemporaryWorldKey;
 
         self::copyFolder(DataFolderPath::$worlds . $folderName, DataFolderPath::$worlds . $newLevelName);
         self::fixLevelName($newLevelName);
         Server::getInstance()->loadLevel($newLevelName);
+
+        return $newLevelName;
+    }
+
+    static function generateWorldName(string $newLevelName, bool $isTemporary): string {
+        $newLevelName .= self::GameChefWoldKey;
+        if ($isTemporary) $newLevelName .= self::TemporaryWorldKey;
+        return $newLevelName;
     }
 
     static private function copyFolder(string $dir, string $new_dir) {
@@ -154,11 +162,9 @@ class MapService
         }
     }
 
-    static function getWorldWorld(string $name, bool $isTemporary): Level {
+    static function getCopiedLevelByName(string $name, bool $isTemporary): Level {
         $name .= MapService::GameChefWoldKey;
-        if ($isTemporary) {
-            $name .= MapService::TemporaryWorldKey;
-        }
+        if ($isTemporary)  $name .= MapService::TemporaryWorldKey;
         return Server::getInstance()->getLevelByName($name);
     }
 }

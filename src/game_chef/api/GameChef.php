@@ -213,19 +213,20 @@ class GameChef
     static function getTeamGameMapNamesByType(GameType $gameType): array {
         $names = [];
         foreach (TeamGameMapDataRepository::loadAll() as $mapData) {
-            if (in_array($gameType, $mapData->getAdaptedGameTypes())) {
+            $types = array_map(fn(GameType $type) => strval($type), $mapData->getAdaptedGameTypes());
+            if (in_array(strval($gameType), $types)) {
                 $names[] = $mapData->getName();
             }
         }
 
         return $names;
-
     }
 
     static function getFFAGameMapNamesByType(GameType $gameType): array {
         $names = [];
         foreach (FFAGameMapDataRepository::loadAll() as $mapData) {
-            if (in_array($gameType, $mapData->getAdaptedGameTypes())) {
+            $types = array_map(fn(GameType $type) => strval($type), $mapData->getAdaptedGameTypes());
+            if (in_array(strval($gameType), $types)) {
                 $names[] = $mapData->getName();
             }
         }
@@ -351,7 +352,7 @@ class GameChef
 
     //$nameは 試合用のマップなら「元のLevel名+生成されたuniqId」
     //独自に生成したマップなら、生成した際のLevel名です
-    static function getWorld(string $name, bool $isTemporary): Level {
-        return MapService::getWorldWorld($name, $isTemporary);
+    static function getCopiedLevelByName(string $name, bool $isTemporary): Level {
+        return MapService::getCopiedLevelByName($name, $isTemporary);
     }
 }

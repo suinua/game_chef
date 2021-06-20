@@ -8,7 +8,6 @@ use game_chef\api\GameChef;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
 use game_chef\pmmp\bossbar\BossbarListener;
-use game_chef\pmmp\entities\CustomMapArrayVectorDataMarkerEntity;
 use game_chef\pmmp\entities\NPCBase;
 use game_chef\pmmp\events\PlayerAttackPlayerEvent;
 use game_chef\pmmp\events\PlayerKilledPlayerEvent;
