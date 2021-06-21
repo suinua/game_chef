@@ -9,8 +9,9 @@ use game_chef\models\GameId;
 use game_chef\models\PlayerData;
 use game_chef\models\TeamGame;
 use game_chef\models\TeamId;
-use game_chef\pmmp\events\PlayerJoinGameEvent;
+use game_chef\pmmp\events\PlayerJoinedGameEvent;
 use game_chef\pmmp\events\PlayerMoveTeamEvent;
+use game_chef\pmmp\events\PlayerPreJoinGameEvent;
 use game_chef\store\GamesStore;
 use game_chef\store\PlayerDataStore;
 use game_chef\utilities\SortTeamsByPlayers;
@@ -33,12 +34,13 @@ class TeamGameService
         }
 
         $onSuccess = function (Player $player, Game $game, TeamId $teamId): bool {
-            $event = new PlayerJoinGameEvent($player, $game->getId(), $game->getType(), $teamId);
+            $event = new PlayerPreJoinGameEvent($player, $game->getId(), $game->getType(), $teamId);
             $event->call();
             if ($event->isCancelled()) return false;
 
             $newPlayerData = new PlayerData($player->getName(), $game->getId(), $teamId);
             PlayerDataStore::update($newPlayerData);
+            (new PlayerJoinedGameEvent($player, $game->getId(), $game->getType(), $teamId))->call();
             return true;
         };
 

@@ -11,13 +11,12 @@ use pocketmine\event\Cancellable;
 use pocketmine\event\Event;
 use pocketmine\Player;
 
-class PlayerJoinGameEvent extends Event implements Cancellable
+class PlayerPreJoinGameEvent  extends Event implements Cancellable
 {
     private Player $player;
     private GameId $gameId;
     private GameType $gameType;
     private TeamId $teamId;
-
 
     public function __construct(Player $player, GameId $gameId, GameType $gameType, TeamId $teamId) {
         $this->player = $player;
